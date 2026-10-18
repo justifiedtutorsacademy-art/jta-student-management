@@ -8,10 +8,36 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <style>
-:root{--navy:#14213d;--blue:#2563eb;--pale:#eef4ff;--bg:#f5f7fb;--text:#1f2937;--muted:#64748b;--border:#e2e8f0;--green:#15803d;--red:#b91c1c;--amber:#a16207}
+:root{--navy:#173b8f;--blue:#1456c0;--pale:#edf5ff;--bg:#f5f7ff;--text:#1f2937;--muted:#64748b;--border:#e2e8f0;--green:#15803d;--red:#b91c1c;--amber:#a16207;--purple:#8a36c7;--violet:#a855d8;--cyan:#dff7ff}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--text)}button,input,select,textarea{font:inherit}button{cursor:pointer;border:0;border-radius:10px;padding:10px 14px;font-weight:650}.primary{background:var(--blue);color:white}.secondary{background:#e8eef9;color:var(--navy)}.danger{background:#fee2e2;color:#991b1b}.small{padding:6px 9px;font-size:13px}.shell{display:grid;grid-template-columns:235px 1fr;min-height:100vh}.sidebar{background:var(--navy);color:white;padding:24px 16px}.brand{font-size:19px;font-weight:800;line-height:1.2;margin:0 8px 8px}.tagline{font-size:12px;color:#cbd5e1;margin:0 8px 28px}.nav{display:grid;gap:8px}.nav button{background:transparent;color:#dbeafe;text-align:left;padding:12px}.nav button.active,.nav button:hover{background:#263b62;color:white}.sidebar-note{font-size:12px;color:#cbd5e1;line-height:1.5;margin:30px 8px 0}.main{padding:26px;min-width:0}.topbar{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:22px}.topbar h1{font-size:27px;margin:0}.subtitle{color:var(--muted);font-size:14px;margin-top:4px}.pill{background:#fff;border:1px solid var(--border);border-radius:999px;padding:8px 12px;font-size:12px;color:var(--muted)}.grid{display:grid;gap:16px}.stats{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:18px}.card{background:white;border:1px solid var(--border);border-radius:16px;padding:18px;box-shadow:0 2px 7px #0f172a05;min-width:0}.stat-label{font-size:13px;color:var(--muted)}.stat-value{font-size:28px;font-weight:800;margin-top:5px}.stat-foot{font-size:12px;color:var(--muted);margin-top:3px}.two{grid-template-columns:1.15fr .85fr}.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}.section-head h2,.card h2{font-size:17px;margin:0}.section-head p{font-size:13px;color:var(--muted);margin:4px 0 0}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field{display:grid;gap:6px}.field label{font-size:12px;font-weight:700;color:#475569}.field input,.field select,.field textarea,input,select{min-width:0}.field input,.field select,.field textarea,.toolbar input,.toolbar select{border:1px solid #cbd5e1;border-radius:9px;padding:10px 11px;background:white;width:100%;color:var(--text)}.field.full{grid-column:1/-1}.form-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}.toolbar>*{flex:1;min-width:130px}.table-wrap{overflow:auto;border:1px solid var(--border);border-radius:12px}table{width:100%;border-collapse:collapse;min-width:620px}th,td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--border);font-size:13px;white-space:nowrap}th{background:#f8fafc;color:#475569;font-size:12px}tr:last-child td{border-bottom:0}.muted{color:var(--muted)}.badge{display:inline-block;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:750}.good{background:#dcfce7;color:#166534}.bad{background:#fee2e2;color:#991b1b}.warn{background:#fef3c7;color:#92400e}.empty{text-align:center;padding:30px;color:var(--muted)}.hidden{display:none!important}.notice{background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:13px 15px;color:#1e40af;font-size:13px;line-height:1.5;margin-bottom:16px}.notice strong{display:block;margin-bottom:3px}.bar-row{display:grid;grid-template-columns:110px 1fr 42px;gap:10px;align-items:center;margin:13px 0;font-size:13px}.bar{height:10px;background:#e2e8f0;border-radius:999px;overflow:hidden}.bar span{display:block;height:100%;background:var(--blue);border-radius:999px}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}.tabs button{background:#e8eef9;color:var(--navy)}.tabs button.active{background:var(--blue);color:white}.footer-note{font-size:12px;color:var(--muted);line-height:1.5;margin-top:15px}.toast{position:fixed;right:18px;bottom:18px;background:#14213d;color:white;padding:12px 16px;border-radius:12px;box-shadow:0 8px 25px #0002;z-index:10;max-width:90vw}.file-label{display:inline-flex;align-items:center;justify-content:center;background:#e8eef9;color:var(--navy);border-radius:10px;padding:10px 14px;font-weight:650;cursor:pointer}.mobile-nav{display:none}
 @media(max-width:900px){.shell{grid-template-columns:1fr}.sidebar{padding:14px;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{margin:0;font-size:16px}.tagline,.sidebar-note{display:none}.nav{display:flex;gap:4px;overflow:auto}.nav button{white-space:nowrap;padding:9px;font-size:12px}.main{padding:16px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.two{grid-template-columns:1fr}.topbar h1{font-size:22px}.pill{display:none}}
 @media(max-width:480px){.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.card{padding:14px}.stats{gap:10px}.stat-value{font-size:24px}.topbar{align-items:flex-start}}
+/* JTA visual refresh: royal blue, purple and light-cyan inspired by the academy artwork */
+body{background:linear-gradient(145deg,#f4f8ff 0%,#f8f5ff 58%,#eefaff 100%)}
+.sidebar{background:linear-gradient(165deg,#104fbd 0%,#173b8f 54%,#7136b7 100%);box-shadow:5px 0 24px #163b8f12}
+.brand{letter-spacing:-.35px}.tagline{color:#e3eaff}
+.nav button{border:1px solid transparent;transition:background .18s ease,transform .18s ease}
+.nav button.active,.nav button:hover{background:linear-gradient(100deg,#8a36c7,#1456c0);border-color:#ffffff35;transform:translateX(2px)}
+.main{max-width:1600px;width:100%;margin:0 auto}
+.topbar h1{color:#173b8f;letter-spacing:-.7px}
+.card{border-color:#e1e8f6;border-radius:18px;box-shadow:0 8px 24px #173b8f0b;transition:box-shadow .18s ease,transform .18s ease}
+.card:hover{box-shadow:0 12px 28px #173b8f12}
+.stats .card{position:relative;overflow:hidden}
+.stats .card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:linear-gradient(180deg,#1456c0,#a855d8)}
+.stat-value{color:#173b8f}
+.notice{background:linear-gradient(110deg,#eaf4ff,#f6edff);border-color:#d8dfff;color:#24468b}
+button.primary{background:linear-gradient(105deg,#1456c0,#7136b7);box-shadow:0 4px 12px #1456c026}
+button.primary:hover{filter:brightness(1.06)}
+button.secondary,.tabs button{background:#f0e8ff;color:#57308f}
+.field input:focus,.field select:focus,.field textarea:focus,.toolbar input:focus,.toolbar select:focus,input:focus,select:focus{outline:3px solid #8b5cf633;border-color:#8a36c7}
+th{background:#eef3ff;color:#25488c}
+.bar span{background:linear-gradient(90deg,#1456c0,#a855d8)}
+.pill{border-color:#d8def0;background:#fff;color:#36508a}
+#authGate{background:radial-gradient(circle at 12% 10%,#dff7ff 0,transparent 35%),radial-gradient(circle at 90% 85%,#f0ddff 0,transparent 34%),#f5f7ff!important}
+#loginForm{border-top:5px solid transparent!important;border-image:linear-gradient(90deg,#1456c0,#a855d8) 1;box-shadow:0 18px 55px #173b8f20!important}
+#loginButton{background:linear-gradient(100deg,#1456c0,#8a36c7)!important}
+@media(max-width:900px){.sidebar{background:linear-gradient(100deg,#104fbd,#173b8f 62%,#7136b7);align-items:flex-start;flex-direction:column}.nav{width:100%;padding-bottom:2px}.nav button.active,.nav button:hover{transform:none}.main{padding:14px}}
+@media(max-width:480px){.brand{font-size:16px}.topbar h1{font-size:24px}.card{border-radius:15px}}
 @media print{.sidebar,.topbar .pill,button,.toolbar,.form-actions,.notice.no-print{display:none!important}.shell{display:block}.main{padding:0}.card{box-shadow:none;break-inside:avoid}.page{display:block!important}body{background:white}}
 </style>
 </head>
@@ -19,7 +45,7 @@
 
 <div id="authGate" style="position:fixed;inset:0;background:#f5f7fb;z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px">
   <form id="loginForm" style="width:min(100%,420px);background:#fff;border:1px solid #e2e8f0;border-radius:18px;padding:24px;box-shadow:0 12px 40px #0f172a18">
-    <h1 style="margin:0 0 8px;color:#14213d;font-size:24px">ðŸŽ“ JTA Admin Login</h1>
+    <h1 style="margin:0 0 8px;color:#14213d;font-size:24px">🎓 JTA Admin Login</h1>
     <p style="color:#64748b;line-height:1.5;font-size:14px">Sign in with the administrator account you created in Firebase Authentication to access and sync student records.</p>
     <label style="display:block;font-size:13px;font-weight:700;margin:14px 0 6px">Administrator email</label>
     <input id="loginEmail" type="email" autocomplete="username" required style="width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:9px">
@@ -32,26 +58,26 @@
 
 <div class="shell">
 <aside class="sidebar">
-  <div><div class="brand">ðŸŽ“ Justified Tracker</div><div class="tagline">Student attendance & progress</div></div>
+  <div><div class="brand">🎓 Justified Tracker</div><div class="tagline">Student attendance & progress</div></div>
   <nav class="nav">
-    <button class="active" data-page="dashboard">â–¦ Dashboard</button>
-    <button data-page="students">â™™ Students</button>
-    <button data-page="attendance">âœ“ Weekly attendance</button>
-    <button data-page="scores">âœŽ Scores</button>
-    <button data-page="reports">â–¤ Reports</button>
-    <button data-page="settings">âš™ Data & sync</button>
+    <button class="active" data-page="dashboard">▦ Dashboard</button>
+    <button data-page="students">♙ Students</button>
+    <button data-page="attendance">✓ Weekly attendance</button>
+    <button data-page="scores">✎ Scores</button>
+    <button data-page="reports">▤ Reports</button>
+    <button data-page="settings">⚙ Data & sync</button>
   </nav>
   <div class="sidebar-note">Keep student records accurate and back them up regularly.</div>
 </aside>
 <main class="main">
-  <header class="topbar"><div><h1 id="pageTitle">Dashboard</h1><div class="subtitle" id="pageSubtitle">A clear picture of your students' attendance and progress.</div></div><span class="pill" id="storagePill">Connecting to cloudâ€¦</span></header>
+  <header class="topbar"><div><h1 id="pageTitle">Dashboard</h1><div class="subtitle" id="pageSubtitle">A clear picture of your students' attendance and progress.</div></div><span class="pill" id="storagePill">Connecting to cloud…</span></header>
   <div id="page-dashboard" class="page">
     <div class="notice"><strong>Welcome to your student tracker</strong>Add each student once, then record weekly attendance and assessment scores. Records are stored locally and synced to your private Firebase account when online.</div>
     <div class="grid stats">
       <div class="card"><div class="stat-label">Registered students</div><div class="stat-value" id="statStudents">0</div><div class="stat-foot">Across all groups</div></div>
       <div class="card"><div class="stat-label">Present this week</div><div class="stat-value" id="statPresent">0</div><div class="stat-foot">Students marked present</div></div>
-      <div class="card"><div class="stat-label">Attendance rate</div><div class="stat-value" id="statAttendance">â€”</div><div class="stat-foot">For the selected week</div></div>
-      <div class="card"><div class="stat-label">Average score</div><div class="stat-value" id="statAverage">â€”</div><div class="stat-foot">Across recorded assessments</div></div>
+      <div class="card"><div class="stat-label">Attendance rate</div><div class="stat-value" id="statAttendance">—</div><div class="stat-foot">For the selected week</div></div>
+      <div class="card"><div class="stat-label">Average score</div><div class="stat-value" id="statAverage">—</div><div class="stat-foot">Across recorded assessments</div></div>
     </div>
     <div class="grid two">
       <section class="card"><div class="section-head"><div><h2>Recent student progress</h2><p>Average percentage by student</p></div><button class="secondary small" onclick="go('reports')">View reports</button></div><div id="progressBars"></div></section>
@@ -63,6 +89,55 @@
       <section class="card"><div class="section-head"><div><h2 id="studentFormTitle">Register a student</h2><p>Enter the student's details once.</p></div></div>
         <form id="studentForm"><input type="hidden" id="editStudentId"><div class="form-grid">
           <div class="field"><label for="studentName">Full name *</label><input id="studentName" required placeholder="e.g. John Okafor"></div>
+          <div class="field"><label for="studentCode">Student ID</label><input id="studentCode" placeholder="e.g. STU001 (optional)"></div>
+          <div class="field"><label for="studentGroup">Class / group *</label><input id="studentGroup" required placeholder="e.g. Saturday Chemistry"></div>
+          <div class="field"><label for="studentSubject">Main subject</label><input id="studentSubject" placeholder="e.g. Chemistry"></div>
+          <div class="field"><label for="studentPhone">Phone (optional)</label><input id="studentPhone" type="tel" placeholder="Optional"></div>
+          <div class="field"><label for="studentDate">Date registered</label><input id="studentDate" type="date"></div>
+        </div><div class="form-actions"><button class="primary" type="submit" id="saveStudentBtn">Save student</button><button class="secondary" type="button" onclick="resetStudentForm()">Clear</button></div></form>
+      </section>
+      <section class="card"><h2>Student list</h2><p class="muted" style="font-size:13px">Search or filter students by group.</p><div class="toolbar"><input id="studentSearch" placeholder="Search name or ID"><select id="studentGroupFilter"><option value="">All groups</option></select></div><div id="studentCount" class="muted" style="font-size:12px;margin-bottom:8px"></div><div id="studentTable"></div></section>
+    </div>
+  </div>
+  <div id="page-attendance" class="page hidden">
+    <div class="card">
+      <div class="section-head"><div><h2>Weekly attendance</h2><p>Select a week and mark each student's status.</p></div></div>
+      <div class="toolbar"><div class="field"><label>Week beginning</label><input type="date" id="attendanceWeek"></div><div class="field"><label>Class / group</label><select id="attendanceGroup"><option value="">All groups</option></select></div><div class="field"><label>Subject (optional)</label><input id="attendanceSubject" placeholder="e.g. Chemistry"></div></div>
+      <div class="form-actions" style="margin:0 0 14px"><button class="primary" onclick="markAll('Present')">Mark all present</button><button class="secondary" onclick="markAll('Absent')">Mark all absent</button><button class="secondary" onclick="saveAttendance()">Save attendance</button></div>
+      <div id="attendanceTable"></div><div class="footer-note">Attendance is recorded per student, week, and subject. If no subject is entered, it is saved as the general weekly attendance.</div>
+    </div>
+  </div>
+  <div id="page-scores" class="page hidden">
+    <div class="grid two">
+      <section class="card"><div class="section-head"><div><h2 id="scoreFormTitle">Record a score</h2><p>Use any maximum score: 10, 20, 50, 100, or another value.</p></div></div>
+        <form id="scoreForm"><input type="hidden" id="editScoreId"><div class="form-grid">
+          <div class="field full"><label for="scoreStudent">Student *</label><select id="scoreStudent" required><option value="">Choose student</option></select></div>
+          <div class="field"><label for="scoreDate">Assessment date *</label><input id="scoreDate" type="date" required></div>
+          <div class="field"><label for="scoreSubject">Subject *</label><input id="scoreSubject" required placeholder="e.g. Chemistry"></div>
+          <div class="field"><label for="scoreAssessment">Assessment type *</label><select id="scoreAssessment"><option>Test</option><option>Assignment</option><option>Classwork</option><option>Practical</option><option>Examination</option><option>Quiz</option><option>Other</option></select></div>
+          <div class="field"><label for="scoreTitle">Assessment name</label><input id="scoreTitle" placeholder="e.g. Water topic test"></div>
+          <div class="field"><label for="scoreValue">Score obtained *</label><input id="scoreValue" type="number" min="0" step="any" required placeholder="e.g. 16"></div>
+          <div class="field"><label for="scoreMax">Maximum score *</label><input id="scoreMax" type="number" min="0.01" step="any" value="20" required></div>
+          <div class="field full"><label for="scoreComment">Teacher's note (optional)</label><textarea id="scoreComment" rows="2" placeholder="Strengths, topic to revise, etc."></textarea></div>
+        </div><div class="form-actions"><button class="primary" type="submit" id="saveScoreBtn">Save score</button><button class="secondary" type="button" onclick="resetScoreForm()">Clear</button></div></form>
+      </section>
+      <section class="card"><div class="section-head"><div><h2>Assessment records</h2><p>Review, edit, or remove recorded scores.</p></div></div><div class="toolbar"><input id="scoreSearch" placeholder="Search student or subject"><select id="scoreGroupFilter"><option value="">All groups</option></select></div><div id="scoresTable"></div></section>
+    </div>
+  </div>
+  <div id="page-reports" class="page hidden">
+    <div class="card">
+      <div class="section-head"><div><h2>Student reports</h2><p>Review attendance and academic progress for a selected student.</p></div><button class="secondary" onclick="window.print()">Print report</button></div>
+      <div class="toolbar"><select id="reportStudent"><option value="">Choose a student</option></select><input type="date" id="reportFrom" aria-label="Report start date"><input type="date" id="reportTo" aria-label="Report end date"><button class="primary" onclick="renderReport()">Generate report</button></div>
+      <div id="reportOutput"><div class="empty">Choose a student and generate a report.</div></div>
+    </div>
+  </div>
+  <div id="page-settings" class="page hidden">
+    <div class="grid two">
+      <section class="card"><h2>Back up and restore records</h2><p class="muted" style="font-size:13px;line-height:1.5">Download a JSON backup for safekeeping. To transfer records to another device, download the backup here and import it on that device.</p><div class="form-actions"><button class="primary" onclick="exportJSON()">Download full backup</button><label class="file-label">Import backup<input id="importFile" type="file" accept=".json,application/json" hidden></label><button class="secondary" onclick="exportCSV()">Export student list (CSV)</button></div><p class="footer-note">Importing a backup replaces the current records in this browser. Keep a copy of your existing data first.</p></section>
+      <section class="card"><h2>Cross-device sync</h2><p style="font-size:13px;line-height:1.6">This version syncs student, attendance, and score records to the signed-in administrator’s Firebase account. Keep regular backups as an extra precaution.</p><div class="notice" style="margin:12px 0"><strong>Cloud sync status</strong>Cloud sync requires Firebase Authentication and the matching Firestore rules to be configured. Only the signed-in administrator can access this account’s records.</div><p class="muted" style="font-size:13px">For now, use the backup/import feature to move data manually. Do not store sensitive student or parent information on a shared device.</p></section>
+    </div>
+    <section class="card" style="margin-top:16px"><h2>Administrator session</h2><p class="muted" style="font-size:13px">Sign out when finished, especially on a shared device.</p><div class="form-actions"><button class="secondary" onclick="signOutAdmin()">Sign out</button></div></section>
+    <section class="card" style="margin-top:16px"><h2>Data summary</h2><div id="dataSummary" class="muted" style="font-size:13px;ma  <div class="field"><label for="studentName">Full name *</label><input id="studentName" required placeholder="e.g. John Okafor"></div>
           <div class="field"><label for="studentCode">Student ID</label><input id="studentCode" placeholder="e.g. STU001 (optional)"></div>
           <div class="field"><label for="studentGroup">Class / group *</label><input id="studentGroup" required placeholder="e.g. Saturday Chemistry"></div>
           <div class="field"><label for="studentSubject">Main subject</label><input id="studentSubject" placeholder="e.g. Chemistry"></div>
