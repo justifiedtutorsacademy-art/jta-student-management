@@ -132,4 +132,194 @@ function weekDefault(){let d=new Date();let day=(d.getDay()+6)%7;d.setDate(d.get
 function go(page){document.querySelectorAll('.page').forEach(e=>e.classList.add('hidden'));$('page-'+page).classList.remove('hidden');document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));const names={dashboard:['Dashboard',"A clear picture of your students' attendance and progress."],students:['Students','Register and manage your students and groups.'],attendance:['Weekly attendance','Record attendance for each week.'],scores:['Scores','Record assessments and track performance.'],reports:['Reports','Generate an individual student report.'],settings:['Data & sync','Back up your records and manage data.']};$('pageTitle').textContent=names[page][0];$('pageSubtitle').textContent=names[page][1];refreshAll()}
 document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>go(b.dataset.page)));
 function groups(){return [...new Set(db.students.map(s=>s.group).filter(Boolean))].sort()}
-function fillSelect(id,items,first){const el=$(id),old=el.value;el.innerHTML=`<option value="">${esc(first)}</option>`+items.map(x=>`<option value="${esc(x.value)}">${esc(x.label)}</opt
+function fillSelect(id,items,first){const el=$(id),old=el.value;el.innerHTML=`<option value="">${esc(first)}</option>`+items.map(x=>`<option value="${esc(x.value)}">${esc(x.label)}</option>`).join('');if(items.some(x=>x.value===old))el.value=old}
+function refreshSelects(){const gs=groups();['studentGroupFilter','attendanceGroup','scoreGroupFilter'].forEach(id=>{const old=$(id).value;$(id).innerHTML='<option value="">All groups</option>'+gs.map(g=>`<option>${esc(g)}</option>`).join('');if(gs.includes(old))$(id).value=old});
+fillSelect('scoreStudent',db.students.slice().sort((a,b)=>a.name.localeCompare(b.name)).map(s=>({value:s.id,label:s.name+' â€” '+s.group})),'Choose student');
+fillSelect('reportStudent',db.students.slice().sort((a,b)=>a.name.localeCompare(b.name)).map(s=>({value:s.id,label:s.name+' â€” '+s.group})),'Choose a student')}
+function renderStudents(){const q=$('studentSearch').value.toLowerCase(),g=$('studentGroupFilter').value;const arr=db.students.filter(s=>(!g||s.group===g)&&[s.name,s.code,s.group,s.subject].join(' ').toLowerCase().includes(q)).sort((a,b)=>a.name.localeCompare(b.name));$('studentCount').textContent=`${arr.length} student${arr.length===1?'':'s'}`;$('studentTable').innerHTML=arr.length?`<div class="table-wrap"><table><thead><tr><th>Name / ID</th><th>Group</th><th>Subject</th><th>Actions</th></tr></thead><tbody>${arr.map(s=>`<tr><td><strong>${esc(s.name)}</strong><br><span class="muted">${esc(s.code||'No ID')}</span></td><td>${esc(s.group)}</td><td>${esc(s.subject||'â€”')}</td><td><button class="secondary small" onclick="editStudent('${s.id}')">Edit</button> <button class="danger small" onclick="deleteStudent('${s.id}')">Delete</button></td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">No students yet. Register your first student using the form.</div>'}
+function resetStudentForm(){$('studentForm').reset();$('editStudentId').value='';$('studentDate').value=today();$('studentFormTitle').textContent='Register a student';$('saveStudentBtn').textContent='Save student'}
+$('studentForm').addEventListener('submit',e=>{e.preventDefault();const id=$('editStudentId').value;const s={id:id||uid(),name:$('studentName').value.trim(),code:$('studentCode').value.trim(),group:$('studentGroup').value.trim(),subject:$('studentSubject').value.trim(),phone:$('studentPhone').value.trim(),date:$('studentDate').value||today()};if(!s.name||!s.group)return;const i=db.students.findIndex(x=>x.id===id);if(i>=0)db.students[i]=s;else{if(!s.code)s.code='STU'+String(db.students.length+1).padStart(3,'0');db.students.push(s)}save();resetStudentForm();toast(i>=0?'Student updated':'Student registered')});
+function editStudent(id){const s=db.students.find(x=>x.id===id);if(!s)return;$('editStudentId').value=s.id;$('studentName').value=s.name;$('studentCode').value=s.code;$('studentGroup').value=s.group;$('studentSubject').value=s.subject;$('studentPhone').value=s.phone;$('studentDate').value=s.date;$('studentFormTitle').textContent='Edit student';$('saveStudentBtn').textContent='Update student';window.scrollTo({top:0,behavior:'smooth'})}
+function deleteStudent(id){const s=db.students.find(x=>x.id===id);if(!s||!confirm(`Delete ${s.name} and their attendance and scores?`))return;db.students=db.students.filter(x=>x.id!==id);db.attendance=db.attendance.filter(x=>x.studentId!==id);db.scores=db.scores.filter(x=>x.studentId!==id);save();toast('Student and related records deleted')}
+function attendanceKey(studentId,week,subject){return [studentId,week,(subject||'').trim().toLowerCase()].join('|')}
+function renderAttendance(){const week=$('attendanceWeek').value||weekDefault(),g=$('attendanceGroup').value,sub=$('attendanceSubject').value.trim().toLowerCase();const arr=db.students.filter(s=>!g||s.group===g).sort((a,b)=>a.name.localeCompare(b.name));const rows=arr.map(s=>{const rec=db.attendance.find(a=>attendanceKey(a.studentId,a.week,a.subject)===attendanceKey(s.id,week,sub));return `<tr><td><strong>${esc(s.name)}</strong><br><span class="muted">${esc(s.group)}</span></td><td><select data-att-student="${s.id}" class="att-status"><option ${!rec?'selected':''} value="Unmarked">Unmarked</option><option ${rec?.status==='Present'?'selected':''}>Present</option><option ${rec?.status==='Absent'?'selected':''}>Absent</option><option ${rec?.status==='Late'?'selected':''}>Late</option><option ${rec?.status==='Excused'?'selected':''}>Excused</option></select></td></tr>`}).join('');$('attendanceTable').innerHTML=arr.length?`<div class="table-wrap"><table><thead><tr><th>Student</th><th>Status for week of ${esc(week)}</th></tr></thead><tbody>${rows}</tbody></table></div>`:'<div class="empty">Register students first, then record attendance here.</div>'}
+function saveAttendance(){const week=$('attendanceWeek').value||weekDefault(),sub=$('attendanceSubject').value.trim(),g=$('attendanceGroup').value;document.querySelectorAll('.att-status').forEach(el=>{const studentId=el.dataset.attStudent;const i=db.attendance.findIndex(a=>attendanceKey(a.studentId,a.week,a.subject)===attendanceKey(studentId,week,sub));if(el.value==='Unmarked'){if(i>=0)db.attendance.splice(i,1);return}const rec={studentId,week,subject:sub,status:el.value};if(i>=0)db.attendance[i]=rec;else db.attendance.push(rec)});save();toast('Weekly attendance saved')}
+function markAll(status){document.querySelectorAll('.att-status').forEach(e=>e.value=status)}
+function resetScoreForm(){$('scoreForm').reset();$('editScoreId').value='';$('scoreDate').value=today();$('scoreMax').value=20;$('scoreFormTitle').textContent='Record a score';$('saveScoreBtn').textContent='Save score'}
+$('scoreForm').addEventListener('submit',e=>{e.preventDefault();const studentId=$('scoreStudent').value,score=Number($('scoreValue').value),max=Number($('scoreMax').value);if(!studentId||max<=0||score<0||score>max){toast('Check the student and score values. Score must not exceed maximum.');return}const id=$('editScoreId').value;const rec={id:id||uid(),studentId,date:$('scoreDate').value,subject:$('scoreSubject').value.trim(),type:$('scoreAssessment').value,title:$('scoreTitle').value.trim(),score,max,comment:$('scoreComment').value.trim()};const i=db.scores.findIndex(x=>x.id===id);if(i>=0)db.scores[i]=rec;else db.scores.push(rec);save();resetScoreForm();toast(i>=0?'Score updated':'Score recorded')});
+function renderScores(){const q=$('scoreSearch').value.toLowerCase(),g=$('scoreGroupFilter').value;const arr=db.scores.filter(r=>{const s=db.students.find(x=>x.id===r.studentId);return s&&(!g||s.group===g)&&[s.name,r.subject,r.type,r.title].join(' ').toLowerCase().includes(q)}).sort((a,b)=>b.date.localeCompare(a.date));$('scoresTable').innerHTML=arr.length?`<div class="table-wrap"><table><thead><tr><th>Date / Student</th><th>Assessment</th><th>Score</th><th>Actions</th></tr></thead><tbody>${arr.map(r=>{const s=db.students.find(x=>x.id===r.studentId);return `<tr><td>${esc(r.date)}<br><strong>${esc(s.name)}</strong></td><td>${esc(r.subject)}<br><span class="muted">${esc(r.type)}${r.title?' Â· '+esc(r.title):''}</span></td><td><strong>${fmt(r.score)}/${fmt(r.max)}</strong><br><span class="muted">${fmt(pct(r.score,r.max))}%</span></td><td><button class="secondary small" onclick="editScore('${r.id}')">Edit</button> <button class="danger small" onclick="deleteScore('${r.id}')">Delete</button></td></tr>`}).join('')}</tbody></table></div>`:'<div class="empty">No scores recorded yet.</div>'}
+function editScore(id){const r=db.scores.find(x=>x.id===id);if(!r)return;$('editScoreId').value=r.id;$('scoreStudent').value=r.studentId;$('scoreDate').value=r.date;$('scoreSubject').value=r.subject;$('scoreAssessment').value=r.type;$('scoreTitle').value=r.title;$('scoreValue').value=r.score;$('scoreMax').value=r.max;$('scoreComment').value=r.comment;$('scoreFormTitle').textContent='Edit score';$('saveScoreBtn').textContent='Update score';window.scrollTo({top:0,behavior:'smooth'})}
+function deleteScore(id){if(!confirm('Delete this score record?'))return;db.scores=db.scores.filter(x=>x.id!==id);save();toast('Score deleted')}
+function studentScores(sid,from='',to=''){return db.scores.filter(r=>r.studentId===sid&&(!from||r.date>=from)&&(!to||r.date<=to)).sort((a,b)=>a.date.localeCompare(b.date))}
+function studentAttendance(sid,from='',to=''){return db.attendance.filter(r=>r.studentId===sid&&(!from||r.week>=from)&&(!to||r.week<=to))}
+function averageFor(sid,from='',to=''){const a=studentScores(sid,from,to);return a.length?a.reduce((sum,r)=>sum+pct(r.score,r.max),0)/a.length:null}
+function renderReport(){const sid=$('reportStudent').value;if(!sid){$('reportOutput').innerHTML='<div class="empty">Choose a student first.</div>';return}const s=db.students.find(x=>x.id===sid);if(!s)return;const from=$('reportFrom').value,to=$('reportTo').value,ss=studentScores(sid,from,to),aa=studentAttendance(sid,from,to),marked=aa.filter(a=>['Present','Absent','Late'].includes(a.status)),present=aa.filter(a=>['Present','Late'].includes(a.status)).length,avg=averageFor(sid,from,to);const rows=ss.map(r=>`<tr><td>${esc(r.date)}</td><td>${esc(r.subject)}</td><td>${esc(r.type)}${r.title?' â€” '+esc(r.title):''}</td><td>${fmt(r.score)}/${fmt(r.max)}</td><td>${fmt(pct(r.score,r.max))}%</td><td>${esc(r.comment||'â€”')}</td></tr>`).join('');const attRows=aa.sort((a,b)=>a.week.localeCompare(b.week)).map(a=>`<tr><td>${esc(a.week)}</td><td>${esc(a.subject||'General')}</td><td>${esc(a.status)}</td></tr>`).join('');$('reportOutput').innerHTML=`<div style="padding:10px 0"><h2 style="font-size:22px;margin:0">${esc(s.name)}</h2><p class="muted">${esc(s.group)} Â· ${esc(s.subject||'Subject not specified')} Â· ID: ${esc(s.code||'â€”')}</p><div class="grid stats" style="margin-top:18px"><div class="card"><div class="stat-label">Assessments</div><div class="stat-value">${ss.length}</div></div><div class="card"><div class="stat-label">Average score</div><div class="stat-value">${avg===null?'â€”':fmt(avg)+'%'}</div></div><div class="card"><div class="stat-label">Weeks marked</div><div class="stat-value">${marked.length}</div></div><div class="card"><div class="stat-label">Attendance</div><div class="stat-value">${marked.length?fmt(present/marked.length*100)+'%':'â€”'}</div></div></div><h3>Assessment history</h3>${ss.length?`<div class="table-wrap"><table><thead><tr><th>Date</th><th>Subject</th><th>Assessment</th><th>Score</th><th>Percentage</th><th>Teacher's note</th></tr></thead><tbody>${rows}</tbody></table></div>`:'<p class="muted">No assessment records in this period.</p>'}<h3 style="margin-top:24px">Attendance history</h3>${aa.length?`<div class="table-wrap"><table><thead><tr><th>Week beginning</th><th>Subject</th><th>Status</th></tr></thead><tbody>${attRows}</tbody></table></div>`:'<p class="muted">No attendance records in this period.</p>'}<p class="footer-note">Progress indicators summarize recorded data only. Use your professional judgment when deciding what support a student needs.</p></div>`}
+function renderDashboard(){const week=$('attendanceWeek').value||weekDefault();const marked=db.attendance.filter(a=>a.week===week&&['Present','Absent','Late'].includes(a.status));const present=marked.filter(a=>['Present','Late'].includes(a.status)).length;const allAvg=db.scores.length?db.scores.reduce((sum,r)=>sum+pct(r.score,r.max),0)/db.scores.length:null;$('statStudents').textContent=db.students.length;$('statPresent').textContent=present;$('statAttendance').textContent=marked.length?fmt(present/marked.length*100)+'%':'â€”';$('statAverage').textContent=allAvg===null?'â€”':fmt(allAvg)+'%';
+const bars=db.students.map(s=>({s,avg:averageFor(s.id)})).filter(x=>x.avg!==null).sort((a,b)=>b.avg-a.avg).slice(0,7);$('progressBars').innerHTML=bars.length?bars.map(x=>`<div class="bar-row"><span title="${esc(x.s.name)}">${esc(x.s.name.length>15?x.s.name.slice(0,14)+'â€¦':x.s.name)}</span><div class="bar"><span style="width:${Math.max(0,Math.min(100,x.avg))}%"></span></div><strong>${fmt(x.avg)}%</strong></div>`).join(''):'<div class="empty">Record scores to see progress here.</div>';
+const issues=db.students.map(s=>{const avg=averageFor(s.id),a=db.attendance.filter(x=>x.studentId===s.id&&['Present','Absent','Late'].includes(x.status));const rate=a.length?a.filter(x=>['Present','Late'].includes(x.status)).length/a.length*100:null;let reasons=[];if(avg!==null&&avg<50)reasons.push('Average below 50%');if(rate!==null&&rate<75)reasons.push('Attendance below 75%');return {s,reasons,avg,rate}}).filter(x=>x.reasons.length).slice(0,8);$('attentionList').innerHTML=issues.length?issues.map(x=>`<div style="padding:10px 0;border-bottom:1px solid var(--border)"><strong>${esc(x.s.name)}</strong><div style="margin-top:5px">${x.reasons.map(r=>`<span class="badge warn" style="margin:0 4px 4px 0">${esc(r)}</span>`).join('')}</div></div>`).join(''):'<div class="empty">No students currently flagged by the recorded data.</div>'}
+function refreshAll(){refreshSelects();renderStudents();renderAttendance();renderScores();renderDashboard();$('dataSummary').textContent=`${db.students.length} students Â· ${db.attendance.length} attendance entries Â· ${db.scores.length} score records. Cached in this browser and synced to Firebase when connected.`}
+function exportJSON(){const blob=new Blob([JSON.stringify({version:1,exportedAt:new Date().toISOString(),...db},null,2)],{type:'application/json'});downloadBlob(blob,'justified-student-tracker-backup-'+today()+'.json')}
+function exportCSV(){const rows=[['Student ID','Full Name','Class / Group','Main Subject','Phone','Date Registered'],...db.students.map(s=>[s.code,s.name,s.group,s.subject,s.phone,s.date])];const csv=rows.map(row=>row.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\r\n');downloadBlob(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'}),'student-list-'+today()+'.csv')}
+function downloadBlob(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();URL.revokeObjectURL(a.href)}
+$('importFile').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;try{const x=JSON.parse(await f.text());if(!Array.isArray(x.students)||!Array.isArray(x.attendance)||!Array.isArray(x.scores))throw Error('Invalid backup');if(!confirm('Importing replaces all current local records. Continue?'))return;db={students:x.students,attendance:x.attendance,scores:x.scores};save();toast('Backup imported successfully')}catch(err){alert('Could not import this file. Please choose a valid tracker JSON backup.')}finally{e.target.value=''}});
+function signOutAdmin(){if(confirm('Sign out of the JTA administrator account?'))jtaAuth.signOut()}
+function clearAllData(){if(!confirm('This permanently deletes all student, attendance, and score records from this browser. Download a backup first. Continue?'))return;db={students:[],attendance:[],scores:[]};save();toast('All local records deleted')}
+
+// Firebase configuration for the JTA Student Management System.
+const firebaseConfig = {
+  apiKey: "AIzaSyCNWN-av5keEG3bxO-oXUdJxbFDFnX9lC0",
+  authDomain: "jta-student-management-system.firebaseapp.com",
+  projectId: "jta-student-management-system",
+  storageBucket: "jta-student-management-system.firebasestorage.app",
+  messagingSenderId: "676080502643",
+  appId: "1:676080502643:web:9742944d26a4eed71b6706"
+};
+let firebaseReady = false;
+let cloudBusy = false;
+let cloudTimer = null;
+let currentUser = null;
+try {
+  firebase.initializeApp(firebaseConfig);
+  window.jtaAuth = firebase.auth();
+  window.jtaStore = firebase.firestore();
+  firebaseReady = true;
+} catch (err) {
+  console.error(err);
+}
+function setCloudStatus(message, bad=false) {
+  const pill = $('storagePill');
+  if (pill) {
+    pill.textContent = message;
+    pill.style.color = bad ? '#b91c1c' : '#64748b';
+  }
+}
+function cloudDocId(collection, item) {
+  if (collection === 'attendance') {
+    const raw = attendanceKey(item.studentId, item.week, item.subject || '');
+    return 'a_' + btoa(unescape(encodeURIComponent(raw))).replace(/=/g,'').replace(/\+/g,'-').replace(/\//g,'_');
+  }
+  return String(item.id);
+}
+async function getCloudCollection(collection) {
+  const snap = await jtaStore.collection('admins').doc(currentUser.uid).collection(collection).get();
+  return snap.docs.map(d => ({...d.data(), _cloudId:d.id}));
+}
+function recordKey(collection, item) {
+  return collection === 'attendance'
+    ? attendanceKey(item.studentId, item.week, item.subject || '')
+    : String(item.id);
+}
+async function syncCollection(collection) {
+  const ref = jtaStore.collection('admins').doc(currentUser.uid).collection(collection);
+  const local = db[collection] || [];
+  const snap = await ref.get();
+  const localById = new Map(local.map(item => [cloudDocId(collection,item), item]));
+  const batchOps = [];
+  snap.docs.forEach(doc => {
+    if (!localById.has(doc.id)) batchOps.push({type:'delete', ref:doc.ref});
+  });
+  localById.forEach((item, id) => {
+    batchOps.push({type:'set', ref:ref.doc(id), item});
+  });
+  // Firestore batches are limited to 500 operations.
+  for (let i=0; i<batchOps.length; i+=400) {
+    const batch = jtaStore.batch();
+    batchOps.slice(i,i+400).forEach(op => {
+      if (op.type === 'delete') batch.delete(op.ref);
+      else batch.set(op.ref, op.item);
+    });
+    await batch.commit();
+  }
+}
+async function syncAllToCloud() {
+  if (!currentUser || !firebaseReady || cloudBusy) return;
+  cloudBusy = true;
+  setCloudStatus('Syncingâ€¦');
+  try {
+    await syncCollection('students');
+    await syncCollection('attendance');
+    await syncCollection('scores');
+    setCloudStatus('â˜ Synced to Firebase');
+  } catch (err) {
+    console.error('Firebase sync failed:', err);
+    setCloudStatus('Cloud sync needs attention', true);
+    toast('Saved on this device, but cloud sync failed. Check Firestore rules and internet.');
+  } finally {
+    cloudBusy = false;
+  }
+}
+function queueCloudSync() {
+  if (!currentUser) return;
+  clearTimeout(cloudTimer);
+  cloudTimer = setTimeout(() => syncAllToCloud(), 250);
+}
+async function loadCloudAndMerge() {
+  setCloudStatus('Loading cloud recordsâ€¦');
+  try {
+    const [students, attendance, scores] = await Promise.all([
+      getCloudCollection('students'), getCloudCollection('attendance'), getCloudCollection('scores')
+    ]);
+    // Merge local and cloud data by record identity so first sign-in does not discard local records.
+    const merge = (collection, cloudItems) => {
+      const map = new Map();
+      (db[collection] || []).forEach(item => map.set(recordKey(collection,item), item));
+      cloudItems.forEach(item => {
+        delete item._cloudId;
+        map.set(recordKey(collection,item), item);
+      });
+      return [...map.values()];
+    };
+    db.students = merge('students', students);
+    db.attendance = merge('attendance', attendance);
+    db.scores = merge('scores', scores);
+    localStorage.setItem(KEY, JSON.stringify(db));
+    refreshAll();
+    await syncAllToCloud();
+  } catch (err) {
+    console.error('Could not load Firestore data:', err);
+    setCloudStatus('Cloud access blocked â€” check rules', true);
+    $('authMessage').textContent = 'Signed in, but Firestore access failed. Publish the secure rules provided in the setup instructions, then reload.';
+  }
+}
+$('loginForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  if (!firebaseReady) {
+    $('authMessage').textContent = 'Firebase could not start. Check your internet connection and reload the page.';
+    return;
+  }
+  $('loginButton').disabled = true;
+  $('loginButton').textContent = 'Signing inâ€¦';
+  $('authMessage').textContent = '';
+  try {
+    await jtaAuth.signInWithEmailAndPassword($('loginEmail').value.trim(), $('loginPassword').value);
+  } catch (err) {
+    console.error(err);
+    $('authMessage').textContent = err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password'
+      ? 'Email or password is incorrect. Check the Firebase Authentication user details.'
+      : (err.message || 'Sign-in failed. Please try again.');
+  } finally {
+    $('loginButton').disabled = false;
+    $('loginButton').textContent = 'Sign in and sync';
+  }
+});
+if (firebaseReady) {
+  jtaAuth.onAuthStateChanged(async user => {
+    currentUser = user || null;
+    if (!user) {
+      $('authGate').style.display = 'flex';
+      setCloudStatus('Sign in required');
+      return;
+    }
+    $('authGate').style.display = 'none';
+    init();
+    await loadCloudAndMerge();
+  });
+} else {
+  $('authMessage').textContent = 'Could not load Firebase. Check your connection and reload.';
+}
+
+function init(){load();$('studentDate').value=today();$('scoreDate').value=today();$('attendanceWeek').value=weekDefault();$('reportTo').value=today();$('reportFrom').value=new Date(Date.now()-90*86400000).toISOString().slice(0,10);['studentSearch','studentGroupFilter'].forEach(id=>$(id).addEventListener('input',renderStudents));['scoreSearch','scoreGroupFilter'].forEach(id=>$(id).addEventListener('input',renderScores));['attendanceWeek','attendanceGroup','attendanceSubject'].forEach(id=>$(id).addEventListener('change',renderAttendance));$('attendanceWeek').addEventListener('change',renderDashboard);$('reportStudent').addEventListener('change',renderReport);refreshAll()}
+// The Firebase auth-state listener loads local/cache and cloud data after sign-in.
+</script>
+</body>
+</html>
