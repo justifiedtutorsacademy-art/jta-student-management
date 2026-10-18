@@ -76,6 +76,82 @@ th{background:#eef3ff;color:#25488c}
     <div class="grid stats">
       <div class="card"><div class="stat-label">Registered students</div><div class="stat-value" id="statStudents">0</div><div class="stat-foot">Across all groups</div></div>
       <div class="card"><div class="stat-label">Present this week</div><div class="stat-value" id="statPresent">0</div><div class="stat-foot">Students marked present</div></div>
+      <div class="card"><div class="stat-label">Attendance rate</div><div class="stat-value" id="statAttendance">N/A</div><div class="stat-foot">For the selected week</div></div>
+      <div class="card"><div class="stat-label">Average score</div><div class="stat-value" id="statAverage">N/A</div><div class="stat-foot">Across recorded assessments</div></div>
+    </div>
+    <div class="grid two">
+      <section class="card"><div class="section-head"><div><h2>Recent student progress</h2><p>Average percentage by student</p></div><button class="secondary small" onclick="go('reports')">View reports</button></div><div id="progressBars"></div></section>
+      <section class="card"><div class="section-head"><div><h2>Needs attention</h2><p>Based on attendance and recent scores</p></div></div><div id="attentionList"></div></section>
+    </div>
+  </div>
+  <div id="page-students" class="page hidden">
+    <div class="grid two">
+      <section class="card"><div class="section-head"><div><h2 id="studentFormTitle">Register a student</h2><p>Enter the student's details once.</p></div></div>
+        <form id="studentForm"><input type="hidden" id="editStudentId"><div class="form-grid">
+          <div class="field"><label for="studentName">Full name *</label><input id="studentName" required placeholder="e.g. John Okafor"></div>
+          <div class="field"><label for="studentCode">Student ID</label><input id="studentCode" placeholder="e.g. STU001 (optional)"></div>
+          <div class="field"><label for="studentGroup">Class / group *</label><input id="studentGroup" required placeholder="e.g. Saturday Chemistry"></div>
+          <div class="field"><label for="studentSubject">Main subject</label><input id="studentSubject" placeholder="e.g. Chemistry"></div>
+          <div class="field"><label for="studentPhone">Phone (optional)</label><input id="studentPhone" type="tel" placeholder="Optional"></div>
+          <div class="field"><label for="studentDate">Date registered</label><input id="studentDate" type="date"></div>
+        </div><div class="form-actions"><button class="primary" type="submit" id="saveStudentBtn">Save student</button><button class="secondary" type="button" onclick="resetStudentForm()">Clear</button></div></form>
+      </section>
+      <section class="card"><h2>Student list</h2><p class="muted" style="font-size:13px">Search or filter students by group.</p><div class="toolbar"><input id="studentSearch" placeholder="Search name or ID"><select id="studentGroupFilter"><option value="">All groups</option></select></div><div id="studentCount" class="muted" style="font-size:12px;margin-bottom:8px"></div><div id="studentTable"></div></section>
+    </div>
+  </div>
+  <div id="page-attendance" class="page hidden">
+    <div class="card">
+      <div class="section-head"><div><h2>Weekly attendance</h2><p>Select a week and mark each student's status.</p></div></div>
+      <div class="toolbar"><div class="field"><label>Week beginning</label><input type="date" id="attendanceWeek"></div><div class="field"><label>Class / group</label><select id="attendanceGroup"><option value="">All groups</option></select></div><div class="field"><label>Subject (optional)</label><input id="attendanceSubject" placeholder="e.g. Chemistry"></div></div>
+      <div class="form-actions" style="margin:0 0 14px"><button class="primary" onclick="markAll('Present')">Mark all present</button><button class="secondary" onclick="markAll('Absent')">Mark all absent</button><button class="secondary" onclick="saveAttendance()">Save attendance</button></div>
+      <div id="attendanceTable"></div><div class="footer-note">Attendance is recorded per student, week, and subject. If no subject is entered, it is saved as the general weekly attendance.</div>
+    </div>
+  </div>
+  <div id="page-scores" class="page hidden">
+    <div class="grid two">
+      <section class="card"><div class="section-head"><div><h2 id="scoreFormTitle">Record a score</h2><p>Use any maximum score: 10, 20, 50, 100, or another value.</p></div></div>
+        <form id="scoreForm"><input type="hidden" id="editScoreId"><div class="form-grid">
+          <div class="field full"><label for="scoreStudent">Student *</label><select id="scoreStudent" required><option value="">Choose student</option></select></div>
+          <div class="field"><label for="scoreDate">Assessment date *</label><input id="scoreDate" type="date" required></div>
+          <div class="field"><label for="scoreSubject">Subject *</label><input id="scoreSubject" required placeholder="e.g. Chemistry"></div>
+          <div class="field"><label for="scoreAssessment">Assessment type *</label><select id="scoreAssessment"><option>Test</option><option>Assignment</option><option>Classwork</option><option>Practical</option><option>Examination</option><option>Quiz</option><option>Other</option></select></div>
+          <div class="field"><label for="scoreTitle">Assessment name</label><input id="scoreTitle" placeholder="e.g. Water topic test"></div>
+          <div class="field"><label for="scoreValue">Score obtained *</label><input id="scoreValue" type="number" min="0" step="any" required placeholder="e.g. 16"></div>
+          <div class="field"><label for="scoreMax">Maximum score *</label><input id="scoreMax" type="number" min="0.01" step="any" value="20" required></div>
+          <div class="field full"><label for="scoreComment">Teacher's note (optional)</label><textarea id="scoreComment" rows="2" placeholder="Strengths, topic to revise, etc."></textarea></div>
+        </div><div class="form-actions"><button class="primary" type="submit" id="saveScoreBtn">Save score</button><button class="secondary" type="button" onclick="resetScoreForm()">Clear</button></div></form>
+      </section>
+      <section class="card"><div class="section-head"><div><h2>Assessment records</h2><p>Review, edit, or remove recorded scores.</p></div></div><div class="toolbar"><input id="scoreSearch" placeholder="Search student or subject"><select id="scoreGroupFilter"><option value="">All groups</option></select></div><div id="scoresTable"></div></section>
+    </div>
+  </div>
+  <div id="page-reports" class="page hidden">
+    <div class="card">
+      <div class="section-head"><div><h2>Student reports</h2><p>Review attendance and academic progress for a selected student.</p></div><button class="secondary" onclick="window.print()">Print report</button></div>
+      <div class="toolbar"><select id="reportStudent"><option value="">Choose a student</option></select><input type="date" id="reportFrom" aria-label="Report start date"><input type="date" id="reportTo" aria-label="Report end date"><button class="primary" onclick="renderReport()">Generate report</button></div>
+      <div id="reportOutput"><div class="empty">Choose a student and generate a report.</div></div>
+    </div>
+  </div>
+  <div id="page-settings" class="page hidden">
+    <div class="grid two">
+      <section class="card"><h2>Back up and restore records</h2><p class="muted" style="font-size:13px;line-height:1.5">Download a JSON backup for safekeeping. To transfer records to another device, download the backup here and import it on that device.</p><div class="form-actions"><button class="primary" onclick="exportJSON()">Download full backup</button><label class="file-label">Import backup<input id="importFile" type="file" accept=".json,application/json" hidden></label><button class="secondary" onclick="exportCSV()">Export student list (CSV)</button></div><p class="footer-note">Importing a backup replaces the current records in this browser. Keep a copy of your existing data first.</p></section>
+      <section class="card"><h2>Cross-device sync</h2><p style="font-size:13px;line-height:1.6">This version syncs student, attendance, and score records to the signed-in administrator's Firebase account. Keep regular backups as an extra precaution.</p><div class="notice" style="margin:12px 0"><strong>Cloud sync status</strong>Cloud sync requires Firebase Authentication and the matching Firestore rules to be configured. Only the signed-in administrator can access this account's records.</div><p class="muted" style="font-size:13px">For now, use the backup/import feature to move data manually. Do not store sensitive student or parent information on a shared device.</p></section>
+    </div>
+    <section class="card" style="margin-top:16px"><h2>Administrator session</h2><p class="muted" style="font-size:13px">Sign out when finished, especially on a shared device.</p><div class="form-actions"><button class="secondary" onclick="signOutAdmin()">Sign out</button></div></section>
+    <section class="card" style="margin-top:16px"><h2>Data summary</h2><div id="dataSumutton data-page="students">♙ Students</button>
+    <button data-page="attendance">✓ Weekly attendance</button>
+    <button data-page="scores">✎ Scores</button>
+    <button data-page="reports">▤ Reports</button>
+    <button data-page="settings">⚙ Data & sync</button>
+  </nav>
+  <div class="sidebar-note">Keep student records accurate and back them up regularly.</div>
+</aside>
+<main class="main">
+  <header class="topbar"><div><h1 id="pageTitle">Dashboard</h1><div class="subtitle" id="pageSubtitle">A clear picture of your students' attendance and progress.</div></div><span class="pill" id="storagePill">Connecting to cloud…</span></header>
+  <div id="page-dashboard" class="page">
+    <div class="notice"><strong>Welcome to your student tracker</strong>Add each student once, then record weekly attendance and assessment scores. Records are stored locally and synced to your private Firebase account when online.</div>
+    <div class="grid stats">
+      <div class="card"><div class="stat-label">Registered students</div><div class="stat-value" id="statStudents">0</div><div class="stat-foot">Across all groups</div></div>
+      <div class="card"><div class="stat-label">Present this week</div><div class="stat-value" id="statPresent">0</div><div class="stat-foot">Students marked present</div></div>
       <div class="card"><div class="stat-label">Attendance rate</div><div class="stat-value" id="statAttendance">—</div><div class="stat-foot">For the selected week</div></div>
       <div class="card"><div class="stat-label">Average score</div><div class="stat-value" id="statAverage">—</div><div class="stat-foot">Across recorded assessments</div></div>
     </div>
