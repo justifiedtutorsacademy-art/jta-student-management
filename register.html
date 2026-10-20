@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JTA Student Registration</title>
+<style>
+:root{--navy:#102b54;--gold:#f0b429;--ink:#182230;--muted:#667085;--line:#d0d5dd}
+*{box-sizing:border-box}body{margin:0;background:#f3f6fb;color:var(--ink);font:16px/1.45 Arial,sans-serif}
+.wrap{max-width:760px;margin:24px auto;padding:16px}.card{background:#fff;border:1px solid #e4e7ec;border-radius:18px;padding:24px;box-shadow:0 8px 28px #102b5410}
+header{text-align:center;margin-bottom:22px} .badge{display:inline-block;background:var(--navy);color:white;padding:8px 14px;border-radius:10px;font-weight:800;letter-spacing:.5px}
+h1{font-size:25px;margin:14px 0 5px;color:var(--navy)}.intro{color:var(--muted);margin:0}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.field{min-width:0}.full{grid-column:1/-1}label{display:block;font-weight:700;font-size:14px;margin:0 0 6px}
+input,select{width:100%;min-height:48px;border:1px solid var(--line);border-radius:10px;padding:11px 12px;font:inherit;background:#fff;color:var(--ink)}
+input:focus,select:focus{outline:3px solid #dbeafe;border-color:#2563eb}
+small{display:block;color:var(--muted);margin-top:5px}.photo-box{border:1px dashed #98a2b3;border-radius:12px;padding:14px;text-align:center;background:#fafbfc}
+#preview{display:none;max-width:140px;max-height:140px;object-fit:cover;border-radius:12px;margin:12px auto 0}
+button{width:100%;min-height:50px;border:0;border-radius:11px;background:var(--navy);color:white;font-weight:800;font-size:16px;padding:12px;cursor:pointer}
+button:disabled{opacity:.6;cursor:wait}.status{display:none;padding:12px 14px;border-radius:10px;margin:16px 0 0;overflow-wrap:anywhere}.status.show{display:block}.status.ok{background:#ecfdf3;color:#027a48}.status.err{background:#fef3f2;color:#b42318}.status.info{background:#eff8ff;color:#175cd3}
+.notice{font-size:13px;color:var(--muted);margin-top:15px}
+@media(max-width:560px){.wrap{margin:0 auto;padding:10px}.card{padding:18px 14px;border-radius:14px}.grid{grid-template-columns:1fr}.full{grid-column:auto}h1{font-size:22px}}
+</style>
+</head>
+<body>
+<main class="wrap"><section class="card">
+<header><div class="badge">JTA · JUSTIFIED TUTORS' ACADEMY</div><h1>Student Registration</h1><p class="intro">Complete the form to apply for student access. Your registration must be approved by the academy.</p></header>
+<form id="registrationForm">
+<div class="grid">
+<div class="field full"><label for="fullName">Full name *</label><input id="fullName" name="fullName" autocomplete="name" required maxlength="120" placeholder="Enter your full name"></div>
+<div class="field"><label for="phone">Student phone number *</label><input id="phone" name="phone" type="tel" autocomplete="tel" required maxlength="25" placeholder="e.g. 08012345678"></div>
+<div class="field"><label for="parentPhone">Parent/guardian phone *</label><input id="parentPhone" name="parentPhone" type="tel" required maxlength="25" placeholder="Parent or guardian number"></div>
+<div class="field"><label for="dataPhone">Phone used for data *</label><input id="dataPhone" name="dataPhone" type="tel" required maxlength="25" placeholder="Number used for internet"></div>
+<div class="field"><label for="network">Mobile network *</label><select id="network" name="network" required><option value="">Choose network</option><option>MTN</option><option>Airtel</option><option>Glo</option><option>9mobile</option><option>Other</option></select></div>
+<div class="field full"><label for="email">Email address *</label><input id="email" name="email" type="email" autocomplete="email" required maxlength="254" placeholder="you@example.com"></div>
+<div class="field full"><label for="department">Department/category *</label><select id="department" name="department" required><option value="">Choose your category</option><option>Medical</option><option>Engineering</option><option>Law and Pure Arts</option><option>English Literature, Economics and Government</option><option>Commercial 1</option><option>Commercial 2</option><option>IRS</option><option>Other</option></select></div>
+<div class="field full"><label for="photo">Student picture *</label><div class="photo-box"><input id="photo" name="photo" type="file" accept="image/*" required aria-describedby="photoHelp"><small id="photoHelp">Choose a clear photo (maximum 1.5 MB). JPG, PNG or WebP.</small><img id="preview" alt="Selected student photo preview"></div></div>
+<div class="field"><label for="password">Create password *</label><input id="password" name="password" type="password" required minlength="8" autocomplete="new-password" placeholder="At least 8 characters"></div>
+<div class="field"><label for="confirmPassword">Confirm password *</label><input id="confirmPassword" name="confirmPassword" type="password" required minlength="8" autocomplete="new-password" placeholder="Enter password again"></div>
+<div class="field full"><button id="submitBtn" type="submit">Submit Registration</button></div>
+</div>
+<div id="status" class="status" role="status" aria-live="polite"></div>
+</form>
+<p class="notice">Your password is sent to Firebase Authentication through the secure registration function; it is not saved as a plain-text Firestore field. Do not submit someone else's personal information without permission.</p>
+</section></main>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-functions-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyCNWN-av5keEG3bxO-oXUdJxbFDFnX9lC0",
+  authDomain: "jta-student-management-system.firebaseapp.com",
+  projectId: "jta-student-management-system",
+  storageBucket: "jta-student-management-system.firebasestorage.app",
+  messagingSenderId: "676080502643",
+  appId: "1:676080502643:web:9742944d26a4eed71b6706"
+};
+firebase.initializeApp(firebaseConfig);
+const functions = firebase.app().functions("us-central1");
+const registerStudent = functions.httpsCallable("registerStudent");
+const form = document.getElementById("registrationForm");
+const photo = document.getElementById("photo");
+const preview = document.getElementById("preview");
+const statusBox = document.getElementById("status");
+const submitBtn = document.getElementById("submitBtn");
+let photoData = null, photoMime = null;
+function showStatus(message, type) {
+  statusBox.textContent = message;
+  statusBox.className = "status show " + type;
+}
+photo.addEventListener("change", () => {
+  const file = photo.files && photo.files[0];
+  photoData = null; photoMime = null;
+  preview.style.display = "none"; preview.removeAttribute("src");
+  if (!file) return;
+  if (!file.type.startsWith("image/")) { photo.value=""; showStatus("Please choose an image file.", "err"); return; }
+  if (file.size > 1.5 * 1024 * 1024) { photo.value=""; showStatus("That picture is too large. Please choose one under 1.5 MB.", "err"); return; }
+  const reader = new FileReader();
+  reader.onload = () => {
+    const dataUrl = String(reader.result || "");
+    const comma = dataUrl.indexOf(",");
+    if (comma < 0) { showStatus("Could not read that picture. Please choose it again.", "err"); return; }
+    photoData = dataUrl.slice(comma + 1); photoMime = file.type || "image/jpeg";
+    preview.src = dataUrl; preview.style.display = "block";
+  };
+  reader.onerror = () => showStatus("Could not read that picture. Please choose it again.", "err");
+  reader.readAsDataURL(file);
+});
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  if (!form.reportValidity()) return;
+  if (form.password.value !== form.confirmPassword.value) { showStatus("The passwords do not match.", "err"); return; }
+  if (!photoData) { showStatus("Please select a picture and wait for its preview before submitting.", "err"); return; }
+  const payload = {
+    fullName: form.fullName.value.trim(),
+    phone: form.phone.value.trim(),
+    parentPhone: form.parentPhone.value.trim(),
+    dataPhone: form.dataPhone.value.trim(),
+    network: form.network.value,
+    email: form.email.value.trim().toLowerCase(),
+    department: form.department.value,
+    password: form.password.value,
+    photoBase64: photoData,
+    photoMime: photoMime
+  };
+  submitBtn.disabled = true; submitBtn.textContent = "Submitting…";
+  showStatus("Submitting your application securely. Please keep this page open.", "info");
+  try {
+    const result = await registerStudent(payload);
+    const data = result && result.data ? result.data : {};
+    showStatus("Registration submitted successfully. " + (data.studentCode ? ("Your student code is " + data.studentCode + ". ") : "") + "Your application is awaiting academy approval. Keep your student code safe.", "ok");
+    form.reset(); photoData = null; photoMime = null; preview.style.display = "none"; preview.removeAttribute("src");
+  } catch (error) {
+    console.error("JTA registration error:", error);
+    const code = error && error.code ? error.code : "";
+    let message = "Registration could not be submitted.";
+    if (code.includes("not-found") || code.includes("unavailable") || code.includes("internal")) {
+      message += " The Firebase registration function may not be deployed or configured yet.";
+    } else if (code.includes("already-exists")) {
+      message += " An account with these details may already exist.";
+    } else if (error && error.message) {
+      message += " " + error.message;
+    }
+    showStatus(message + " No application was confirmed as submitted.", "err");
+  } finally {
+    submitBtn.disabled = false; submitBtn.textContent = "Submit Registration";
+  }
+});
+</script>
+</body>
+  </html>
