@@ -20,9 +20,7 @@
       --jta-border: #D8E3EC;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -63,7 +61,6 @@
       font-size: 25px;
       font-weight: 900;
       letter-spacing: 1px;
-      box-shadow: 0 5px 18px rgba(0, 0, 0, 0.18);
     }
 
     .brand h1 {
@@ -147,18 +144,9 @@
       font-size: 16px;
       font-weight: 700;
       cursor: pointer;
-      transition: background 0.2s ease;
     }
 
-    .login-button:hover {
-      background: var(--jta-teal);
-    }
-
-    .login-button:focus-visible,
-    a:focus-visible {
-      outline: 3px solid var(--jta-gold);
-      outline-offset: 3px;
-    }
+    .login-button:hover { background: var(--jta-teal); }
 
     .login-button:disabled {
       opacity: 0.65;
@@ -188,9 +176,7 @@
       text-decoration: none;
     }
 
-    a:hover {
-      text-decoration: underline;
-    }
+    a:hover { text-decoration: underline; }
 
     .footer {
       margin-top: 22px;
@@ -200,20 +186,10 @@
       line-height: 1.7;
     }
 
-    .footer strong {
-      color: var(--jta-gold);
-    }
+    .footer strong { color: var(--jta-gold); }
 
     @media (max-width: 380px) {
-      .login-card {
-        padding: 25px 19px;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      * {
-        transition: none !important;
-      }
+      .login-card { padding: 25px 19px; }
     }
   </style>
 </head>
@@ -223,11 +199,8 @@
 
     <header class="brand">
       <div class="logo" aria-label="JTA logo">JTA</div>
-
       <h1>JUSTIFIED TUTOR'S ACADEMY</h1>
-
       <p>Learn Today. Excel Tomorrow.</p>
-
       <div class="gold-line"></div>
     </header>
 
@@ -235,19 +208,20 @@
       <h2>Welcome Back!</h2>
 
       <p class="intro">
-        Sign in to your student account to access your
-        academic activities and progress.
+        Sign in with your JTA student code and password
+        to access your academic activities and progress.
       </p>
 
       <form id="loginForm">
-        <label for="email">Email Address</label>
+        <label for="studentCode">JTA Student Code</label>
 
         <input
-          id="email"
-          name="email"
-          type="email"
-          placeholder="Enter your registered email"
+          id="studentCode"
+          name="studentCode"
+          type="text"
+          placeholder="e.g. JTA2027-0002"
           autocomplete="username"
+          autocapitalize="characters"
           required
         >
 
@@ -272,9 +246,7 @@
       <div class="links">
         New to JTA?
         <a href="register.html">Register as a Student</a>
-
         <br>
-
         <a href="index.html">← Back to Main Website</a>
       </div>
     </section>
@@ -307,8 +279,11 @@
     form.addEventListener("submit", async function (event) {
       event.preventDefault();
 
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value;
+      const studentCode =
+        document.getElementById("studentCode").value.trim().toUpperCase();
+
+      const password =
+        document.getElementById("password").value;
 
       button.disabled = true;
       button.textContent = "Signing In...";
@@ -320,7 +295,10 @@
           headers: {
             "Content-Type": "application/json"
           },
-          body: JSON.stringify({ email, password })
+          body: JSON.stringify({
+            studentCode: studentCode,
+            password: password
+          })
         });
 
         const data = await response.json().catch(() => ({}));
@@ -329,7 +307,7 @@
           throw new Error(
             data.message ||
             data.error ||
-            "Unable to sign in. Please check your details."
+            "Login failed. Check your student code and password."
           );
         }
 
@@ -343,17 +321,16 @@
 
         sessionStorage.setItem("jta_student_token", token);
 
-        showMessage(
-          "Your login was successful. The student portal must be connected before you can access your academic dashboard.",
-          true
-        );
+        showMessage("Login successful! Opening your student portal...", true);
+
+        window.location.href = "student-portal.html";
 
       } catch (error) {
         showMessage(
           error.message ||
-          "Connection failed. Please check your internet and try again."
+          "Unable to connect. Please check your internet connection."
         );
-      } finally {
+
         button.disabled = false;
         button.textContent = "Sign In to Your Account";
       }
