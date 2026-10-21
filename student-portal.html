@@ -108,161 +108,20 @@ loadPortal();
 </script>
 </body>
 </html>
-y = document.createElement("tbody");
-
-      rows.forEach(row => {
-        const tr = document.createElement("tr");
-
-        columns.forEach(column => {
-          const td = document.createElement("td");
-          td.textContent = safeText(row[column.key]);
-          tr.appendChild(td);
-        });
-
-        tbody.appendChild(tr);
-      });
-
-      table.appendChild(tbody);
-      wrapper.appendChild(table);
-
-      container.className = "";
-      container.replaceChildren(wrapper);
-    }
-
-    async function loadPortal() {
-      if (!token) {
-        showStatus("Please log in before opening your student portal.");
-        document.getElementById("fullName").textContent = "Not signed in";
-        document.getElementById("studentCode").textContent = "Not signed in";
-        document.getElementById("email").textContent = "Not signed in";
-        document.getElementById("department").textContent = "Not signed in";
-        document.getElementById("attendanceList").textContent =
-          "Sign in to view your attendance.";
-        document.getElementById("scoresList").textContent =
-          "Sign in to view your scores.";
-        return;
-      }
-
-      refreshButton.disabled = true;
-      refreshButton.textContent = "Loading...";
-
-      try {
-        const data = await apiRequest("/api/me");
-        const student = data.student || {};
-
-        document.getElementById("welcomeTitle").textContent =
-          "Welcome, " + safeText(student.fullName);
-
-        document.getElementById("fullName").textContent =
-          safeText(student.fullName);
-
-        document.getElementById("studentCode").textContent =
-          safeText(student.studentCode);
-
-        document.getElementById("email").textContent =
-          safeText(student.email);
-
-        document.getElementById("department").textContent =
-          safeText(student.department);
-
-        renderTable(
-          document.getElementById("attendanceList"),
-          [
-            { key: "class_date", label: "Class Date" },
-            { key: "status", label: "Attendance" }
-          ],
-          data.attendance || [],
-          "No attendance records found yet."
-        );
-
-        renderTable(
-          document.getElementById("scoresList"),
-          [
-            { key: "test_name", label: "Test" },
-            { key: "score", label: "Score" },
-            { key: "max_score", label: "Maximum" },
-            { key: "taken_at", label: "Date" }
-          ],
-          data.scores || [],
-          "No test scores have been added yet."
-        );
-
-        showStatus("Your student information has been loaded.", true);
-
-      } catch (error) {
-        showStatus(
-          error.message +
-          " If your session has expired, log in again."
-        );
-
-        if (/unauthorized|session|token/i.test(error.message)) {
-          sessionStorage.removeItem("jta_student_token");
-        }
-      } finally {
-        refreshButton.disabled = false;
-        refreshButton.textContent = "Refresh My Information";
-      }
-    }
-
-    document.getElementById("attendanceForm").addEventListener(
-      "submit",
-      async function (event) {
-        event.preventDefault();
-
-        if (!token) {
-          showStatus("Please log in before marking attendance.");
-          return;
-        }
-
-        const classDate = document.getElementById("classDate").value;
-
-        if (!classDate) {
-          showStatus("Please select the class date.");
-          return;
-        }
-
-        attendanceButton.disabled = true;
-        attendanceButton.textContent = "Submitting...";
-
-        try {
-          await apiRequest("/api/attendance", {
-            method: "POST",
-            body: JSON.stringify({ classDate })
-          });
-
-          showStatus("Attendance submitted successfully.", true);
-          await loadPortal();
-
-        } catch (error) {
-          showStatus(error.message);
-        } finally {
-          attendanceButton.disabled = false;
-          attendanceButton.textContent = "Mark Attendance";
-        }
-      }
-    );
-
-    refreshButton.addEventListener("click", loadPortal);
-
-    document.getElementById("logoutButton").addEventListener(
-      "click",
-      function () {
-        sessionStorage.removeItem("jta_student_token");
-        window.location.href = "login.html";
-      }
-    );
-
-    // Default the date field to today's local date.
-    const today = new Date();
-    const localDate = [
-      today.getFullYear(),
-      String(today.getMonth() + 1).padStart(2, "0"),
-      String(today.getDate()).padStart(2, "0")
-    ].join("-");
-
-    document.getElementById("classDate").value = localDate;
-
-    loadPortal();
+        <!-- JTA CBT Examination Button -->
+<div style="text-align:center; margin:25px 10px;">
+  <a href="cbt.html"
+     style="display:inline-block;
+            background:#123c69;
+            color:white;
+            padding:15px 25px;
+            border-radius:10px;
+            text-decoration:none;
+            font-weight:bold;
+            font-size:16px;">
+    📝 Take CBT Examination
+  </a>
+</div>
   </script>
 </body>
   </html>
