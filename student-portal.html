@@ -40,7 +40,7 @@ button,.button{display:inline-flex;align-items:center;justify-content:center;min
 <section class="card"><h3>My Attendance History</h3><div id="attendanceList" class="empty">Loading attendance records...</div></section>
 <section class="card"><h3>My Test Scores</h3><div id="scoresList" class="empty">Loading test scores...</div></section>
 </div>
-<div class="actions"><a class="button" href="index.html">Main Website</a><a class="button" href="register.html">Registration Page</a><button id="logoutButton" type="button">Log Out</button></div>
+<div class="actions"><button id="logoutButton" type="button">Log Out</button></div>
 </main>
 <footer><strong>JTA STUDENT PORTAL</strong><br>© 2027 Justified Tutor's Academy<br>Empowering Students for Academic Excellence</footer>
 <script>
@@ -55,7 +55,6 @@ async function apiRequest(path,options={}){const response=await fetch(API_BASE+p
 function safeText(value){return value===null||value===undefined||value===""?"Not provided":String(value)}
 function formatAttendanceTime(value){
   if(!value)return "Time unavailable";
-  // D1 datetime('now') is UTC without a timezone suffix.
   const normalized=/Z$|[+-]\d{2}:\d{2}$/.test(value)?value:value.replace(" ","T")+"Z";
   const date=new Date(normalized);
   if(Number.isNaN(date.getTime()))return "Time unavailable";
@@ -94,6 +93,25 @@ async function loadPortal(){
 }
 document.getElementById("attendanceForm").addEventListener("submit",async function(event){
   event.preventDefault();if(!token){showStatus("Please log in before marking attendance.");return}
+  const classDate=document.getElementById("classDate").value;if(!classDate){showStatus("Please select the class date.");return}
+  attendanceButton.disabled=true;attendanceButton.textContent="Submitting...";
+  try{await apiRequest("/api/attendance",{method:"POST",body:JSON.stringify({classDate})});showStatus("Attendance submitted successfully.",true);await loadPortal()}
+  catch(error){showStatus(error.message)}
+  finally{attendanceButton.disabled=false;attendanceButton.textContent="Mark Attendance"}
+});
+refreshButton.addEventListener("click",loadPortal);
+document.getElementById("logoutButton").addEventListener("click",function(){sessionStorage.removeItem("jta_student_token");window.location.href="login.html"});
+const today=new Date();
+document.getElementById("classDate").value=[today.getFullYear(),String(today.getMonth()+1).padStart(2,"0"),String(today.getDate()).padStart(2,"0")].join("-");
+loadPortal();
+</script>
+<!-- JTA CBT Examination Button -->
+<div style="text-align:center; margin:25px 10px;">
+  <a href="cbt.html" style="display:inline-block;background:#123c69;color:white;padding:15px 25px;border-radius:10px;text-decoration:none;font-weight:bold;font-size:16px;">📝 Take CBT Examination</a>
+</div>
+</body>
+</html>
+atus("Please log in before marking attendance.");return}
   const classDate=document.getElementById("classDate").value;if(!classDate){showStatus("Please select the class date.");return}
   attendanceButton.disabled=true;attendanceButton.textContent="Submitting...";
   try{await apiRequest("/api/attendance",{method:"POST",body:JSON.stringify({classDate})});showStatus("Attendance submitted successfully.",true);await loadPortal()}
