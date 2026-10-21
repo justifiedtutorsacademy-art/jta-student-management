@@ -5,105 +5,652 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#092B4C">
 <title>Student Portal | Justified Tutor's Academy</title>
+
 <style>
-:root{--navy:#092B4C;--blue:#124A78;--teal:#087F8C;--gold:#E6B84A;--light:#DFF3FC;--text:#183247;--muted:#667B8C;--border:#D8E3EC}
-*{box-sizing:border-box}body{margin:0;background:var(--light);color:var(--text);font-family:Arial,Helvetica,sans-serif}
-header{padding:24px 18px;color:#fff;background:linear-gradient(120deg,var(--navy),var(--blue));border-bottom:5px solid var(--gold)}
-.header-inner{max-width:1050px;margin:auto;display:flex;align-items:center;gap:15px}.logo{flex-shrink:0;width:62px;height:62px;display:flex;align-items:center;justify-content:center;border:3px solid var(--gold);border-radius:50%;background:#fff;color:var(--navy);font-size:21px;font-weight:900}
-header h1{margin:0;font-size:clamp(18px,4vw,26px);line-height:1.4}header p{margin:5px 0 0;color:#E1EDF5;font-size:13px}
-main{width:100%;max-width:1050px;margin:26px auto;padding:0 16px 30px}.welcome{margin-bottom:22px}.welcome h2{margin:0 0 8px;color:var(--navy);font-size:25px}.welcome p{margin:0;color:var(--muted);line-height:1.6}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.card{min-width:0;padding:21px;background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:0 4px 15px rgba(9,43,76,.05)}.card h3{margin:0 0 17px;color:var(--navy);font-size:18px}
-.profile-row{padding:12px 0;border-bottom:1px solid var(--border);overflow-wrap:anywhere}.profile-row:last-child{border-bottom:none}.profile-row span{display:block;margin-bottom:5px;color:var(--muted);font-size:12px}.profile-row strong{color:var(--navy);font-size:15px}
-label{display:block;margin:14px 0 7px;color:var(--navy);font-size:14px;font-weight:bold}input{display:block;width:100%;min-height:46px;padding:12px;border:1px solid var(--border);border-radius:8px;background:#fff;font:inherit;font-size:16px}input:focus{outline:2px solid var(--teal);outline-offset:2px}
-button,.button{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:11px 16px;border:none;border-radius:8px;background:var(--navy);color:#fff;font:inherit;font-size:14px;font-weight:bold;text-align:center;text-decoration:none;cursor:pointer}button:hover,.button:hover{background:var(--teal)}button:disabled{opacity:.6;cursor:wait}.full-button{width:100%;margin-top:15px}.gold-button{background:var(--teal)}
-.table-wrap{width:100%;overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:12px 9px;border-bottom:1px solid var(--border);text-align:left;white-space:nowrap}th{background:var(--light);color:var(--navy)}
-.empty{color:var(--muted);font-size:14px;line-height:1.6}.status{display:none;margin-bottom:18px;padding:13px;border-radius:9px;font-size:14px;line-height:1.5;overflow-wrap:anywhere}.notice{margin-top:16px;padding:13px;border-radius:9px;background:#FFF7DF;color:#6E5010;font-size:13px;line-height:1.6}
-.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}footer{padding:20px 15px;background:var(--navy);color:#E1EDF5;text-align:center;font-size:12px;line-height:1.8}footer strong{color:var(--gold)}
-@media(max-width:650px){.grid{grid-template-columns:1fr}main{margin-top:20px}.card{padding:18px}}
+:root {
+  --navy: #092B4C;
+  --blue: #124A78;
+  --teal: #087F8C;
+  --gold: #E6B84A;
+  --light: #DFF3FC;
+  --text: #183247;
+  --muted: #667B8C;
+  --border: #D8E3EC;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--light);
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+header {
+  padding: 24px 18px;
+  color: #fff;
+  background: linear-gradient(120deg, var(--navy), var(--blue));
+  border-bottom: 5px solid var(--gold);
+}
+
+.header-inner {
+  max-width: 1050px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.logo {
+  flex-shrink: 0;
+  width: 62px;
+  height: 62px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid var(--gold);
+  border-radius: 50%;
+  background: #fff;
+  color: var(--navy);
+  font-size: 21px;
+  font-weight: 900;
+}
+
+header h1 {
+  margin: 0;
+  font-size: clamp(18px, 4vw, 26px);
+  line-height: 1.4;
+}
+
+header p {
+  margin: 5px 0 0;
+  color: #E1EDF5;
+  font-size: 13px;
+}
+
+main {
+  width: 100%;
+  max-width: 1050px;
+  margin: 26px auto;
+  padding: 0 16px 30px;
+}
+
+.welcome { margin-bottom: 22px; }
+
+.welcome h2 {
+  margin: 0 0 8px;
+  color: var(--navy);
+  font-size: 25px;
+}
+
+.welcome p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.card {
+  min-width: 0;
+  padding: 21px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 4px 15px rgba(9, 43, 76, .05);
+}
+
+.card h3 {
+  margin: 0 0 17px;
+  color: var(--navy);
+  font-size: 18px;
+}
+
+.profile-row {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  overflow-wrap: anywhere;
+}
+
+.profile-row:last-child { border-bottom: none; }
+
+.profile-row span {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.profile-row strong {
+  color: var(--navy);
+  font-size: 15px;
+}
+
+label {
+  display: block;
+  margin: 14px 0 7px;
+  color: var(--navy);
+  font-size: 14px;
+  font-weight: bold;
+}
+
+input {
+  display: block;
+  width: 100%;
+  min-height: 46px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  font: inherit;
+  font-size: 16px;
+}
+
+input:focus {
+  outline: 2px solid var(--teal);
+  outline-offset: 2px;
+}
+
+button, .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 11px 16px;
+  border: none;
+  border-radius: 8px;
+  background: var(--navy);
+  color: #fff;
+  font: inherit;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+button:hover, .button:hover { background: var(--teal); }
+
+button:disabled {
+  opacity: .6;
+  cursor: wait;
+}
+
+.full-button {
+  width: 100%;
+  margin-top: 15px;
+}
+
+.gold-button { background: var(--teal); }
+
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+th, td {
+  padding: 12px 9px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  white-space: nowrap;
+}
+
+th {
+  background: var(--light);
+  color: var(--navy);
+}
+
+.empty {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.status {
+  display: none;
+  margin-bottom: 18px;
+  padding: 13px;
+  border-radius: 9px;
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.notice {
+  margin-top: 16px;
+  padding: 13px;
+  border-radius: 9px;
+  background: #FFF7DF;
+  color: #6E5010;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.actions .button,
+.actions button {
+  width: 100%;
+  min-height: 50px;
+  font-size: 16px;
+}
+
+.cbt-button {
+  background: #123C69;
+  border: 2px solid var(--gold);
+}
+
+.cbt-button:hover { background: var(--teal); }
+
+footer {
+  padding: 20px 15px;
+  background: var(--navy);
+  color: #E1EDF5;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+footer strong { color: var(--gold); }
+
+@media (max-width: 650px) {
+  .grid { grid-template-columns: 1fr; }
+  main { margin-top: 20px; }
+  .card { padding: 18px; }
+}
 </style>
 </head>
-<body>
-<header><div class="header-inner"><div class="logo">JTA</div><div><h1>JUSTIFIED TUTOR'S ACADEMY</h1><p>Student Portal · Learn Today. Excel Tomorrow.</p></div></div></header>
-<main>
-<div id="status" class="status" role="status" aria-live="polite"></div>
-<section class="welcome"><h2 id="welcomeTitle">Welcome to Your Student Portal</h2><p>View your student details, record class attendance, and monitor your academic progress.</p></section>
-<div class="grid">
-<section class="card"><h3>My Student Profile</h3>
-<div class="profile-row"><span>Full Name</span><strong id="fullName">Loading...</strong></div>
-<div class="profile-row"><span>JTA Student Code</span><strong id="studentCode">Loading...</strong></div>
-<div class="profile-row"><span>Email Address</span><strong id="email">Loading...</strong></div>
-<div class="profile-row"><span>Department</span><strong id="department">Loading...</strong></div>
-<button id="refreshButton" class="full-button" type="button">Refresh My Information</button></section>
-<section class="card"><h3>Class Attendance</h3><p class="empty">Select the class date and record your attendance. The server records the time your attendance is submitted.</p>
-<form id="attendanceForm"><label for="classDate">Class Date</label><input id="classDate" type="date" required><button id="attendanceButton" class="full-button gold-button" type="submit">Mark Attendance</button></form>
-<div class="notice">Please mark attendance only when attending the actual class. Attendance can be recorded once per class date.</div></section>
-<section class="card"><h3>My Attendance History</h3><div id="attendanceList" class="empty">Loading attendance records...</div></section>
-<section class="card"><h3>My Test Scores</h3><div id="scoresList" class="empty">Loading test scores...</div></section>
-</div>
-<div class="actions"><button id="logoutButton" type="button">Log Out</button></div>
-</main>
-<footer><strong>JTA STUDENT PORTAL</strong><br>© 2027 Justified Tutor's Academy<br>Empowering Students for Academic Excellence</footer>
-<script>
-const API_BASE="https://jta-student-backend.justifiedtutorsacademy.workers.dev";
-const token=sessionStorage.getItem("jta_student_token");
-const statusBox=document.getElementById("status");
-const refreshButton=document.getElementById("refreshButton");
-const attendanceButton=document.getElementById("attendanceButton");
 
-function showStatus(text,success=false){statusBox.style.display="block";statusBox.style.background=success?"#E5F7EC":"#FDECEC";statusBox.style.color=success?"#176638":"#A12626";statusBox.textContent=text}
-async function apiRequest(path,options={}){const response=await fetch(API_BASE+path,{...options,headers:{"Content-Type":"application/json","Authorization":"Bearer "+token,...(options.headers||{})}});const data=await response.json().catch(()=>({}));if(!response.ok)throw new Error(data.message||data.error||"The request could not be completed.");return data}
-function safeText(value){return value===null||value===undefined||value===""?"Not provided":String(value)}
-function formatAttendanceTime(value){
-  if(!value)return "Time unavailable";
-  const normalized=/Z$|[+-]\d{2}:\d{2}$/.test(value)?value:value.replace(" ","T")+"Z";
-  const date=new Date(normalized);
-  if(Number.isNaN(date.getTime()))return "Time unavailable";
-  return new Intl.DateTimeFormat(undefined,{hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:true}).format(date);
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">JTA</div>
+    <div>
+      <h1>JUSTIFIED TUTOR'S ACADEMY</h1>
+      <p>Student Portal · Learn Today. Excel Tomorrow.</p>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div id="status" class="status" role="status" aria-live="polite"></div>
+
+  <section class="welcome">
+    <h2 id="welcomeTitle">Welcome to Your Student Portal</h2>
+    <p>View your student details, record class attendance, and monitor your academic progress.</p>
+  </section>
+
+  <div class="grid">
+
+    <section class="card">
+      <h3>My Student Profile</h3>
+
+      <div class="profile-row">
+        <span>Full Name</span>
+        <strong id="fullName">Loading...</strong>
+      </div>
+
+      <div class="profile-row">
+        <span>JTA Student Code</span>
+        <strong id="studentCode">Loading...</strong>
+      </div>
+
+      <div class="profile-row">
+        <span>Email Address</span>
+        <strong id="email">Loading...</strong>
+      </div>
+
+      <div class="profile-row">
+        <span>Department</span>
+        <strong id="department">Loading...</strong>
+      </div>
+
+      <button id="refreshButton" class="full-button" type="button">
+        Refresh My Information
+      </button>
+    </section>
+
+    <section class="card">
+      <h3>Class Attendance</h3>
+
+      <p class="empty">
+        Select the class date and record your attendance. The server records
+        the time your attendance is submitted.
+      </p>
+
+      <form id="attendanceForm">
+        <label for="classDate">Class Date</label>
+        <input id="classDate" type="date" required>
+
+        <button id="attendanceButton" class="full-button gold-button" type="submit">
+          Mark Attendance
+        </button>
+      </form>
+
+      <div class="notice">
+        Please mark attendance only when attending the actual class.
+        Attendance can be recorded once per class date.
+      </div>
+    </section>
+
+    <section class="card">
+      <h3>My Attendance History</h3>
+      <div id="attendanceList" class="empty">
+        Loading attendance records...
+      </div>
+    </section>
+
+    <section class="card">
+      <h3>My Test Scores</h3>
+      <div id="scoresList" class="empty">
+        Loading test scores...
+      </div>
+    </section>
+
+  </div>
+
+  <!-- CBT appears before Log Out -->
+  <div class="actions">
+    <a class="button cbt-button" href="cbt.html">
+      📝 Take CBT Examination
+    </a>
+
+    <button id="logoutButton" type="button">
+      Log Out
+    </button>
+  </div>
+</main>
+
+<footer>
+  <strong>JTA STUDENT PORTAL</strong><br>
+  © 2027 Justified Tutor's Academy<br>
+  Empowering Students for Academic Excellence
+</footer>
+
+<script>
+const API_BASE = "https://jta-student-backend.justifiedtutorsacademy.workers.dev";
+const LOGIN_PAGE = "login.html";
+
+const statusBox = document.getElementById("status");
+const refreshButton = document.getElementById("refreshButton");
+const attendanceButton = document.getElementById("attendanceButton");
+
+let token = sessionStorage.getItem("jta_student_token");
+let redirectingToLogin = false;
+
+function goToLogin(message) {
+  if (redirectingToLogin) return;
+  redirectingToLogin = true;
+
+  sessionStorage.removeItem("jta_student_token");
+
+  if (message) {
+    sessionStorage.setItem("jta_login_notice", message);
+  }
+
+  window.location.replace(LOGIN_PAGE);
 }
-function renderTable(container,columns,rows,emptyMessage){
-  if(!Array.isArray(rows)||rows.length===0){container.className="empty";container.textContent=emptyMessage;return}
-  const wrapper=document.createElement("div");wrapper.className="table-wrap";
-  const table=document.createElement("table");const thead=document.createElement("thead");const headerRow=document.createElement("tr");
-  columns.forEach(column=>{const th=document.createElement("th");th.textContent=column.label;headerRow.appendChild(th)});
-  thead.appendChild(headerRow);table.appendChild(thead);const tbody=document.createElement("tbody");
-  rows.forEach(row=>{const tr=document.createElement("tr");columns.forEach(column=>{const td=document.createElement("td");const value=column.format?column.format(row[column.key],row):row[column.key];td.textContent=safeText(value);tr.appendChild(td)});tbody.appendChild(tr)});
-  table.appendChild(tbody);wrapper.appendChild(table);container.className="";container.replaceChildren(wrapper);
+
+function showStatus(text, success = false) {
+  statusBox.style.display = "block";
+  statusBox.style.background = success ? "#E5F7EC" : "#FDECEC";
+  statusBox.style.color = success ? "#176638" : "#A12626";
+  statusBox.textContent = text;
 }
-async function loadPortal(){
-  if(!token){showStatus("Please log in before opening your student portal.");["fullName","studentCode","email","department"].forEach(id=>document.getElementById(id).textContent="Not signed in");document.getElementById("attendanceList").textContent="Sign in to view your attendance.";document.getElementById("scoresList").textContent="Sign in to view your scores.";return}
-  refreshButton.disabled=true;refreshButton.textContent="Loading...";
-  try{
-    const data=await apiRequest("/api/me");const student=data.student||{};
-    document.getElementById("welcomeTitle").textContent="Welcome, "+safeText(student.fullName);
-    document.getElementById("fullName").textContent=safeText(student.fullName);
-    document.getElementById("studentCode").textContent=safeText(student.studentCode);
-    document.getElementById("email").textContent=safeText(student.email);
-    document.getElementById("department").textContent=safeText(student.department);
-    renderTable(document.getElementById("attendanceList"),[
-      {key:"class_date",label:"Class Date"},
-      {key:"marked_at",label:"Time Marked",format:value=>formatAttendanceTime(value)},
-      {key:"status",label:"Attendance"}
-    ],data.attendance||[],"No attendance records found yet.");
-    renderTable(document.getElementById("scoresList"),[
-      {key:"test_name",label:"Test"},{key:"score",label:"Score"},{key:"max_score",label:"Maximum"},{key:"taken_at",label:"Date"}
-    ],data.scores||[],"No test scores have been added yet.");
-    showStatus("Your student information has been loaded.",true);
-  }catch(error){showStatus(error.message+" If your session has expired, log in again.");if(/unauthorized|session|token|sign in/i.test(error.message))sessionStorage.removeItem("jta_student_token")}
-  finally{refreshButton.disabled=false;refreshButton.textContent="Refresh My Information"}
+
+async function apiRequest(path, options = {}) {
+  if (!token) {
+    goToLogin("Please sign in to access your student portal.");
+    throw new Error("Login required.");
+  }
+
+  let response;
+
+  try {
+    response = await fetch(API_BASE + path, {
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + token,
+        ...(options.headers || {})
+      }
+    });
+  } catch (error) {
+    throw new Error("Unable to connect. Please check your internet connection and try again.");
+  }
+
+  if (response.status === 401 || response.status === 403) {
+    goToLogin("Your session has expired. Please sign in again.");
+    throw new Error("Your session has expired.");
+  }
+
+  const data = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    throw new Error(data.message || data.error || "The request could not be completed.");
+  }
+
+  return data;
 }
-document.getElementById("attendanceForm").addEventListener("submit",async function(event){
-  event.preventDefault();if(!token){showStatus("Please log in before marking attendance.");return}
-  const classDate=document.getElementById("classDate").value;if(!classDate){showStatus("Please select the class date.");return}
-  attendanceButton.disabled=true;attendanceButton.textContent="Submitting...";
-  try{await apiRequest("/api/attendance",{method:"POST",body:JSON.stringify({classDate})});showStatus("Attendance submitted successfully.",true);await loadPortal()}
-  catch(error){showStatus(error.message)}
-  finally{attendanceButton.disabled=false;attendanceButton.textContent="Mark Attendance"}
+
+function safeText(value) {
+  return value === null || value === undefined || value === ""
+    ? "Not provided"
+    : String(value);
+}
+
+function formatAttendanceTime(value) {
+  if (!value) return "Time unavailable";
+
+  const normalized = /Z$|[+-]\d{2}:\d{2}$/.test(value)
+    ? value
+    : value.replace(" ", "T") + "Z";
+
+  const date = new Date(normalized);
+
+  if (Number.isNaN(date.getTime())) return "Time unavailable";
+
+  return new Intl.DateTimeFormat(undefined, {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true
+  }).format(date);
+}
+
+function renderTable(container, columns, rows, emptyMessage) {
+  if (!Array.isArray(rows) || rows.length === 0) {
+    container.className = "empty";
+    container.textContent = emptyMessage;
+    return;
+  }
+
+  const wrapper = document.createElement("div");
+  wrapper.className = "table-wrap";
+
+  const table = document.createElement("table");
+  const thead = document.createElement("thead");
+  const headerRow = document.createElement("tr");
+
+  columns.forEach(column => {
+    const th = document.createElement("th");
+    th.textContent = column.label;
+    headerRow.appendChild(th);
+  });
+
+  thead.appendChild(headerRow);
+  table.appendChild(thead);
+
+  const tbody = document.createElement("tbody");
+
+  rows.forEach(row => {
+    const tr = document.createElement("tr");
+
+    columns.forEach(column => {
+      const td = document.createElement("td");
+      const value = column.format
+        ? column.format(row[column.key], row)
+        : row[column.key];
+
+      td.textContent = safeText(value);
+      tr.appendChild(td);
+    });
+
+    tbody.appendChild(tr);
+  });
+
+  table.appendChild(tbody);
+  wrapper.appendChild(table);
+
+  container.className = "";
+  container.replaceChildren(wrapper);
+}
+
+async function loadPortal() {
+  token = sessionStorage.getItem("jta_student_token");
+
+  if (!token) {
+    goToLogin("Please sign in to access your student portal.");
+    return;
+  }
+
+  refreshButton.disabled = true;
+  refreshButton.textContent = "Loading...";
+
+  try {
+    const data = await apiRequest("/api/me");
+    const student = data.student || {};
+
+    document.getElementById("welcomeTitle").textContent =
+      "Welcome, " + safeText(student.fullName);
+
+    document.getElementById("fullName").textContent =
+      safeText(student.fullName);
+
+    document.getElementById("studentCode").textContent =
+      safeText(student.studentCode);
+
+    document.getElementById("email").textContent =
+      safeText(student.email);
+
+    document.getElementById("department").textContent =
+      safeText(student.department);
+
+    renderTable(
+      document.getElementById("attendanceList"),
+      [
+        { key: "class_date", label: "Class Date" },
+        {
+          key: "marked_at",
+          label: "Time Marked",
+          format: value => formatAttendanceTime(value)
+        },
+        { key: "status", label: "Attendance" }
+      ],
+      data.attendance || [],
+      "No attendance records found yet."
+    );
+
+    renderTable(
+      document.getElementById("scoresList"),
+      [
+        { key: "test_name", label: "Test" },
+        { key: "score", label: "Score" },
+        { key: "max_score", label: "Maximum" },
+        { key: "taken_at", label: "Date" }
+      ],
+      data.scores || [],
+      "No test scores have been added yet."
+    );
+
+    showStatus("Your student information has been loaded.", true);
+
+  } catch (error) {
+    if (!redirectingToLogin) {
+      showStatus(error.message || "Unable to load your information.");
+    }
+  } finally {
+    refreshButton.disabled = false;
+    refreshButton.textContent = "Refresh My Information";
+  }
+}
+
+document.getElementById("attendanceForm").addEventListener("submit", async function(event) {
+  event.preventDefault();
+
+  token = sessionStorage.getItem("jta_student_token");
+
+  if (!token) {
+    goToLogin("Please sign in before marking attendance.");
+    return;
+  }
+
+  const classDate = document.getElementById("classDate").value;
+
+  if (!classDate) {
+    showStatus("Please select the class date.");
+    return;
+  }
+
+  attendanceButton.disabled = true;
+  attendanceButton.textContent = "Submitting...";
+
+  try {
+    await apiRequest("/api/attendance", {
+      method: "POST",
+      body: JSON.stringify({ classDate })
+    });
+
+    showStatus("Attendance submitted successfully.", true);
+    await loadPortal();
+
+  } catch (error) {
+    if (!redirectingToLogin) {
+      showStatus(error.message);
+    }
+  } finally {
+    attendanceButton.disabled = false;
+    attendanceButton.textContent = "Mark Attendance";
+  }
 });
-refreshButton.addEventListener("click",loadPortal);
-document.getElementById("logoutButton").addEventListener("click",function(){sessionStorage.removeItem("jta_student_token");window.location.href="login.html"});
-const today=new Date();
-document.getElementById("classDate").value=[today.getFullYear(),String(today.getMonth()+1).padStart(2,"0"),String(today.getDate()).padStart(2,"0")].join("-");
+
+refreshButton.addEventListener("click", loadPortal);
+
+document.getElementById("logoutButton").addEventListener("click", function() {
+  sessionStorage.removeItem("jta_student_token");
+  window.location.replace(LOGIN_PAGE);
+});
+
+const today = new Date();
+
+document.getElementById("classDate").value = [
+  today.getFullYear(),
+  String(today.getMonth() + 1).padStart(2, "0"),
+  String(today.getDate()).padStart(2, "0")
+].join("-");
+
 loadPortal();
+</script>
+
+</body>
+</html> 
 </script>
 <!-- JTA CBT Examination Button -->
 <div style="text-align:center; margin:25px 10px;">
@@ -111,18 +658,6 @@ loadPortal();
 </div>
 </body>
 </html>
-atus("Please log in before marking attendance.");return}
-  const classDate=document.getElementById("classDate").value;if(!classDate){showStatus("Please select the class date.");return}
-  attendanceButton.disabled=true;attendanceButton.textContent="Submitting...";
-  try{await apiRequest("/api/attendance",{method:"POST",body:JSON.stringify({classDate})});showStatus("Attendance submitted successfully.",true);await loadPortal()}
-  catch(error){showStatus(error.message)}
-  finally{attendanceButton.disabled=false;attendanceButton.textContent="Mark Attendance"}
-});
-refreshButton.addEventListener("click",loadPortal);
-document.getElementById("logoutButton").addEventListener("click",function(){sessionStorage.removeItem("jta_student_token");window.location.href="login.html"});
-const today=new Date();
-document.getElementById("classDate").value=[today.getFullYear(),String(today.getMonth()+1).padStart(2,"0"),String(today.getDate()).padStart(2,"0")].join("-");
-loadPortal();
 </script>
   <!-- JTA CBT Examination Button -->
 <div style="text-align:center; margin:25px 10px;">
