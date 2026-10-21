@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JTA Admin Dashboard</title>
+
+  <style>
+    :root {
+      --navy: #142b4a;
+      --blue: #2459a9;
+      --gold: #e6b84b;
+      --bg: #f3f6fb;
+      --white: #fff;
+      --text: #172438;
+      --muted: #64748b;
+      --border: #dce4ef;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    header {
+      background: var(--navy);
+      color: white;
+      padding: 24px 16px;
+      border-bottom: 5px solid var(--gold);
+    }
+
+    .header-inner, main {
+      width: min(100% - 28px, 1000px);
+      margin: auto;
+    }
+
+    header h1 {
+      margin: 0 0 8px;
+      font-size: 24px;
+    }
+
+    header p {
+      margin: 0;
+      color: #dbe7f7;
+    }
+
+    main { padding: 24px 0 40px; }
+
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 18px;
+      box-shadow: 0 4px 18px rgba(20,43,74,.04);
+    }
+
+    h2 {
+      font-size: 19px;
+      margin: 0 0 14px;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin: 12px 0 7px;
+    }
+
+    input, select, button {
+      width: 100%;
+      min-height: 46px;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    input, select {
+      padding: 10px;
+      border: 1px solid #cbd5e1;
+      background: white;
+    }
+
+    button {
+      border: 0;
+      padding: 10px 14px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    button:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+    }
+
+    .primary {
+      background: var(--blue);
+      color: white;
+      margin-top: 14px;
+    }
+
+    .approve {
+      background: #16794b;
+      color: white;
+    }
+
+    .reject {
+      background: #b42332;
+      color: white;
+    }
+
+    .secondary {
+      background: #e7edf6;
+      color: var(--navy);
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .status {
+      padding: 12px;
+      border-radius: 8px;
+      background: #edf3fc;
+      overflow-wrap: anywhere;
+      margin-top: 14px;
+    }
+
+    .status.error {
+      background: #fff0f0;
+      color: #9b1c1c;
+    }
+
+    .status.success {
+      background: #e9f8ef;
+      color: #17623b;
+    }
+
+    .hidden { display: none; }
+
+    .application {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 14px;
+      overflow-wrap: anywhere;
+    }
+
+    .application h3 {
+      margin: 0 0 10px;
+      font-size: 18px;
+    }
+
+    .application p {
+      margin: 8px 0;
+      line-height: 1.45;
+    }
+
+    .code {
+      color: var(--blue);
+      font-weight: 700;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    @media (min-width: 650px) {
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+<header>
+  <div class="header-inner">
+    <h1>Justified Tutor's Academy</h1>
+    <p>Administrator Dashboard</p>
+  </div>
+</header>
+
+<main>
+  <section class="card" id="loginPanel">
+    <h2>Administrator Access</h2>
+    <p class="muted">
+      Enter your existing Cloudflare ADMIN_SECRET to access pending
+      applications. Never share this secret with students.
+    </p>
+
+    <form id="loginForm">
+      <label for="adminKey">Administrator secret</label>
+      <input
+        id="adminKey"
+        type="password"
+        autocomplete="off"
+        required
+        placeholder="Enter your admin secret"
+      >
+
+      <button class="primary" type="submit">
+        Connect to Admin Dashboard
+      </button>
+    </form>
+
+    <div id="loginMessage" class="status hidden" role="status"></div>
+  </section>
+
+  <section id="dashboard" class="hidden">
+    <div class="card">
+      <h2>Student Applications</h2>
+
+      <div class="form-row">
+        <div>
+          <label for="statusFilter">Application status</label>
+          <select id="statusFilter">
+            <option value="pending">Pending</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="refreshButton">Refresh applications</label>
+          <button class="secondary" id="refreshButton" type="button">
+            Refresh List
+          </button>
+        </div>
+      </div>
+
+      <div id="listMessage" class="status" role="status">
+        Connect to load applications.
+      </div>
+
+      <div id="applications"></div>
+    </div>
+
+    <div class="card">
+      <h2>Admin Session</h2>
+      <p class="muted">
+        The secret is kept in this page's temporary memory and is not
+        saved to local storage.
+      </p>
+      <button class="secondary" id="logoutButton" type="button">
+        Disconnect and Clear Secret
+      </button>
+    </div>
+  </section>
+</main>
+
+<footer>
+  Justified Tutor's Academy · Student Management System
+</footer>
+
+<script>
+(() => {
+  "use strict";
+
+  const API =
+    "https://jta-student-backend.justifiedtutorsacademy.workers.dev";
+
+  let adminSecret = "";
+  let busy = false;
+
+  const $ = id => document.getElementById(id);
+
+  function showMessage(element, message, type = "") {
+    element.textContent = message;
+    element.className = "status" + (type ? " " + type : "");
+    element.classList.remove("hidden");
+  }
+
+  async function apiRequest(path, options = {}) {
+    const headers = {
+      "X-Admin-Key": adminSecret,
+      ...(options.body ? { "Content-Type": "application/json" } : {})
+    };
+
+    const response = await fetch(API + path, {
+      ...options,
+      headers: { ...headers, ...(options.headers || {}) }
+    });
+
+    const result = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      throw new Error(result.error || "Request failed (" + response.status + ").");
+    }
+
+    return result;
+  }
+
+  function addText(parent, tag, value, className = "") {
+    const element = document.createElement(tag);
+    element.textContent = value == null ? "" : String(value);
+
+    if (className) element.className = className;
+
+    parent.appendChild(element);
+    return element;
+  }
+
+  function makeApplicationCard(application) {
+    const card = document.createElement("article");
+    card.className = "application";
+
+    addText(card, "h3", application.full_name || "Unnamed student");
+
+    addText(
+      card,
+      "p",
+      "JTA Code: " + (application.student_code || "Not assigned"),
+      "code"
+    );
+
+    addText(card, "p", "Email: " + (application.email || "Not provided"));
+    addText(card, "p", "Phone: " + (application.phone || "Not provided"));
+    addText(
+      card,
+      "p",
+      "Parent/Guardian Phone: " + (application.parent_phone || "Not provided")
+    );
+    addText(card, "p", "Data Phone: " + (application.data_phone || "Not provided"));
+    addText(card, "p", "Network: " + (application.network || "Not provided"));
+    addText(card, "p", "Department: " + (application.department || "Not provided"));
+    addText(card, "p", "Status: " + (application.status || "Unknown"));
+    addText(card, "p", "Application ID: " + application.id, "muted");
+
+    const currentStatus = $("statusFilter").value;
+
+    if (currentStatus === "pending") {
+      const actions = document.createElement("div");
+      actions.className = "actions";
+
+      const approve = document.createElement("button");
+      approve.type = "button";
+      approve.className = "approve";
+      approve.textContent = "Approve";
+
+      const reject = document.createElement("button");
+      reject.type = "button";
+      reject.className = "reject";
+      reject.textContent = "Reject";
+
+      approve.addEventListener("click", () =>
+        reviewApplication(application.id, "approved", approve, reject)
+      );
+
+      reject.addEventListener("click", () =>
+        reviewApplication(application.id, "rejected", approve, reject)
+      );
+
+      actions.append(approve, reject);
+      card.appendChild(actions);
+    }
+
+    return card;
+  }
+
+  async function loadApplications() {
+    if (!adminSecret || busy) return;
+
+    busy = true;
+    $("refreshButton").disabled = true;
+    $("applications").replaceChildren();
+
+    showMessage($("listMessage"), "Loading applications...");
+
+    try {
+      const status = $("statusFilter").value;
+      const result = await apiRequest(
+        "/api/admin/applications?status=" + encodeURIComponent(status)
+      );
+
+      const applications = Array.isArray(result.applications)
+        ? result.applications
+        : [];
+
+      if (!applications.length) {
+        showMessage($("listMessage"), "No " + status + " applications found.");
+        return;
+      }
+
+      showMessage(
+        $("listMessage"),
+        applications.length + " application(s) found.",
+        "success"
+      );
+
+      for (const application of applications) {
+        $("applications").appendChild(makeApplicationCard(application));
+      }
+    } catch (error) {
+      showMessage($("listMessage"), error.message, "error");
+
+      if (/admin access denied/i.test(error.message)) {
+        adminSecret = "";
+        $("dashboard").classList.add("hidden");
+        $("loginPanel").classList.remove("hidden");
+        $("adminKey").value = "";
+      }
+    } finally {
+      busy = false;
+      $("refreshButton").disabled = false;
+    }
+  }
+
+  async function reviewApplication(id, decision, approve, reject) {
+    const action = decision === "approved" ? "approve" : "reject";
+
+    if (!confirm("Are you sure you want to " + action + " this application?")) {
+      return;
+    }
+
+    approve.disabled = true;
+    reject.disabled = true;
+
+    try {
+      await apiRequest("/api/admin/review", {
+        method: "POST",
+        body: JSON.stringify({
+          applicationId: id,
+          decision
+        })
+      });
+
+      alert("Application " + decision + " successfully.");
+      await loadApplications();
+    } catch (error) {
+      alert("Could not update application: " + error.message);
+      approve.disabled = false;
+      reject.disabled = false;
+    }
+  }
+
+  $("loginForm").addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const candidate = $("adminKey").value.trim();
+
+    if (!candidate) {
+      showMessage($("loginMessage"), "Enter your administrator secret.", "error");
+      return;
+    }
+
+    adminSecret = candidate;
+    $("loginMessage").classList.add("hidden");
+
+    try {
+      // Verify the secret before opening the dashboard.
+      await apiRequest("/api/admin/applications?status=pending");
+
+      $("loginPanel").classList.add("hidden");
+      $("dashboard").classList.remove("hidden");
+      $("statusFilter").value = "pending";
+
+      await loadApplications();
+    } catch (error) {
+      adminSecret = "";
+      $("adminKey").value = "";
+      showMessage(
+        $("loginMessage"),
+        "Could not connect: " + error.message,
+        "error"
+      );
+    }
+  });
+
+  $("refreshButton").addEventListener("click", loadApplications);
+  $("statusFilter").addEventListener("change", loadApplications);
+
+  $("logoutButton").addEventListener("click", () => {
+    adminSecret = "";
+    $("adminKey").value = "";
+    $("applications").replaceChildren();
+    $("dashboard").classList.add("hidden");
+    $("loginPanel").classList.remove("hidden");
+    $("listMessage").textContent = "";
+    $("listMessage").className = "status hidden";
+    showMessage($("loginMessage"), "You have disconnected.", "success");
+  });
+})();
+</script>
+</body>
+  </html>
