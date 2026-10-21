@@ -43,6 +43,7 @@ button:disabled{opacity:.6;cursor:wait}.status{display:none;padding:12px 14px;bo
 </section></main>
 <script>
 const API_BASE = "https://jta-student-backend.justifiedtutorsacademy.workers.dev";
+const WELCOME_URL = "portal-welcome.html";
 const form=document.getElementById("registrationForm"),photo=document.getElementById("photo"),preview=document.getElementById("preview"),statusBox=document.getElementById("status"),submitBtn=document.getElementById("submitBtn");
 let photoData=null,photoMime=null;
 function showStatus(message,type){statusBox.textContent=message;statusBox.className="status show "+type;}
@@ -63,10 +64,12 @@ form.addEventListener("submit",async(event)=>{
   const response=await fetch(API_BASE+"/api/register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
   const data=await response.json().catch(()=>({}));if(!response.ok)throw new Error(data.error||"Registration failed. Please try again.");
   const studentCode=data.studentCode||data.jtaCode||"";
-  showStatus("Registration submitted successfully. "+(studentCode?"Your student code is "+studentCode+". ":"")+"Keep your code safe and wait for academy approval.","ok");
+  showStatus("Registration submitted successfully. "+(studentCode?"Your student code is "+studentCode+". ":"")+"Your application is awaiting academy approval. Opening the welcome page…","ok");
   form.reset();photoData=null;photoMime=null;preview.style.display="none";preview.removeAttribute("src");
+  submitBtn.textContent="Registration Submitted";
+  setTimeout(()=>{window.location.href=WELCOME_URL;},2500);
  }catch(error){console.error("JTA registration error:",error);showStatus("Registration was not confirmed: "+(error.message||"Please try again later."),"err");}
- finally{submitBtn.disabled=false;submitBtn.textContent="Submit Registration";}
+ finally{if(submitBtn.textContent!=="Registration Submitted"){submitBtn.disabled=false;submitBtn.textContent="Submit Registration";}}
 });
 </script>
 </body>
