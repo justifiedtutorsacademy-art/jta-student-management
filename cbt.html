@@ -3,19 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#1050BD">
 <title>JTA CBT Examination</title>
 
 <style>
 :root {
-  --primary: #123c69;
-  --accent: #e9a23b;
-  --background: #f3f6fb;
-  --white: #ffffff;
-  --text: #202b3c;
-  --muted: #68758a;
-  --border: #dce3ed;
-  --success: #16794b;
-  --danger: #b42318;
+  --primary: #1050BD;
+  --accent: #A653D8;
+  --background: #EAF6FC;
+  --white: #FFFFFF;
+  --text: #202B3C;
+  --muted: #68758A;
+  --border: #D7E5F2;
+  --success: #16794B;
+  --danger: #B42318;
+  --purple: #963CC8;
 }
 
 * { box-sizing: border-box; }
@@ -25,87 +27,95 @@ body {
   background: var(--background);
   color: var(--text);
   font-family: Arial, sans-serif;
+  line-height: 1.5;
 }
 
 header {
-  background: var(--primary);
+  background: linear-gradient(135deg, #1050BD, #7438C6, #A653D8);
   color: white;
-  padding: 22px 16px;
+  padding: 28px 16px;
   text-align: center;
+  border-bottom: 5px solid #C17BE5;
 }
 
 header h1 {
   margin: 0 0 7px;
-  font-size: 24px;
+  font-size: 25px;
 }
 
-header p { margin: 0; }
+header p { margin: 0; color: #F4E9FF; }
 
 main {
-  width: min(900px, 100%);
-  margin: 22px auto;
+  width: min(950px, 100%);
+  margin: 24px auto;
   padding: 0 14px 30px;
 }
 
 .panel {
   background: var(--white);
   border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 20px;
-  margin-bottom: 16px;
+  border-radius: 18px;
+  padding: 22px;
+  margin-bottom: 18px;
+  box-shadow: 0 5px 18px rgba(16, 80, 189, 0.07);
 }
 
-h2 { margin-top: 0; }
+h2 { margin-top: 0; line-height: 1.3; color: #1050BD; }
+h3 { color: #29364A; }
 
 button {
-  background: var(--primary);
+  background: linear-gradient(135deg, #1050BD, #285FD0);
   color: white;
   border: 0;
-  padding: 12px 17px;
-  border-radius: 8px;
+  padding: 12px 18px;
+  border-radius: 9px;
   font-size: 15px;
+  font-weight: 600;
   cursor: pointer;
   margin: 5px 5px 5px 0;
+  min-height: 44px;
 }
 
 button.secondary {
-  background: #e8edf5;
-  color: var(--text);
+  background: #F0E5FA;
+  color: #6330A3;
+  border: 1px solid #DCC1F0;
 }
 
-button.warning { background: #a33b25; }
-
-button:disabled {
-  opacity: .55;
-  cursor: not-allowed;
+button.warning {
+  background: linear-gradient(135deg, #8737B9, #B34FD6);
 }
+
+button:disabled { opacity: .55; cursor: not-allowed; }
 
 input[type="radio"] {
   margin-right: 9px;
   transform: scale(1.15);
+  accent-color: #1050BD;
 }
 
 .option {
   display: block;
-  background: #f8faff;
-  border: 1px solid var(--border);
-  border-radius: 9px;
-  padding: 14px;
-  margin: 10px 0;
+  background: #F7FBFF;
+  border: 1px solid #D7E5F2;
+  border-radius: 11px;
+  padding: 15px;
+  margin: 11px 0;
   cursor: pointer;
 }
 
 .option:has(input:checked) {
-  border-color: var(--primary);
-  background: #edf4ff;
+  border-color: #1050BD;
+  background: #E7F0FF;
 }
 
 .muted { color: var(--muted); }
 
 .message {
-  padding: 12px;
-  border-radius: 8px;
-  background: #edf4ff;
+  padding: 14px;
+  border-radius: 10px;
+  background: #E8F3FF;
+  border: 1px solid #C8DDF9;
   margin: 12px 0;
   overflow-wrap: anywhere;
 }
@@ -122,14 +132,15 @@ input[type="radio"] {
 }
 
 .question-number {
-  color: var(--muted);
+  color: var(--purple);
   font-size: 14px;
+  font-weight: bold;
   margin-bottom: 10px;
 }
 
 #questionText {
   white-space: pre-wrap;
-  line-height: 1.6;
+  line-height: 1.7;
   overflow-wrap: anywhere;
 }
 
@@ -140,49 +151,127 @@ input[type="radio"] {
 }
 
 #timer {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: bold;
-  color: var(--primary);
+  color: #1050BD;
+  background: #E7F0FF;
+  border-radius: 9px;
+  padding: 8px 12px;
+}
+
+#timer.urgent {
+  color: #B42318;
+  background: #FEECEC;
 }
 
 .hidden { display: none !important; }
 
+.result-card {
+  border: 1px solid #D9C5EF;
+  border-radius: 15px;
+  padding: 20px;
+  margin: 16px 0;
+  background: linear-gradient(180deg, #FFFFFF, #FAF6FF);
+}
+
+.result-score {
+  font-size: 19px;
+  font-weight: bold;
+  color: #1050BD;
+}
+
+.jamb-score {
+  background: linear-gradient(135deg, #EAF4FF, #F5E9FF);
+  border: 1px solid #D5B9ED;
+  border-radius: 14px;
+  padding: 20px;
+  margin: 16px 0;
+}
+
+.jamb-score .big-score {
+  font-size: clamp(32px, 7vw, 44px);
+  font-weight: bold;
+  color: #1050BD;
+  line-height: 1.25;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.stat {
+  background: #F4F8FF;
+  border: 1px solid #D9E5F5;
+  border-radius: 11px;
+  padding: 14px;
+  overflow-wrap: anywhere;
+}
+
+.stat-label { font-size: 13px; color: var(--muted); }
+
+.stat-value {
+  font-size: 19px;
+  font-weight: bold;
+  color: #1050BD;
+  margin-top: 4px;
+}
+
+.progress-track {
+  width: 100%;
+  height: 11px;
+  border-radius: 99px;
+  background: #E1D5EF;
+  overflow: hidden;
+  margin: 12px 0;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #1050BD, #A653D8);
+  width: 0;
+  border-radius: 99px;
+}
+
+.disclaimer { color: var(--muted); font-size: 13px; }
+
 footer {
   text-align: center;
-  color: var(--muted);
+  color: #65748A;
   font-size: 13px;
-  padding: 18px;
+  padding: 22px 16px;
+  background: #E1F1FC;
+  border-top: 1px solid #D3E6F5;
 }
 
 @media (max-width: 480px) {
   header h1 { font-size: 21px; }
-  .panel { padding: 15px; }
+  .panel { padding: 16px; border-radius: 14px; }
+  .stat-grid { grid-template-columns: 1fr 1fr; }
 }
 </style>
 </head>
 
 <body>
-
 <header>
   <h1>Justified Tutor's Academy</h1>
   <p>Computer-Based Test (CBT) Portal</p>
 </header>
 
 <main>
-  <div id="notice" class="message hidden" role="status"
-       aria-live="polite"></div>
+  <div id="notice" class="message hidden" role="status" aria-live="polite"></div>
 
   <section id="homePanel" class="panel">
     <h2>Available Examinations</h2>
     <p class="muted">
-      Select an available examination to begin. Read each question
-      carefully and submit your answers before the time expires.
+      Select an available examination. Read each question carefully
+      and submit your answers before time expires.
     </p>
 
     <button id="loadExamsBtn" type="button">Load Examinations</button>
-    <button id="loadResultsBtn" type="button" class="secondary">
-      My Results
-    </button>
+    <button id="loadResultsBtn" type="button" class="secondary">My Results</button>
 
     <div id="examList" style="margin-top:18px">
       <p class="muted">Tap "Load Examinations" to begin.</p>
@@ -210,13 +299,9 @@ footer {
     </div>
 
     <div style="margin-top:20px">
-      <button id="previousBtn" class="secondary" type="button">
-        Previous
-      </button>
+      <button id="previousBtn" class="secondary" type="button">Previous</button>
       <button id="nextBtn" type="button">Next</button>
-      <button id="submitBtn" class="warning" type="button">
-        Submit Examination
-      </button>
+      <button id="submitBtn" class="warning" type="button">Submit Examination</button>
     </div>
 
     <p class="muted">
@@ -227,16 +312,13 @@ footer {
 
   <section id="resultsPanel" class="panel hidden">
     <h2>My Examination Results</h2>
+    <p class="muted">Review your raw marks, percentage and estimated score out of 400.</p>
     <div id="resultsList"></div>
-    <button id="backBtn" type="button" class="secondary">
-      Back to Examinations
-    </button>
+    <button id="backBtn" type="button" class="secondary">Back to Examinations</button>
   </section>
 </main>
 
-<footer>
-  Justified Tutor's Academy · JTA CBT
-</footer>
+<footer>Justified Tutor's Academy · JTA CBT</footer>
 
 <script>
 "use strict";
@@ -278,9 +360,7 @@ async function api(path, options = {}) {
   const token = getToken();
 
   if (!token) {
-    throw new Error(
-      "Your student login session was not found. Please log in first."
-    );
+    throw new Error("Your login session was not found. Please log in first.");
   }
 
   const headers = {
@@ -289,11 +369,7 @@ async function api(path, options = {}) {
     ...(options.headers || {})
   };
 
-  const response = await fetch(API + path, {
-    ...options,
-    headers
-  });
-
+  const response = await fetch(API + path, {...options, headers});
   const text = await response.text();
   let data = {};
 
@@ -304,10 +380,7 @@ async function api(path, options = {}) {
   }
 
   if (!response.ok) {
-    throw new Error(
-      data.error || data.message ||
-      ("Request failed with status " + response.status)
-    );
+    throw new Error(data.error || data.message || ("Request failed: " + response.status));
   }
 
   return data;
@@ -315,11 +388,9 @@ async function api(path, options = {}) {
 
 function unwrapList(data, keys) {
   if (Array.isArray(data)) return data;
-
   for (const key of keys) {
     if (Array.isArray(data[key])) return data[key];
   }
-
   return [];
 }
 
@@ -331,6 +402,129 @@ function getExamTitle(exam) {
   return exam.title || exam.name || exam.exam_title || "JTA Examination";
 }
 
+function getTotalMarks(result) {
+  const value = Number(
+    result.total_marks ?? result.max_score ??
+    result.totalMarks ?? result.maxScore
+  );
+  return Number.isFinite(value) && value > 0 ? value : null;
+}
+
+function getRawScore(result) {
+  const value = Number(result.score ?? result.total_score ?? result.marks);
+  return Number.isFinite(value) ? value : null;
+}
+
+function formatDate(value) {
+  if (!value) return "Not available";
+  return String(value);
+}
+
+function addStat(grid, label, value) {
+  const box = document.createElement("div");
+  box.className = "stat";
+
+  const caption = document.createElement("div");
+  caption.className = "stat-label";
+  caption.textContent = label;
+
+  const number = document.createElement("div");
+  number.className = "stat-value";
+  number.textContent = value;
+
+  box.append(caption, number);
+  grid.appendChild(box);
+}
+
+function renderResultCard(result) {
+  const item = document.createElement("article");
+  item.className = "result-card";
+
+  const title = document.createElement("h3");
+  title.textContent = result.exam_title || result.title ||
+    result.exam_name || getExamTitle(currentExam || {});
+  item.appendChild(title);
+
+  const rawScore = getRawScore(result);
+  const totalMarks = getTotalMarks(result);
+
+  if (rawScore === null) {
+    const message = document.createElement("p");
+    message.textContent = "The score is not available from the server.";
+    item.appendChild(message);
+  } else {
+    const scoreLine = document.createElement("p");
+    scoreLine.className = "result-score";
+    scoreLine.textContent = totalMarks !== null
+      ? `Raw score: ${rawScore}/${totalMarks}`
+      : `Raw score: ${rawScore}`;
+    item.appendChild(scoreLine);
+
+    if (totalMarks !== null) {
+      const percentage = Math.max(0, Math.min(100, rawScore / totalMarks * 100));
+      const estimated = Math.round(percentage * 4);
+
+      const hero = document.createElement("div");
+      hero.className = "jamb-score";
+
+      const caption = document.createElement("p");
+      caption.className = "muted";
+      caption.textContent = "ESTIMATED JAMB-STYLE SCORE";
+
+      const big = document.createElement("div");
+      big.className = "big-score";
+      big.textContent = `${estimated}/400`;
+
+      const percentText = document.createElement("p");
+      percentText.textContent = `Percentage: ${percentage.toFixed(1)}%`;
+
+      const track = document.createElement("div");
+      track.className = "progress-track";
+      track.setAttribute("role", "progressbar");
+      track.setAttribute("aria-label", "Examination percentage");
+      track.setAttribute("aria-valuemin", "0");
+      track.setAttribute("aria-valuemax", "100");
+      track.setAttribute("aria-valuenow", percentage.toFixed(1));
+
+      const fill = document.createElement("div");
+      fill.className = "progress-fill";
+      fill.style.width = percentage + "%";
+      track.appendChild(fill);
+
+      const disclaimer = document.createElement("p");
+      disclaimer.className = "disclaimer";
+      disclaimer.textContent =
+        "This is a practice estimate based on your percentage, not an official JAMB UTME score.";
+
+      hero.append(caption, big, percentText, track, disclaimer);
+      item.appendChild(hero);
+
+      const grid = document.createElement("div");
+      grid.className = "stat-grid";
+      addStat(grid, "Raw marks", `${rawScore}/${totalMarks}`);
+      addStat(grid, "Percentage", `${percentage.toFixed(1)}%`);
+      addStat(grid, "Estimated score", `${estimated}/400`);
+      addStat(grid, "Status", result.status || "Submitted");
+      item.appendChild(grid);
+    } else {
+      const note = document.createElement("p");
+      note.className = "disclaimer";
+      note.textContent =
+        "The server did not return total marks. The score out of 400 cannot be calculated until the results API includes total_marks.";
+      item.appendChild(note);
+    }
+  }
+
+  const date = document.createElement("p");
+  date.className = "muted";
+  date.textContent = "Submitted: " + formatDate(
+    result.submitted_at || result.submittedAt || result.taken_at
+  );
+  item.appendChild(date);
+
+  return item;
+}
+
 async function loadExams() {
   clearNotice();
   $("loadExamsBtn").disabled = true;
@@ -339,7 +533,6 @@ async function loadExams() {
   try {
     const data = await api("/api/exams");
     const exams = unwrapList(data, ["exams", "data", "results"]);
-
     $("examList").replaceChildren();
 
     if (!exams.length) {
@@ -363,10 +556,8 @@ async function loadExams() {
       const total = Number(exam.total_questions ?? exam.question_count);
 
       details.textContent = [
-        Number.isFinite(duration) && duration > 0
-          ? duration + " minutes" : "",
-        Number.isFinite(total) && total > 0
-          ? total + " questions" : "",
+        Number.isFinite(duration) && duration > 0 ? duration + " minutes" : "",
+        Number.isFinite(total) && total > 0 ? total + " questions" : "",
         exam.department || ""
       ].filter(Boolean).join(" · ") || "Online examination";
 
@@ -390,11 +581,11 @@ async function loadExams() {
 
 function normalizeQuestions(data) {
   const list = unwrapList(data, ["questions", "data"]);
+
   return list.map((q, index) => ({
     id: q.id ?? q.question_id ?? q.questionId ?? String(index + 1),
     text: q.question ?? q.text ?? q.question_text ?? q.prompt ?? "",
-    options: q.options ?? q.choices ?? [],
-    savedAnswer: q.answer
+    options: q.options ?? q.options_json ?? q.choices ?? []
   }));
 }
 
@@ -404,9 +595,7 @@ async function startExam(id) {
     return;
   }
 
-  if (!confirm("Start this examination now? Follow the time limit carefully.")) {
-    return;
-  }
+  if (!confirm("Start this examination now? Follow the time limit carefully.")) return;
 
   clearNotice();
   showNotice("Starting examination...");
@@ -429,29 +618,169 @@ async function startExam(id) {
     submitting = false;
 
     if (!questions.length) {
-      throw new Error(
-        "The server did not return any questions. The CBT backend response must be checked."
-      );
+      throw new Error("The server did not return any questions. Please check the backend.");
     }
 
     const duration = Number(
-      data.duration_minutes ??
-      data.durationMinutes ??
-      currentExam.duration_minutes ??
-      currentExam.durationMinutes
+      data.duration_minutes ?? data.durationMinutes ??
+      currentExam.duration_minutes ?? currentExam.durationMinutes
     );
 
-    const endTime = data.deadline || data.ends_at || data.endTime;
+    const endTime = data.deadline || data.deadline_at || data.ends_at || data.endTime;
 
     if (endTime) {
       deadline = new Date(endTime).getTime();
     } else if (Number.isFinite(duration) && duration > 0) {
-      deadline = Date.now() + duration * 60 * 1000;
+      deadline = Date.now() + duration * 60000;
     } else {
       deadline = null;
     }
 
     $("examTitle").textContent = getExamTitle(currentExam);
+    showPanel("examPanel");
+    clearNotice();
+    renderQuestion();
+    startTimer();
+  } catch (error) {
+    showNotice(error.message, true);
+  }
+}
+
+function renderQuestion() {
+  if (!questions.length) return;
+
+  const q = questions[currentIndex];
+  $("questionNumber").textContent =
+    `Question ${currentIndex + 1} of ${questions.length}`;
+  $("questionProgress").textContent = `${Object.keys(answers).length} answered`;
+  $("questionText").textContent = q.text || "Question text unavailable.";
+  $("options").replaceChildren();
+
+  let options = q.options;
+
+  if (typeof options === "string") {
+    try { options = JSON.parse(options); }
+    catch { options = []; }
+  }
+
+  if (options && !Array.isArray(options) && typeof options === "object") {
+    options = Object.entries(options).map(([key, value]) => ({
+      label: key,
+      text: value
+    }));
+  }
+
+  if (!Array.isArray(options) || !options.length) {
+    const msg = document.createElement("p");
+    msg.className = "error";
+    msg.textContent = "Options are unavailable for this question.";
+    $("options").appendChild(msg);
+  } else {
+    options.forEach((option, index) => {
+      // Submit the option index expected by the backend scorer.
+      const value = String(index);
+      const labelText = typeof option === "object"
+        ? (option.text ?? option.label ?? option.option ?? option.value ?? "")
+        : option;
+
+      const label = document.createElement("label");
+      label.className = "option";
+
+      const radio = document.createElement("input");
+      radio.type = "radio";
+      radio.name = "answer";
+      radio.value = value;
+      radio.checked = String(answers[q.id] ?? "") === value;
+
+      radio.addEventListener("change", () => {
+        answers[q.id] = radio.value;
+        $("questionProgress").textContent =
+          `${Object.keys(answers).length} answered`;
+      });
+
+      label.appendChild(radio);
+      label.appendChild(document.createTextNode(" " + String(labelText)));
+      $("options").appendChild(label);
+    });
+  }
+
+  $("previousBtn").disabled = currentIndex === 0;
+  $("nextBtn").disabled = currentIndex === questions.length - 1;
+}
+
+function startTimer() {
+  stopTimer();
+
+  function tick() {
+    if (!deadline || !Number.isFinite(deadline)) {
+      $("timer").textContent = "Server timed";
+      return;
+    }
+
+    const remaining = Math.max(0, Math.floor((deadline - Date.now()) / 1000));
+    const minutes = Math.floor(remaining / 60);
+    const seconds = remaining % 60;
+
+    $("timer").textContent =
+      String(minutes).padStart(2, "0") + ":" +
+      String(seconds).padStart(2, "0");
+
+    $("timer").classList.toggle("urgent", remaining <= 300);
+
+    if (remaining <= 0) {
+      stopTimer();
+      submitExam(true);
+    }
+  }
+
+  tick();
+  timerInterval = setInterval(tick, 1000);
+}
+
+function stopTimer() {
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = null;
+}
+
+$("previousBtn").addEventListener("click", () => {
+  if (currentIndex > 0) {
+    currentIndex--;
+    renderQuestion();
+  }
+});
+
+$("nextBtn").addEventListener("click", () => {
+  if (currentIndex < questions.length - 1) {
+    currentIndex++;
+    renderQuestion();
+  }
+});
+
+$("submitBtn").addEventListener("click", () => submitExam(false));
+
+async function submitExam(autoSubmit) {
+  if (!currentExam || submitting) return;
+
+  const unanswered = questions.length - Object.keys(answers).length;
+
+  if (!autoSubmit && unanswered > 0) {
+    if (!confirm(`You have ${unanswered} unanswered question(s). Submit anyway?`)) return;
+  } else if (!autoSubmit) {
+    if (!confirm("Are you sure you want to submit your examination?")) return;
+  }
+
+  submitting = true;
+  $("submitBtn").disabled = true;
+  showNotice(autoSubmit ? "Time is up. Submitting..." : "Submitting examination...");
+
+  try {
+    const examId = getExamId(currentExam);
+    if (examId === undefined || examId === null) {
+      throw new Error("The examination ID is missing.");
+    }
+
+    const data = await api(
+      "/api/exams/" + enctContent = getExamTitle(currentExam);
     showPanel("examPanel");
     clearNotice();
     renderQuestion();
