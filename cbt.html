@@ -779,196 +779,26 @@ async function submitExam(autoSubmit) {
       throw new Error("The examination ID is missing.");
     }
 
-    const data = await api(
-      "/api/exams/" + enctContent = getExamTitle(currentExam);
-    showPanel("examPanel");
-    clearNotice();
-    renderQuestion();
-    startTimer();
-  } catch (error) {
-    showNotice(error.message, true);
-  }
-}
-
-function renderQuestion() {
-  if (!questions.length) return;
-
-  const q = questions[currentIndex];
-
-  $("questionNumber").textContent =
-    "Question " + (currentIndex + 1) + " of " + questions.length;
-
-  $("questionProgress").textContent =
-    Object.keys(answers).length + " answered";
-
-  $("questionText").textContent = q.text || "Question text unavailable.";
-
-  $("options").replaceChildren();
-
-  let options = q.options;
-
-  if (typeof options === "string") {
-    try { options = JSON.parse(options); }
-    catch { options = []; }
-  }
-
-  if (options && !Array.isArray(options) && typeof options === "object") {
-    options = Object.entries(options).map(([key, value]) => ({
-      label: key,
-      text: value
-    }));
-  }
-
-  if (!Array.isArray(options) || !options.length) {
-    const msg = document.createElement("p");
-    msg.className = "error";
-    msg.textContent = "Options are unavailable for this question.";
-    $("options").appendChild(msg);
-  } else {
-    options.forEach((option, index) => {
-      const value = typeof option === "object"
-        ? (option.value ?? option.id ?? option.label ?? option.text ?? String(index))
-        : option;
-
-      const labelText = typeof option === "object"
-        ? (option.text ?? option.label ?? option.option ?? String(value))
-        : option;
-
-      const label = document.createElement("label");
-      label.className = "option";
-
-      const radio = document.createElement("input");
-      radio.type = "radio";
-      radio.name = "answer";
-      radio.value = String(value);
-      radio.checked = String(answers[q.id] ?? "") === String(value);
-
-      radio.addEventListener("change", () => {
-        answers[q.id] = radio.value;
-        $("questionProgress").textContent =
-          Object.keys(answers).length + " answered";
-      });
-
-      label.appendChild(radio);
-      label.appendChild(document.createTextNode(String(labelText)));
-      $("options").appendChild(label);
-    });
-  }
-
-  $("previousBtn").disabled = currentIndex === 0;
-  $("nextBtn").disabled = currentIndex === questions.length - 1;
-}
-
-function startTimer() {
-  stopTimer();
-
-  function tick() {
-    if (!deadline) {
-      $("timer").textContent = "Timed by server";
-      return;
-    }
-
-    const remaining = Math.max(0, Math.floor((deadline - Date.now()) / 1000));
-    const minutes = Math.floor(remaining / 60);
-    const seconds = remaining % 60;
-
-    $("timer").textContent =
-      String(minutes).padStart(2, "0") + ":" +
-      String(seconds).padStart(2, "0");
-
-    if (remaining <= 0) {
-      stopTimer();
-      submitExam(true);
-    }
-  }
-
-  tick();
-  timerInterval = setInterval(tick, 1000);
-}
-
-function stopTimer() {
-  if (timerInterval) clearInterval(timerInterval);
-  timerInterval = null;
-}
-
-$("previousBtn").addEventListener("click", () => {
-  if (currentIndex > 0) {
-    currentIndex--;
-    renderQuestion();
-  }
-});
-
-$("nextBtn").addEventListener("click", () => {
-  if (currentIndex < questions.length - 1) {
-    currentIndex++;
-    renderQuestion();
-  }
-});
-
-$("submitBtn").addEventListener("click", () => submitExam(false));
-
-async function submitExam(autoSubmit) {
-  if (!currentExam || submitting) return;
-
-  const unanswered = questions.length - Object.keys(answers).length;
-
-  if (!autoSubmit && unanswered > 0) {
-    if (!confirm(
-      "You have " + unanswered +
-      " unanswered question(s). Submit anyway?"
-    )) return;
-  } else if (!autoSubmit) {
-    if (!confirm("Are you sure you want to submit your examination?")) return;
-  }
-
-  submitting = true;
-  $("submitBtn").disabled = true;
-  showNotice(autoSubmit ? "Time is up. Submitting..." : "Submitting examination...");
-
-  try {
-    const examId = getExamId(currentExam);
-
-    if (examId === undefined || examId === null) {
-      throw new Error("The examination ID is missing.");
-    }
-
-    const data = await api(
+const data = await api(
       "/api/exams/" + encodeURIComponent(examId) + "/submit",
-      {
-        method: "POST",
-        body: JSON.stringify({answers})
-      }
+      {method: "POST", body: JSON.stringify({answers})}
     );
 
     stopTimer();
+
+    const result = {
+      ...(data.result || data),
+      exam_title: getExamTitle(currentExam),
+      status: "submitted"
+    };
+
     currentExam = null;
     questions = [];
     answers = {};
+
     showPanel("resultsPanel");
-
-    const result = data.result || data;
     $("resultsList").replaceChildren();
-
-    const heading = document.createElement("h3");
-    heading.textContent = "Examination submitted";
-    $("resultsList").appendChild(heading);
-
-    const score = document.createElement("p");
-    score.textContent = "Score: " +
-      (result.score ?? result.total_score ?? result.marks ?? "Submitted");
-    $("resultsList").appendChild(score);
-
-    if (result.percentage !== undefined) {
-      const percent = document.createElement("p");
-      percent.textContent = "Percentage: " + result.percentage + "%";
-      $("resultsList").appendChild(percent);
-    }
-
-    if (result.correct !== undefined) {
-      const correct = document.createElement("p");
-      correct.textContent = "Correct answers: " + result.correct;
-      $("resultsList").appendChild(correct);
-    }
+    $("resultsList").appendChild(renderResultCard(result));
 
     showNotice("Your examination has been submitted successfully.");
   } catch (error) {
@@ -996,25 +826,7 @@ async function loadResults() {
     }
 
     results.forEach(result => {
-      const item = document.createElement("div");
-      item.className = "panel";
-
-      const title = document.createElement("h3");
-      title.textContent =
-        result.exam_title || result.title || result.exam_name || "JTA Examination";
-
-      const score = document.createElement("p");
-      score.textContent = "Score: " +
-        (result.score ?? result.total_score ?? result.marks ?? "Not available");
-
-      const date = document.createElement("p");
-      date.className = "muted";
-      date.textContent = result.submitted_at
-        ? "Submitted: " + result.submitted_at
-        : "";
-
-      item.append(title, score, date);
-      $("resultsList").appendChild(item);
+      $("resultsList").appendChild(renderResultCard(result));
     });
   } catch (error) {
     $("resultsList").textContent = error.message;
@@ -1031,14 +843,10 @@ $("backBtn").addEventListener("click", () => {
 });
 
 if (!getToken()) {
-  showNotice(
-    "Please log in through the JTA student login page before using the CBT portal.",
-    true
-  );
+  showNotice("Please log in through the JTA student login page before using the CBT portal.", true);
 } else {
   loadExams();
 }
 </script>
-
 </body>
 </html>
