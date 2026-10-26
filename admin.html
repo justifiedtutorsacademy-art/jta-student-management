@@ -36,7 +36,7 @@
       </form>
       <div id="loginMessage" class="status hidden" role="status" aria-live="polite"></div>
     </section>
-
+ 
     <section id="dashboard" class="hidden">
       <div class="intro"><div><p class="eyebrow">JTA management</p><h2>Dashboard overview</h2><p>Manage applications and your student-support team from one place.</p></div><span class="pill">Administrator connected</span></div>
       <div class="stats" aria-label="Dashboard summary">
@@ -45,7 +45,7 @@
         <div class="stat"><div class="stat-top"><span class="stat-label">Rejected applications</span><span class="stat-icon">×</span></div><div class="stat-value" id="rejectedCount">—</div><div class="stat-note">Rejected applications</div></div>
         <div class="stat"><div class="stat-top"><span class="stat-label">Registered coaches</span><span class="stat-icon">★</span></div><div class="stat-value" id="coachCount">—</div><div class="stat-note">Coach accounts in the system</div></div>
       </div>
-
+ 
       <div class="section-grid">
         <section class="card">
           <div class="card-head"><div><h2>Student applications</h2><p class="subtext">Review applications and approve eligible students.</p></div><span class="pill">Students</span></div>
@@ -56,7 +56,7 @@
           <div id="listMessage" class="status" role="status" aria-live="polite">Connect to load applications.</div>
           <div id="applications" class="list"></div>
         </section>
-
+ 
         <section class="card" id="coachManagement">
           <div class="card-head"><div><h2>Coach management</h2><p class="subtext">Create coach accounts and review the coaches registered in JTA.</p></div><span class="pill">Team</span></div>
           <form id="coachForm">
@@ -75,7 +75,7 @@
           <p class="note">Student assignment and follow-up notes need their own backend endpoints; this page will not claim those actions are available until they are implemented.</p>
         </section>
       </div>
-
+ 
       <section class="card admin-session">
         <div><h2>Administrator session</h2><p>Your secret stays in this page's temporary memory and is not saved to local storage.</p></div>
         <button class="btn btn-soft" id="logoutButton" type="button">Disconnect and clear secret</button>
@@ -91,7 +91,7 @@
   let applicationBusy = false;
   let coachBusy = false;
   const $ = id => document.getElementById(id);
-
+ 
   function showMessage(element, message, type = "") {
     element.textContent = message;
     element.className = "status" + (type ? " " + type : "");
@@ -205,7 +205,7 @@
     $("dashboard").classList.add("hidden"); $("loginPanel").classList.remove("hidden");
     $("listMessage").className = "status hidden"; $("coachesMessage").className = "status hidden";
     showMessage($("loginMessage"), message, "success");
-    ["pendingCount", "approvedCount", "rejectedCount", "coachCount"].forEach(id => $(id).textContent = "—");
+   ["pendingCount", "approvedCount", "rejectedCount", "coachCount"].forEach(id => $(id).textContent = "—");
   }
   $("loginForm").addEventListener("submit", async event => {
     event.preventDefault();
