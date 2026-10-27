@@ -76,6 +76,20 @@
         </section>
       </div>
  
+      <section class="card" id="assignmentManagement">
+        <div class="card-head"><div><h2>Student–coach assignments</h2><p class="subtext">Assign an approved student, transfer them to another active coach, or end an assignment without deleting student history.</p></div><span class="pill">Assignments</span></div>
+        <form id="assignmentForm">
+          <div class="field-grid">
+            <div class="field"><label for="assignmentCoach">Active coach</label><select id="assignmentCoach" required><option value="">Load coaches first</option></select></div>
+            <div class="field"><label for="assignmentStudent">Approved student</label><select id="assignmentStudent" required><option value="">Load students first</option></select></div>
+          </div>
+          <button class="btn btn-primary btn-block" type="submit" id="assignStudentButton">Assign / transfer student</button>
+        </form>
+        <div id="assignmentMessage" class="status" role="status" aria-live="polite">Connect to load approved students and assignments.</div>
+        <div class="card-head" style="margin-top:25px;margin-bottom:10px"><div><h2 style="font-size:16px">Approved students and current assignments</h2><p class="subtext">Ending an assignment does not delete attendance, scores or follow-up notes.</p></div><button class="btn btn-soft" type="button" id="refreshAssignmentsButton">↻ Refresh</button></div>
+        <div id="assignments" class="list"></div>
+      </section>
+ 
       <section class="card admin-session">
         <div><h2>Administrator session</h2><p>Your secret stays in this page's temporary memory and is not saved to local storage.</p></div>
         <button class="btn btn-soft" id="logoutButton" type="button">Disconnect and clear secret</button>
@@ -90,6 +104,9 @@
   let adminSecret = "";
   let applicationBusy = false;
   let coachBusy = false;
+  let cachedCoaches = [];
+  let cachedStudents = [];
+  let assignmentBusy = false;
   const $ = id => document.getElementById(id);
  
   function showMessage(element, message, type = "") {
@@ -169,7 +186,82 @@
     addText(card, "p", "Phone: " + (coach.phone || "Not provided"));
     addText(card, "p", "Status: " + (coach.status || "Unknown"));
     if (coach.created_at) addText(card, "p", "Created: " + coach.created_at);
+    const actions = document.createElement("div"); actions.className = "item-actions";
+    const button = document.createElement("button"); button.type = "button";
+    const active = coach.status === "active";
+    button.className = "btn " + (active ? "btn-danger" : "btn-success");
+    button.textContent = active ? "Suspend coach" : "Reactivate coach";
+    button.addEventListener("click", () => changeCoachStatus(coach, active ? "inactive" : "active", button));
+    actions.appendChild(button); card.appendChild(actions);
     return card;
+  }
+  async function changeCoachStatus(coach, status, button) {
+    const verb = status === "inactive" ? "suspend" : "reactivate";
+    if (!confirm("Are you sure you want to " + verb + " " + (coach.full_name || "this coach") + "?")) return;
+    button.disabled = true;
+    try {
+      await apiRequest("/api/admin/coach-status", { method: "POST", body: JSON.stringify({ coachId: coach.id, status }) });
+      showMessage($("coachesMessage"), "Coach " + (status === "active" ? "reactivated" : "suspended") + " successfully.", "success");
+      await loadCoaches();
+      await loadAssignments();
+    } catch (error) {
+      alert("Could not " + verb + " coach: " + error.message);
+      button.disabled = false;
+    }
+  }
+  function fillSelect(select, items, placeholder, getValue, getLabel) {
+    select.replaceChildren();
+    const first = document.createElement("option"); first.value = ""; first.textContent = placeholder; select.appendChild(first);
+    items.forEach(item => {
+      const option = document.createElement("option");
+      option.value = getValue(item); option.textContent = getLabel(item); select.appendChild(option);
+    });
+  }
+  function refreshAssignmentSelects() {
+    const activeCoaches = cachedCoaches.filter(c => c.status === "active");
+    fillSelect($("assignmentCoach"), activeCoaches, "Choose an active coach", c => c.id, c => c.full_name + " — " + c.email);
+    fillSelect($("assignmentStudent"), cachedStudents, "Choose an approved student", s => s.id, s => (s.student_code || "No JTA code") + " — " + s.full_name);
+  }
+  function makeAssignmentCard(student) {
+    const card = document.createElement("article"); card.className = "item";
+    addText(card, "h3", student.full_name || "Unnamed student");
+    addText(card, "p", "JTA Code: " + (student.student_code || "Not assigned"), "code");
+    addText(card, "p", "Email: " + (student.email || "Not provided"));
+    addText(card, "p", "Department: " + (student.department || "Not provided"));
+    const currentCoach = cachedCoaches.find(c => c.id === student.coach_id);
+    addText(card, "p", "Current coach: " + (currentCoach ? currentCoach.full_name : (student.coach_id ? "Coach account unavailable" : "Unassigned")));
+    if (student.coach_id) {
+      const actions = document.createElement("div"); actions.className = "item-actions";
+      const endButton = document.createElement("button"); endButton.type = "button"; endButton.className = "btn btn-danger"; endButton.textContent = "End assignment";
+      endButton.addEventListener("click", async () => {
+        if (!confirm("End the current coach assignment for " + student.full_name + "? Their historical records will be preserved.")) return;
+        endButton.disabled = true;
+        try {
+          await apiRequest("/api/admin/end-assignment", { method: "POST", body: JSON.stringify({ studentId: student.id }) });
+          showMessage($("assignmentMessage"), "Assignment ended. Student history was preserved.", "success");
+          await loadAssignments();
+        } catch (error) { alert("Could not end assignment: " + error.message); endButton.disabled = false; }
+      });
+      actions.appendChild(endButton); card.appendChild(actions);
+    }
+    return card;
+  }
+  async function loadAssignments() {
+    if (!adminSecret || assignmentBusy) return;
+    assignmentBusy = true; $("refreshAssignmentsButton").disabled = true; $("assignments").replaceChildren();
+    showMessage($("assignmentMessage"), "Loading approved students and assignments…");
+    try {
+      const result = await apiRequest("/api/admin/assignable-students");
+      cachedStudents = Array.isArray(result.students) ? result.students : [];
+      refreshAssignmentSelects();
+      if (!cachedStudents.length) showMessage($("assignmentMessage"), "No approved students are available for assignment yet.");
+      else {
+        showMessage($("assignmentMessage"), cachedStudents.length + " approved student(s) found.", "success");
+        cachedStudents.forEach(student => $("assignments").appendChild(makeAssignmentCard(student)));
+      }
+    } catch (error) {
+      showMessage($("assignmentMessage"), "Could not load assignments: " + error.message, "error");
+    } finally { assignmentBusy = false; $("refreshAssignmentsButton").disabled = false; }
   }
   async function loadCoaches() {
     if (!adminSecret || coachBusy) return;
@@ -178,6 +270,8 @@
     try {
       const result = await apiRequest("/api/admin/coaches");
       const coaches = Array.isArray(result.coaches) ? result.coaches : [];
+      cachedCoaches = coaches;
+      refreshAssignmentSelects();
       $("coachCount").textContent = String(coaches.length);
       if (!coaches.length) showMessage($("coachesMessage"), "No coaches have been created yet.");
       else {
@@ -201,11 +295,11 @@
     }));
   }
   function disconnect(message = "You have disconnected.") {
-    adminSecret = ""; $("adminKey").value = ""; $("applications").replaceChildren(); $("coaches").replaceChildren();
+    adminSecret = ""; cachedCoaches = []; cachedStudents = []; $("adminKey").value = ""; $("applications").replaceChildren(); $("coaches").replaceChildren(); $("assignments").replaceChildren();
     $("dashboard").classList.add("hidden"); $("loginPanel").classList.remove("hidden");
-    $("listMessage").className = "status hidden"; $("coachesMessage").className = "status hidden";
+    $("listMessage").className = "status hidden"; $("coachesMessage").className = "status hidden"; $("assignmentMessage").className = "status hidden";
     showMessage($("loginMessage"), message, "success");
-   ["pendingCount", "approvedCount", "rejectedCount", "coachCount"].forEach(id => $(id).textContent = "—");
+    ["pendingCount", "approvedCount", "rejectedCount", "coachCount"].forEach(id => $(id).textContent = "—");
   }
   $("loginForm").addEventListener("submit", async event => {
     event.preventDefault();
@@ -216,6 +310,7 @@
       await apiRequest("/api/admin/applications?status=pending");
       $("loginPanel").classList.add("hidden"); $("dashboard").classList.remove("hidden"); $("statusFilter").value = "pending";
       await Promise.all([loadApplications(), loadCoaches(), refreshSummary()]);
+      await loadAssignments();
     } catch (error) {
       adminSecret = ""; $("adminKey").value = "";
       showMessage($("loginMessage"), "Could not connect: " + error.message, "error");
@@ -242,7 +337,25 @@
   });
   $("refreshButton").addEventListener("click", loadApplications);
   $("statusFilter").addEventListener("change", loadApplications);
-  $("refreshCoachesButton").addEventListener("click", loadCoaches);
+  $("refreshCoachesButton").addEventListener("click", async () => { await loadCoaches(); await loadAssignments(); });
+  $("assignmentForm").addEventListener("submit", async event => {
+    event.preventDefault();
+    const coachId = $("assignmentCoach").value;
+    const studentId = $("assignmentStudent").value;
+    if (!coachId || !studentId) { showMessage($("assignmentMessage"), "Choose both an active coach and an approved student.", "error"); return; }
+    const student = cachedStudents.find(s => s.id === studentId);
+    const currentCoach = cachedCoaches.find(c => c.id === student?.coach_id);
+    const message = currentCoach ? "This will transfer " + student.full_name + " from " + currentCoach.full_name + " to the selected coach. Continue?" : "Assign this student to the selected coach?";
+    if (!confirm(message)) return;
+    $("assignStudentButton").disabled = true;
+    try {
+      const result = await apiRequest("/api/admin/assign-student", { method: "POST", body: JSON.stringify({ coachId, studentId }) });
+      showMessage($("assignmentMessage"), result.message || "Student assignment saved.", "success");
+      await loadAssignments();
+    } catch (error) { showMessage($("assignmentMessage"), "Could not assign student: " + error.message, "error"); }
+    finally { $("assignStudentButton").disabled = false; }
+  });
+  $("refreshAssignmentsButton").addEventListener("click", loadAssignments);
   $("logoutButton").addEventListener("click", () => disconnect());
 })();
 </script>
