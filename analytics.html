@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JTA Academy Analytics</title>
+<style>
+:root{--navy:#18264b;--blue:#315bd6;--purple:#7047c7;--bg:#f3f6ff;--ink:#202945;--muted:#69748e;--line:#e1e7f5;--white:#fff;--green:#16865b;--red:#c43d53}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{background:linear-gradient(120deg,var(--navy),#314c9c 65%,var(--purple));color:#fff;padding:24px max(18px,calc((100% - 1180px)/2))}
+.brand{font-size:12px;letter-spacing:.14em;text-transform:uppercase;opacity:.8;font-weight:800}.headrow{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}h1{margin:6px 0 2px;font-size:clamp(25px,4vw,36px)}header p{margin:0;color:#e0e7ff}.wrap{max-width:1180px;margin:22px auto;padding:0 16px}
+.panel,.metric,.section{background:var(--white);border:1px solid var(--line);border-radius:16px;box-shadow:0 6px 24px #273b6b0b}
+.login{max-width:480px;margin:28px auto;padding:24px}.login h2{margin:0 0 8px}.login p,.muted{color:var(--muted)}label{display:block;font-weight:700;margin:12px 0 6px}input,select{width:100%;padding:12px;border:1px solid #cfd8ed;border-radius:10px;font:inherit;background:#fff;color:var(--ink)}button,.btn{border:0;border-radius:10px;background:var(--blue);color:#fff;font-weight:750;padding:11px 15px;font:inherit;cursor:pointer}button:disabled{opacity:.6;cursor:wait}.secondary{background:#edf1ff;color:var(--navy)}.danger{background:#fff0f2;color:var(--red)}.hidden{display:none!important}.status{padding:10px 12px;border-radius:9px;background:#eef2ff;margin-top:12px;white-space:pre-wrap}.status.error{background:#fff0f2;color:#9c2538}.status.success{background:#e8f8f0;color:#126844}
+.toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px}.toolbar .muted{margin-right:auto}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.metric{padding:17px}.metric .label{font-size:13px;color:var(--muted)}.metric .value{font-size:30px;font-weight:850;letter-spacing:-.03em;margin-top:4px}.metric .hint{font-size:12px;color:var(--muted)}.sections{display:grid;grid-template-columns:1.2fr .8fr;gap:14px;margin-top:14px}.section{padding:18px;min-width:0}.section h2{font-size:18px;margin:0 0 4px}.section p{margin:0 0 12px;color:var(--muted);font-size:13px}
+canvas{width:100%;height:230px;display:block}.tablewrap{overflow:auto}table{border-collapse:collapse;width:100%;font-size:13px}th,td{text-align:left;padding:10px;border-bottom:1px solid var(--line);white-space:nowrap}th{color:var(--muted);font-weight:750}.badge{display:inline-block;border-radius:99px;background:#fff1d8;color:#86550a;padding:3px 8px;font-size:12px;font-weight:750}.badge.red{background:#fff0f2;color:#a6293b}.badge.green{background:#e8f8f0;color:#126844}.empty{padding:18px;color:var(--muted);text-align:center}.footer{color:var(--muted);font-size:12px;margin:18px 2px}
+@media(max-width:800px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.sections{grid-template-columns:1fr}.metric .value{font-size:26px}}
+@media(max-width:380px){.grid{grid-template-columns:1fr 1fr}.metric{padding:13px}.metric .value{font-size:23px}}
+</style>
+</head>
+<body>
+<header><div class="headrow"><div><div class="brand">Justified Tutor's Academy</div><h1>Academy Analytics</h1><p>Administrator-only academic and attendance monitoring</p></div><button id="logout" class="secondary hidden">Sign out</button></div></header>
+<main class="wrap">
+<section id="loginPanel" class="panel login"><h2>Administrator sign-in</h2><p>Use the same administrator key as your existing JTA Administrator Portal. The key is kept in this browser session and sent to the protected Cloudflare API; it is not saved in this HTML file.</p><form id="loginForm"><label for="adminKey">Administrator key</label><input id="adminKey" type="password" autocomplete="current-password" required><button style="width:100%;margin-top:14px" id="loginButton">Open analytics dashboard</button></form><div id="loginMessage" class="status hidden" role="status"></div></section>
+<section id="dashboard" class="hidden">
+<div class="toolbar"><span class="muted" id="updatedAt">Live data from JTA database</span><button class="secondary" id="refresh">Refresh data</button><button class="secondary" id="exportCsv">Download student summary (CSV)</button></div>
+<div class="grid">
+<div class="metric"><div class="label">Registered students</div><div class="value" id="totalStudents">—</div><div class="hint">All applications</div></div>
+<div class="metric"><div class="label">Approved students</div><div class="value" id="approvedStudents">—</div><div class="hint" id="pendingHint">Pending: —</div></div>
+<div class="metric"><div class="label">Active coaches</div><div class="value" id="activeCoaches">—</div><div class="hint" id="coachHint">Total coaches: —</div></div>
+<div class="metric"><div class="label">Attendance rate</div><div class="value" id="attendanceRate">—</div><div class="hint">Present marks / all attendance marks</div></div>
+<div class="metric"><div class="label">Average score</div><div class="value" id="averageScore">—</div><div class="hint">Normalised to /400 when possible</div></div>
+<div class="metric"><div class="label">Tests recorded</div><div class="value" id="testsTaken">—</div><div class="hint">Saved score records</div></div>
+<div class="metric"><div class="label">Students needing attention</div><div class="value" id="alertsCount">—</div><div class="hint">Low recent scores or attendance</div></div>
+<div class="metric"><div class="label">Students with a coach</div><div class="value" id="assignedStudents">—</div><div class="hint">Current active assignments</div></div>
+</div>
+<div class="sections">
+<section class="section"><h2>Recent score trend</h2><p>Average normalised score by test date; uses saved score records.</p><canvas id="trendChart" aria-label="Average score trend chart"></canvas><div id="trendEmpty" class="empty hidden">Not enough score records to draw a trend yet.</div></section>
+<section class="section"><h2>Department snapshot</h2><p>Approved students grouped by department.</p><div id="departments" class="tablewrap"></div></section>
+</div>
+<div class="sections">
+<section class="section"><h2>Weekly leaderboard</h2><p>Ranked from available exam results. Scores are normalised to 400 where maximum score is known.</p><div id="leaderboard" class="tablewrap"></div></section>
+<section class="section"><h2>Students needing attention</h2><p>Initial review flags: low recent attendance or average normalised score below 200/400. Review before acting.</p><div id="alerts" class="tablewrap"></div></section>
+</div>
+<section class="section" style="margin-top:14px"><h2>Coach overview</h2><p>Active assignment counts by coach.</p><div id="coaches" class="tablewrap"></div></section>
+<div id="dataMessage" class="status hidden" role="status" aria-live="polite"></div>
+<div class="footer">JTA private dashboard • Read-only analytics • Figures are calculated from saved database records. “Needs attention” is a prompt for human review, not an automatic judgement.</div>
+</section>
+</main>
+<script>
+(() => {
+"use strict";
+const API="https://jta-student-backend.justifiedtutorsacademy.workers.dev";
+const $=id=>document.getElementById(id);
+let key="", lastData=null;
+function message(id,text,type=""){const el=$(id);el.textContent=text;el.className="status"+(type?" "+type:"");el.classList.remove("hidden")}
+async function api(path){const r=await fetch(API+path,{headers:{"X-Admin-Key":key,"Accept":"application/json"}});let d={};try{d=await r.json()}catch{}if(!r.ok)throw Error(d.error||"Request failed ("+r.status+")");return d}
+function fmt(n){return Number(n||0).toLocaleString("en-NG")}
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function table(headers,rows){if(!rows.length)return '<div class="empty">No records available yet.</div>';return '<table><thead><tr>'+headers.map(x=>'<th>'+esc(x)+'</th>').join("")+'</tr></thead><tbody>'+rows.map(row=>'<tr>'+row.map(x=>'<td>'+x+'</td>').join("")+'</tr>').join("")+'</tbody></table>'}
+function drawTrend(items){const c=$("trendChart"),ctx=c.getContext("2d"),box=c.getBoundingClientRect(),dpr=window.devicePixelRatio||1;c.width=Math.max(300,box.width)*dpr;c.height=230*dpr;ctx.scale(dpr,dpr);const w=c.width/dpr,h=230;ctx.clearRect(0,0,w,h);if(!items||items.length<2){$("trendEmpty").classList.remove("hidden");c.classList.add("hidden");return}$("trendEmpty").classList.add("hidden");c.classList.remove("hidden");const pad=30,vals=items.map(x=>Number(x.averageScore)||0),max=Math.max(400,...vals),min=0;ctx.strokeStyle="#e2e8f5";ctx.fillStyle="#69748e";ctx.font="11px system-ui";for(let i=0;i<=4;i++){const y=pad+(h-pad*1.5)*i/4;ctx.beginPath();ctx.moveTo(pad,y);ctx.lineTo(w-12,y);ctx.stroke();ctx.fillText(String(Math.round(max*(1-i/4))),2,y+4)}ctx.strokeStyle="#315bd6";ctx.lineWidth=3;ctx.beginPath();items.forEach((item,i)=>{const x=pad+(w-pad-20)*(i/(items.length-1)),y=h-pad-(h-pad*1.5)*(vals[i]/max);if(!i)ctx.moveTo(x,y);else ctx.lineTo(x,y)});ctx.stroke();items.forEach((item,i)=>{const x=pad+(w-pad-20)*(i/(items.length-1)),y=h-pad-(h-pad*1.5)*(vals[i]/max);ctx.fillStyle="#7047c7";ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fill();if(i===0||i===items.length-1){ctx.fillStyle="#69748e";ctx.fillText(esc(item.label||""),Math.max(0,x-24),h-8)}})}
+function render(d){lastData=d;const s=d.summary||{};$("totalStudents").textContent=fmt(s.totalStudents);$("approvedStudents").textContent=fmt(s.approvedStudents);$("pendingHint").textContent="Pending: "+fmt(s.pendingApplications);$("activeCoaches").textContent=fmt(s.activeCoaches);$("coachHint").textContent="Total coaches: "+fmt(s.totalCoaches);$("attendanceRate").textContent=(s.attendanceRate==null?"—":Number(s.attendanceRate).toFixed(1)+"%");$("averageScore").textContent=(s.averageScore==null?"—":Number(s.averageScore).toFixed(1)+"/400");$("testsTaken").textContent=fmt(s.testsTaken);$("alertsCount").textContent=fmt((d.alerts||[]).length);$("assignedStudents").textContent=fmt(s.assignedStudents);
+$("departments").innerHTML=table(["Department","Approved students"],(d.departments||[]).map(x=>[esc(x.department||"Unspecified"),fmt(x.count)]));
+$("leaderboard").innerHTML=table(["#","Student","Department","Score / 400"],(d.leaderboard||[]).slice(0,20).map((x,i)=>[i+1,esc(x.fullName),esc(x.department||"—"),Number(x.scoreOutOf400).toFixed(1)]));
+$("alerts").innerHTML=table(["Student","Reason","Latest average"],(d.alerts||[]).slice(0,30).map(x=>[esc(x.fullName),'<span class="badge red">'+esc(x.reason)+'</span>',x.averageScore==null?"—":Number(x.averageScore).toFixed(1)+"/400"]));
+$("coaches").innerHTML=table(["Coach","Status","Active students"],(d.coaches||[]).map(x=>[esc(x.fullName),'<span class="badge '+(x.status==="active"?"green":"red")+'">'+esc(x.status)+'</span>',fmt(x.assignedStudents)]));
+drawTrend(d.trend||[]);$("updatedAt").textContent="Updated "+new Date().toLocaleString();message("dataMessage","Dashboard data loaded from the JTA database.","success")}
+async function load(){ $("refresh").disabled=true;try{const d=await api("/api/admin/analytics");render(d)}catch(e){message("dataMessage",e.message+" If this endpoint has not yet been added to the Worker, deploy the analytics endpoint patch first.","error");if(/admin access denied/i.test(e.message)){key="";$("dashboard").classList.add("hidden");$("loginPanel").classList.remove("hidden");$("logout").classList.add("hidden")}}finally{$("refresh").disabled=false}}
+$("loginForm").addEventListener("submit",async e=>{e.preventDefault();key=$("adminKey").value.trim();if(!key)return;$("loginButton").disabled=true;try{await api("/api/admin/analytics");$("loginPanel").classList.add("hidden");$("dashboard").classList.remove("hidden");$("logout").classList.remove("hidden");render(await api("/api/admin/analytics"))}catch(err){key="";message("loginMessage",err.message,"error")}finally{$("loginButton").disabled=false}});
+$("refresh").addEventListener("click",load);$("logout").addEventListener("click",()=>{key="";lastData=null;$("adminKey").value="";$("dashboard").classList.add("hidden");$("loginPanel").classList.remove("hidden");$("logout").classList.add("hidden");$("dataMessage").classList.add("hidden")});
+$("exportCsv").addEventListener("click",()=>{if(!lastData){message("dataMessage","Load dashboard data first.","error");return}const rows=[["JTA Code","Student","Department","Average score / 400","Attendance rate","Alert"],...(lastData.students||[]).map(s=>[s.studentCode,s.fullName,s.department,s.averageScore==null?"":Number(s.averageScore).toFixed(1),s.attendanceRate==null?"":Number(s.attendanceRate).toFixed(1),s.alertReason||""])];const csv=rows.map(r=>r.map(v=>'"'+String(v??"").replace(/"/g,'""')+'"').join(",")).join("\r\n");const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"}));a.download="JTA-student-analytics.csv";a.click();URL.revokeObjectURL(a.href)});
+window.addEventListener("resize",()=>{if(lastData)drawTrend(lastData.trend||[])});
+})();
+</script>
+</body>
+</html>
