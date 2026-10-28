@@ -90,7 +90,17 @@
         <div id="assignments" class="list"></div>
       </section>
  
-      <section class="card admin-session">
+      
+      <section class="card" id="examManagementLink">
+       <div class="card-head">
+        <div><h2>Examination management</h2>
+        <p class="subtext">Create exams, add multiple-choice questions, save drafts, publish exams, and review student results.</p></div>
+        <span class="pill">CBT</span>
+       </div>
+       <a class="btn btn-primary btn-block" href="exam-management.html" style="display:block;text-align:center;text-decoration:none">Open examination manager →</a>
+      </section>
+
+<section class="card admin-session">
         <div><h2>Administrator session</h2><p>Your secret stays in this page's temporary memory and is not saved to local storage.</p></div>
         <button class="btn btn-soft" id="logoutButton" type="button">Disconnect and clear secret</button>
       </section>
@@ -133,6 +143,56 @@
     addText(card, "h3", application.full_name || "Unnamed student");
     addText(card, "p", "JTA Code: " + (application.student_code || "Not assigned"), "code");
     addText(card, "p", "Email: " + (application.email || "Not provided"));
+    addText(card, "p", "Phone: " + (application.phone || "Not provided"));
+    addText(card, "p", "Parent/Guardian: " + (application.parent_phone || "Not provided"));
+    addText(card, "p", "Data phone: " + (application.data_phone || "Not provided"));
+    addText(card, "p", "Network: " + (application.network || "Not provided"));
+    addText(card, "p", "Department: " + (application.department || "Not provided"));
+    addText(card, "p", "Status: " + (application.status || "Unknown"));
+    addText(card, "p", "Application ID: " + (application.id || "Not provided"));
+    if ($("statusFilter").value === "pending") {
+      const actions = document.createElement("div"); actions.className = "item-actions";
+      const approve = document.createElement("button"); approve.type = "button"; approve.className = "btn btn-success"; approve.textContent = "Approve";
+      const reject = document.createElement("button"); reject.type = "button"; reject.className = "btn btn-danger"; reject.textContent = "Reject";
+      approve.addEventListener("click", () => reviewApplication(application.id, "approved", approve, reject));
+      reject.addEventListener("click", () => reviewApplication(application.id, "rejected", approve, reject));
+      actions.append(approve, reject); card.appendChild(actions);
+    }
+    return card;
+  }
+  async function loadApplications() {
+    if (!adminSecret || applicationBusy) return;
+    applicationBusy = true; $("refreshButton").disabled = true; $("applications").replaceChildren();
+    showMessage($("listMessage"), "Loading applications…");
+    try {
+      const status = $("statusFilter").value;
+      const result = await apiRequest("/api/admin/applications?status=" + encodeURIComponent(status));
+      const applications = Array.isArray(result.applications) ? result.applications : [];
+      if (!applications.length) {
+        showMessage($("listMessage"), "No " + status + " applications found.");
+      } else {
+        showMessage($("listMessage"), applications.length + " " + status + " application(s) found.", "success");
+        applications.forEach(application => $("applications").appendChild(makeApplicationCard(application)));
+      }
+    } catch (error) {
+      showMessage($("listMessage"), error.message, "error");
+      if (/unauthorized|admin access denied/i.test(error.message)) disconnect("Your administrator session was rejected. Please sign in again.");
+    } finally { applicationBusy = false; $("refreshButton").disabled = false; }
+  }
+  async function reviewApplication(id, decision, approve, reject) {
+    const action = decision === "approved" ? "approve" : "reject";
+    if (!confirm("Are you sure you want to " + action + " this application?")) return;
+    approve.disabled = true; reject.disabled = true;
+    try {
+      await apiRequest("/api/admin/review", { method: "POST", body: JSON.stringify({ applicationId: id, decision }) });
+      showMessage($("listMessage"), "Application " + decision + " successfully.", "success");
+      await refreshSummary(); await loadApplications();
+    } catch (error) { alert("Could not update application: " + error.message); approve.disabled = false; reject.disabled = false; }
+  }
+  function makeCoachCard(coach) {
+    const card = document.createElement("article"); card.className = "item";
+    addText(card, "h3", coach.full_name || "Unnamed coach");
+    addText(card, "p", "Email: " + (coach.email || "Not provided"));
     addText(card, "p", "Phone: " + (application.phone || "Not provided"));
     addText(card, "p", "Parent/Guardian: " + (application.parent_phone || "Not provided"));
     addText(card, "p", "Data phone: " + (application.data_phone || "Not provided"));
@@ -361,3 +421,4 @@
 </script>
 </body>
 </html>
+  
