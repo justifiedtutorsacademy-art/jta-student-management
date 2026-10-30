@@ -609,8 +609,10 @@ async function chooseFourSubjects(exam) {
   const group = exam.department || window.currentStudentDepartment || "";
   const allowed = allowedSubjectsForGroup(group);
   if (!allowed.length) throw new Error("Your department group could not be identified. Please contact JTA.");
-  const available = Array.isArray(exam.available_subjects) && exam.available_subjects.length
-    ? allowed.filter(s => exam.available_subjects.includes(s)) : allowed;
+  // Show every subject allowed for the student's department. The exam may
+  // currently contain questions for only some subjects; do not hide choices.
+  // The backend should validate question availability when the student starts.
+  const available = allowed;
   return new Promise(resolve => {
     const overlay = document.createElement("div");
     overlay.style.cssText = "position:fixed;inset:0;background:rgba(10,25,45,.65);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;";
