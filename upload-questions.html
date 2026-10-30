@@ -52,6 +52,13 @@ body[data-page="dashboard"] #uploadSection,body[data-page="dashboard"] #copySect
 <section class="card" id="uploadSection">
 <h2>Add questions</h2><p class="muted">Select a draft, enter one question at a time, and add more as needed. Options are saved in A, B, C… order.</p>
 <div class="field"><label for="questionExam">Draft examination</label><select id="questionExam"><option value="">Load exams first</option></select></div>
+<section class="question-box" id="bulkImportBox">
+<h3>Bulk import questions</h3>
+<p class="small">Import up to 200 questions from a JTA JSON question file in one operation. Choose the draft above, preview the file, then import. Existing questions will not be deleted.</p>
+<div class="field"><label for="bulkQuestionFile">Question file (JSON)</label><input id="bulkQuestionFile" type="file" accept=".json,application/json"></div>
+<div class="row" style="gap:10px;flex-wrap:wrap"><button class="btn" type="button" id="previewBulkBtn">Preview questions</button><button class="btn primary" type="button" id="importBulkBtn" disabled>Import all questions</button></div>
+<div id="bulkPreview" class="status hidden" aria-live="polite"></div>
+</section>
 <form id="questionForm"><div class="field"><label for="questionSubject">Question subject</label><select id="questionSubject" required><option>English Language</option><option>Mathematics</option><option>Physics</option><option>Chemistry</option><option>Biology</option><option>Literature in English</option><option>CRS</option><option>Government</option><option>IRS</option><option>Economics</option><option>Commerce</option><option>Accounting</option></select></div><div class="field"><label for="questionText">Question text</label><textarea id="questionText" required maxlength="4000"></textarea></div>
 <div class="grid">
 <div class="field"><label for="optA">Option A</label><input id="optA" required maxlength="1000"></div>
@@ -140,6 +147,40 @@ updateSubjects();
 $("examForm").addEventListener("submit",async e=>{e.preventDefault();$("createExamBtn").disabled=true;try{const d=await api("/api/admin/exams",{method:"POST",body:JSON.stringify({title:$("title").value.trim(),description:$("description").value.trim(),department:$("department").value,week_number:Number($("weekNumber").value),exam_type:$("examType").value,subject:$("subject").value,topics:$("topics").value.trim(),duration_minutes:Number($("duration").value)})});$("examForm").reset();$("duration").value=30;msg("examMsg","Draft created: "+d.exam.title,"ok");await loadExams();$("questionExam").value=d.exam.id}catch(err){msg("examMsg",err.message,"err")}finally{$("createExamBtn").disabled=false}});
 $("questionForm").addEventListener("submit",async e=>{e.preventDefault();const examId=$("questionExam").value;if(!examId){msg("questionMsg","Choose a draft examination first.","err");return}const options=[$("optA").value,$("optB").value,$("optC").value,$("optD").value,$("optE").value].map(x=>x.trim()).filter(Boolean);const correct=$("correct").value;if("ABCDE".indexOf(correct)>=options.length){msg("questionMsg","Fill in the selected correct option before saving.","err");return}const body={subject:$("questionSubject").value,question_text:$("questionText").value.trim(),options,correct_answer:correct,marks:Number($("marks").value)};$("addQuestionBtn").disabled=true;try{const d=await api("/api/admin/exams/"+encodeURIComponent(examId)+"/questions",{method:"POST",body:JSON.stringify(body)});msg("questionMsg",d.message,"ok");$("questionForm").reset();$("marks").value=1;await loadExams();$("questionExam").value=examId}catch(err){msg("questionMsg",err.message,"err")}finally{$("addQuestionBtn").disabled=false}});
 $("copyQuestionsBtn").addEventListener("click",async()=>{const source=$("copySource").value,target=$("copyTarget").value,subject=$("copySubject").value;if(!source||!target){msg("copyMsg","Choose both a source examination and a destination draft.","err");return}if(source===target){msg("copyMsg","Choose two different examinations.","err");return}if(!confirm("Copy the selected questions into the destination draft? Existing questions will remain, and duplicates may be created."))return;const btn=$("copyQuestionsBtn");btn.disabled=true;try{const result=await api("/api/admin/exams/"+encodeURIComponent(target)+"/copy-questions",{method:"POST",body:JSON.stringify({source_exam_id:source,subject})});msg("copyMsg",result.message,"ok");await loadExams()}catch(err){msg("copyMsg","Could not copy questions: "+err.message,"err")}finally{btn.disabled=false}});
+
+let bulkQuestions=[];
+function validateBulkQuestions(items){
+ if(!Array.isArray(items)||items.length<1||items.length>200)throw Error("The file must contain between 1 and 200 questions.");
+ const letters=["A","B","C","D","E","F","G","H"];
+ return items.map((q,i)=>{
+  const question_text=String(q.question_text??q.questionText??"").trim();
+  const options=Array.isArray(q.options)?q.options.map(x=>String(typeof x==="string"?x:(x?.text??"")).trim()):[];
+  const correct_answer=String(q.correct_answer??q.correctAnswer??"").trim().toUpperCase();
+  const marks=Number(q.marks??1);
+  if(!question_text||question_text.length>4000)throw Error(`Question ${i+1}: enter question text (maximum 4000 characters).`);
+  if(options.length<2||options.length>8||options.some(x=>!x)||new Set(options).size!==options.length)throw Error(`Question ${i+1}: provide 2–8 non-empty, unique options.`);
+  if(!letters.includes(correct_answer)||letters.indexOf(correct_answer)>=options.length)throw Error(`Question ${i+1}: correct answer must be a valid option letter.`);
+  if(!Number.isFinite(marks)||marks<=0||marks>100)throw Error(`Question ${i+1}: marks must be greater than 0 and no more than 100.`);
+  return {question_text,options,correct_answer,marks,subject:String(q.subject||"Mathematics")};
+ });
+}
+$("previewBulkBtn").addEventListener("click",async()=>{
+ const file=$("bulkQuestionFile").files?.[0];$("importBulkBtn").disabled=true;bulkQuestions=[];
+ if(!file){msg("bulkPreview","Choose a JSON question file first.","err");return}
+ try{const parsed=JSON.parse(await file.text());const items=Array.isArray(parsed)?parsed:(parsed.questions||[]);bulkQuestions=validateBulkQuestions(items);const total=bulkQuestions.reduce((n,q)=>n+q.marks,0);msg("bulkPreview",`Ready to import ${bulkQuestions.length} questions • Subject: ${[...new Set(bulkQuestions.map(q=>q.subject))].join(", ")} • Total marks: ${total}. Review the selected draft and click Import all questions.`,"ok");$("importBulkBtn").disabled=false}
+ catch(err){msg("bulkPreview","Could not read this file: "+err.message,"err")}
+});
+$("importBulkBtn").addEventListener("click",async()=>{
+ const examId=$("questionExam").value;if(!examId){msg("bulkPreview","Choose a draft examination above before importing.","err");return}
+ const exam=exams.find(e=>String(e.id)===String(examId));if(!exam){msg("bulkPreview","Selected draft could not be found. Refresh examinations and try again.","err");return}
+ if(exam.status==="published"){msg("bulkPreview","This examination is published. Return it to draft before importing.","err");return}
+ if(!bulkQuestions.length)return;
+ if(!confirm(`Import ${bulkQuestions.length} questions into “${exam.title}”? Existing questions will remain.`))return;
+ const btn=$("importBulkBtn");btn.disabled=true;$("previewBulkBtn").disabled=true;
+ try{const result=await api("/api/admin/exams/"+encodeURIComponent(examId)+"/questions",{method:"POST",body:JSON.stringify({questions:bulkQuestions})});msg("bulkPreview",result.message||`${result.added||bulkQuestions.length} questions imported successfully.`,"ok");bulkQuestions=[];$("bulkQuestionFile").value="";await loadExams();$("questionExam").value=examId}
+ catch(err){msg("bulkPreview","Import failed: "+err.message,"err")}
+ finally{btn.disabled=true;$("previewBulkBtn").disabled=false}
+});
 $("resetQuestionBtn").addEventListener("click",()=>$("questionForm").reset());
 $("refreshBtn").addEventListener("click",async()=>{try{await loadExams();msg("listMsg","Examinations refreshed.","ok")}catch(err){msg("listMsg",err.message,"err")}});
 $("disconnectBtn").addEventListener("click",()=>{secret="";clearSavedSecret();exams=[];$("adminKey").value="";$("app").classList.add("hidden");$("loginCard").classList.remove("hidden");$("examList").replaceChildren();$("resultsArea").replaceChildren(safe("p","Choose “View results” on an examination to see attempts and scores.","muted"))});
