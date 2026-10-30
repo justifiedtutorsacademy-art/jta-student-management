@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#142b4a">
+<title>JTA | Examination Manager</title>
+<style>
+:root{--blue:#2457c5;--blue2:#173d91;--purple:#6336a5;--purple2:#7a4bc0;--bg:#f3f6ff;--panel:#fff;--text:#17233b;--muted:#68758c;--line:#e1e7f2;--green:#168454;--red:#c53c54}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
+header{background:linear-gradient(120deg,var(--blue2),var(--purple));color:#fff;padding:20px 0;box-shadow:0 5px 18px #283d8020}header .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px}h1{margin:0;font-size:clamp(20px,3vw,27px);font-weight:800}header p{margin:3px 0 0;color:#e2e8ff;font-size:13px}
+.wrap{width:min(1200px,calc(100% - 28px));margin:auto}main{padding:22px 0 45px}.card{background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:20px;margin-bottom:17px;box-shadow:0 8px 28px #233b7810}h2{font-size:19px;margin:0 0 5px}h3{font-size:16px}.muted,.hint{color:var(--muted);font-size:12px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field{margin:9px 0}.field.full{grid-column:1/-1}label{display:block;font-weight:700;margin-bottom:5px;font-size:12px}
+input,select,textarea{width:100%;border:1px solid #d5deed;border-radius:10px;padding:10px 11px;font:inherit;font-size:13px;background:#fff;color:var(--text);outline:none}input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px #2457c51a}textarea{min-height:78px;resize:vertical}
+.btn{border:0;border-radius:10px;padding:10px 14px;font-size:13px;font-weight:750;cursor:pointer;background:#edf1fb;color:var(--blue2);text-decoration:none;display:inline-flex;justify-content:center;align-items:center;gap:6px}.btn:hover{filter:brightness(.97)}.primary{background:linear-gradient(110deg,var(--blue),var(--purple));color:#fff}.success{background:#e3f6ed;color:#087044}.danger{background:#fff0f2;color:#b4233d}.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.row .btn{margin:2px 0}.status{padding:10px 12px;border-radius:10px;background:#eef2fb;margin-top:12px;font-size:12px;white-space:pre-wrap}.status.ok{background:#e7f7ef;color:#16643f}.status.err{background:#fff0f1;color:#9b1c1c}.hidden{display:none!important}
+.exam{border:1px solid var(--line);border-radius:13px;padding:15px;margin:12px 0;background:#fff}.exam h3{margin:0 0 5px}.tag{display:inline-block;border-radius:999px;background:#eef2ff;color:#43578a;padding:4px 9px;font-size:11px;margin:4px 4px 4px 0}.question-box{border:1px solid var(--line);padding:13px;border-radius:12px;margin:12px 0}.small{font-size:11px;color:var(--muted)}.divider{height:1px;background:var(--line);margin:18px 0}
+.admin-layout{display:grid;grid-template-columns:235px minmax(0,1fr);gap:18px;align-items:start}.sidebar{background:#fff;border:1px solid var(--line);border-radius:17px;padding:13px;position:sticky;top:12px;box-shadow:0 8px 28px #233b780d}.brand{font-weight:850;color:var(--blue2);padding:10px 11px 14px;font-size:17px}.navlink{display:flex;align-items:center;gap:11px;padding:12px;border-radius:11px;color:#46536c;text-decoration:none;font-weight:650;font-size:13px;margin:3px 0}.navlink.active,.navlink:hover{background:linear-gradient(100deg,#eaf0ff,#f1eaff);color:var(--blue2)}.navicon{width:23px;text-align:center;font-size:17px}.content{min-width:0}.page-heading{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:0 0 13px}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px;margin-bottom:16px}.stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px}.stat b{display:block;font-size:23px;color:var(--blue2)}.stat span{font-size:11px;color:var(--muted)}
+body[data-page="dashboard"] #uploadSection,body[data-page="dashboard"] #copySection,body[data-page="dashboard"] #resultsSection{display:none}body[data-page="upload"] #createSection,body[data-page="upload"] #copySection,body[data-page="upload"] #publishSection,body[data-page="upload"] #resultsSection{display:none}body[data-page="copy"] #createSection,body[data-page="copy"] #uploadSection,body[data-page="copy"] #publishSection,body[data-page="copy"] #resultsSection{display:none}body[data-page="publish"] #createSection,body[data-page="publish"] #uploadSection,body[data-page="publish"] #copySection,body[data-page="publish"] #resultsSection{display:none}body[data-page="results"] #createSection,body[data-page="results"] #uploadSection,body[data-page="results"] #copySection{display:none}
+@media(max-width:760px){.admin-layout{grid-template-columns:1fr}.sidebar{position:static;padding:9px}.brand{padding:4px 8px 8px}.navitems{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px}.navlink{padding:10px 8px;font-size:12px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.card{padding:15px}.btn{padding:10px 12px}}
+@media(max-width:480px){.grid{grid-template-columns:1fr}.field.full{grid-column:auto}.page-heading{align-items:flex-start;flex-direction:column}.stats{gap:8px}}
+</style>
+</head>
+<body data-page="upload">
+<header><div class="wrap"><div><h1>Justified Tutor's Academy</h1><p>Examination Management Portal</p></div><span style="font-size:12px;color:#e7eaff;font-weight:700">JTA • ADMIN</span></div></header>
+<main class="wrap">
+<section class="card" id="loginCard">
+<h2>Administrator access</h2><p class="muted">Use the same Cloudflare administrator secret as your existing admin dashboard. It stays in this page's memory only.</p>
+<form id="loginForm"><div class="field"><label for="adminKey">Administrator secret</label><input id="adminKey" type="password" autocomplete="current-password" required></div><button class="btn primary" id="connectBtn">Connect securely</button></form><div id="loginMsg" class="status hidden"></div>
+</section>
+<div id="app" class="hidden"><div class="admin-layout"><aside class="sidebar"><div class="brand">JTA EXAM MANAGER</div><nav class="navitems">
+<a class="navlink" data-nav="dashboard" href="exam-management.html"><span class="navicon">⌂</span>Dashboard</a>
+<a class="navlink" data-nav="upload" href="upload-questions.html"><span class="navicon">✎</span>Upload Questions</a>
+<a class="navlink" data-nav="publish" href="publish-exams.html"><span class="navicon">▣</span>Publish Exams</a>
+<a class="navlink" data-nav="copy" href="question-library.html"><span class="navicon">⇄</span>Copy / Move Questions</a>
+<a class="navlink" data-nav="results" href="exam-results.html"><span class="navicon">▤</span>Results</a>
+<a class="navlink" href="admin.html"><span class="navicon">←</span>Main Admin</a>
+</nav><div class="divider"></div><button class="btn danger" id="disconnectBtn" type="button" style="width:100%">Disconnect</button></aside><div class="content">
+<div class="page-heading"><div><h2 id="pageTitle">Dashboard</h2><p class="muted" id="pageDescription">Manage weekly JTA examinations from one place.</p></div><button class="btn" id="refreshBtn" type="button">↻ Refresh</button></div>
+<div class="stats" id="dashboardStats"><div class="stat"><b id="statTotal">—</b><span>Total examinations</span></div><div class="stat"><b id="statDraft">—</b><span>Draft examinations</span></div><div class="stat"><b id="statPublished">—</b><span>Published examinations</span></div><div class="stat"><b id="statQuestions">—</b><span>Questions uploaded</span></div></div>
+<section class="card" id="createSection">
+<div class="row" style="justify-content:space-between"><div><h2>Create an examination</h2><p class="muted">New exams are saved as drafts until you publish them.</p></div></div>
+<form id="examForm"><div class="grid">
+<div class="field"><label for="title">Exam title</label><input id="title" maxlength="160" required placeholder="e.g. JTA Week 1 Chemistry CBT"></div>
+<div class="field"><label for="department">Student group</label><select id="department" required><option value="Science">Science</option><option value="Arts">Arts</option><option value="Commercial">Commercial</option></select><p class="hint">Only students in the selected group should see this exam.</p></div>
+<div class="field"><label for="weekNumber">Academic week</label><select id="weekNumber" required><option value="1" selected>Week 1</option><option value="2">Week 2</option><option value="3">Week 3</option><option value="4">Week 4</option><option value="5">Week 5</option><option value="6">Week 6</option><option value="7">Week 7</option><option value="8">Week 8</option><option value="9">Week 9</option><option value="10">Week 10</option><option value="11">Week 11</option><option value="12">Week 12</option><option value="13">Week 13</option><option value="14">Week 14</option><option value="15">Week 15</option><option value="16">Week 16</option><option value="17">Week 17</option><option value="18">Week 18</option><option value="19">Week 19</option><option value="20">Week 20</option><option value="21">Week 21</option><option value="22">Week 22</option><option value="23">Week 23</option><option value="24">Week 24</option><option value="25">Week 25</option><option value="26">Week 26</option><option value="27">Week 27</option><option value="28">Week 28</option><option value="29">Week 29</option><option value="30">Week 30</option><option value="31">Week 31</option><option value="32">Week 32</option><option value="33">Week 33</option><option value="34">Week 34</option><option value="35">Week 35</option><option value="36">Week 36</option><option value="37">Week 37</option><option value="38">Week 38</option><option value="39">Week 39</option><option value="40">Week 40</option><option value="41">Week 41</option><option value="42">Week 42</option><option value="43">Week 43</option><option value="44">Week 44</option><option value="45">Week 45</option><option value="46">Week 46</option><option value="47">Week 47</option><option value="48">Week 48</option><option value="49">Week 49</option><option value="50">Week 50</option><option value="51">Week 51</option><option value="52">Week 52</option><option value="53">Week 53</option><option value="54">Week 54</option><option value="55">Week 55</option><option value="56">Week 56</option><option value="57">Week 57</option><option value="58">Week 58</option><option value="59">Week 59</option><option value="60">Week 60</option></select></div>
+<div class="field"><label for="examType">Exam type</label><select id="examType" required><option value="individual">Individual subject test</option><option value="combined">Combined weekly test</option></select></div>
+<div class="field"><label for="subject">Subject</label><select id="subject" required></select></div>
+<div class="field full"><label for="topics">Topics covered</label><input id="topics" maxlength="500" required placeholder="e.g. Water, hardness of water, purification"></div>
+<div class="field"><label for="duration">Duration (minutes)</label><input id="duration" type="number" min="1" max="600" value="30" required></div>
+<div class="field full"><label for="description">Instructions / description (optional)</label><textarea id="description" maxlength="2000" placeholder="Read every question carefully."></textarea></div>
+</div><button class="btn primary" id="createExamBtn">＋ Create draft examination</button></form><div id="examMsg" class="status hidden"></div>
+</section>
+<section class="card" id="uploadSection">
+<h2>Add questions</h2><p class="muted">Select a draft, enter one question at a time, and add more as needed. Options are saved in A, B, C… order.</p>
+<div class="field"><label for="questionExam">Draft examination</label><select id="questionExam"><option value="">Load exams first</option></select></div>
+<form id="questionForm"><div class="field"><label for="questionSubject">Question subject</label><select id="questionSubject" required><option>English Language</option><option>Mathematics</option><option>Physics</option><option>Chemistry</option><option>Biology</option><option>Literature in English</option><option>CRS</option><option>Government</option><option>IRS</option><option>Economics</option><option>Commerce</option><option>Accounting</option></select></div><div class="field"><label for="questionText">Question text</label><textarea id="questionText" required maxlength="4000"></textarea></div>
+<div class="grid">
+<div class="field"><label for="optA">Option A</label><input id="optA" required maxlength="1000"></div>
+<div class="field"><label for="optB">Option B</label><input id="optB" required maxlength="1000"></div>
+<div class="field"><label for="optC">Option C (optional)</label><input id="optC" maxlength="1000"></div>
+<div class="field"><label for="optD">Option D (optional)</label><input id="optD" maxlength="1000"></div>
+<div class="field"><label for="optE">Option E (optional)</label><input id="optE" maxlength="1000"></div>
+<div class="field"><label for="correct">Correct option</label><select id="correct"><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select></div>
+<div class="field"><label for="marks">Marks</label><input id="marks" type="number" min="0.1" max="100" step="0.1" value="1" required></div>
+</div><button class="btn primary" id="addQuestionBtn">Save question</button> <button class="btn" type="button" id="resetQuestionBtn">Clear question</button></form><div id="questionMsg" class="status hidden"></div>
+</section>
+<section class="card" id="copySection"><h2>Reuse questions from another examination</h2><p class="muted">Upload English or another subject once, then copy those saved questions into a different draft exam. The original questions remain unchanged; the destination gets its own copies.</p><div class="grid"><div class="field"><label for="copySource">Copy questions from</label><select id="copySource"><option value="">Load examinations first</option></select></div><div class="field"><label for="copySubject">Subject to copy</label><select id="copySubject"><option value="">All subjects in source exam</option><option>English Language</option><option>English</option><option>Mathematics</option><option>Physics</option><option>Chemistry</option><option>Biology</option><option>Literature in English</option><option>CRS</option><option>Government</option><option>IRS</option><option>Economics</option><option>Commerce</option><option>Accounting</option></select></div><div class="field"><label for="copyTarget">Copy into draft exam</label><select id="copyTarget"><option value="">Load examinations first</option></select></div></div><button class="btn primary" id="copyQuestionsBtn" type="button">Copy questions</button><div id="copyMsg" class="status hidden"></div></section>
+<section class="card" id="publishSection"><h2>Examinations</h2><p class="muted">Publish a draft only after adding and checking its questions. Published exams appear in the student CBT portal.</p><div id="examList"><p class="muted">Connect to load examinations.</p></div><div id="listMsg" class="status hidden"></div></section>
+<section class="card" id="resultsSection"><h2>Student results</h2><div id="resultsArea"><p class="muted">Choose “View results” on an examination to see attempts and scores.</p></div></section>
+<div class="row"><a class="btn" href="admin.html" style="text-decoration:none;text-align:center">← Back to admin dashboard</a></div>
+</div></div></div>
+</main>
+<script>
+(() => {
+"use strict";
+const API="https://jta-student-backend.justifiedtutorsacademy.workers.dev";
+let secret=sessionStorage.getItem("jta_exam_admin_key")||"", exams=[];
+const $=id=>document.getElementById(id);
+function msg(id,text,type=""){const e=$(id);e.textContent=text;e.className="status"+(type?" "+type:"");e.classList.remove("hidden")}
+async function api(path,options={}){const headers={"X-Admin-Key":secret,...(options.body?{"Content-Type":"application/json"}:{})};const r=await fetch(API+path,{...options,headers:{...headers,...(options.headers||{})}});const d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.error||"Request failed ("+r.status+")");return d}
+function safe(tag,text,className=""){const e=document.createElement(tag);e.textContent=text??"";if(className)e.className=className;return e}
+async function loadExams(){
+ const data=await api("/api/admin/exams");exams=Array.isArray(data.exams)?data.exams:[];if($("statTotal")){ $("statTotal").textContent=exams.length;$("statDraft").textContent=exams.filter(x=>x.status!=="published").length;$("statPublished").textContent=exams.filter(x=>x.status==="published").length;$("statQuestions").textContent=exams.reduce((n,x)=>n+Number(x.question_count||0),0);}
+ const select=$("questionExam");select.replaceChildren();const placeholder=safe("option","Choose a draft exam");placeholder.value="";select.append(placeholder);
+ exams.filter(e=>e.status!=="published").forEach(e=>{const o=safe("option",e.title+" — "+e.status);o.value=e.id;select.append(o)});
+ const sourceSelect=$("copySource"), targetSelect=$("copyTarget");
+ if(sourceSelect && targetSelect){ sourceSelect.replaceChildren(safe("option","Choose source exam")); targetSelect.replaceChildren(safe("option","Choose destination draft")); exams.forEach(e=>{const a=safe("option",e.title+" — "+e.department+" — "+e.status);a.value=e.id;sourceSelect.append(a); if(e.status!=="published"){const b=safe("option",e.title+" — "+e.department);b.value=e.id;targetSelect.append(b)}}); }
+
+ const list=$("examList");list.replaceChildren();
+ if(!exams.length){list.append(safe("p","No examinations yet. Create your first draft above.","muted"));return}
+ exams.forEach(e=>{
+  const card=safe("article","");card.className="exam";card.append(safe("h3",e.title));
+  card.append(safe("p",(e.description||"No description") ,"muted"));
+  const tags=safe("div","");tags.append(safe("span","Group: "+(e.department_group||e.department),"tag"),safe("span","Week: "+(e.week_number||1),"tag"),safe("span","Subject: "+(e.subject||"Not set"),"tag"),safe("span","Topics: "+(e.topics||"Not set"),"tag"),safe("span","Type: "+(e.exam_type||"individual"),"tag"),safe("span","Duration: "+e.duration_minutes+" min","tag"),safe("span","Questions: "+e.question_count,"tag"),safe("span","Attempts: "+e.attempt_count,"tag"),safe("span","Status: "+e.status,"tag"));card.append(tags);
+  const actions=safe("div","");actions.className="row";
+  if(e.status!=="published"){const pub=safe("button","Publish");pub.className="btn success";pub.type="button";pub.onclick=async()=>{if(!confirm("Publish “"+e.title+"” for students in "+e.department+"?"))return;pub.disabled=true;try{await api("/api/admin/exams/"+encodeURIComponent(e.id)+"/publish",{method:"POST"});msg("listMsg","Examination published.","ok");await loadExams()}catch(err){msg("listMsg",err.message,"err");pub.disabled=false}};actions.append(pub)}
+  else{const un=safe("button","Return to draft");un.className="btn";un.type="button";un.onclick=async()=>{if(!confirm("Return this exam to draft? Students will no longer see it in the published exam list."))return;try{await api("/api/admin/exams/"+encodeURIComponent(e.id)+"/unpublish",{method:"POST"});msg("listMsg","Examination returned to draft.","ok");await loadExams()}catch(err){msg("listMsg",err.message,"err")}};actions.append(un)}
+  const del=safe("button","Delete exam");del.className="btn danger";del.type="button";del.onclick=async()=>{const warning="Delete “"+e.title+"”? This permanently removes the exam, its questions, all student attempts, answers, and results. This cannot be undone.";if(!confirm(warning))return;del.disabled=true;try{const result=await api("/api/admin/exams/"+encodeURIComponent(e.id),{method:"DELETE"});msg("listMsg",result.message||"Examination deleted.","ok");await loadExams()}catch(err){msg("listMsg","Could not delete examination: "+err.message,"err");del.disabled=false}};actions.append(del);
+  const res=safe("button","View results");res.className="btn primary";res.type="button";res.onclick=()=>loadResults(e.id);actions.append(res);
+  if(e.status!=="published"){const add=safe("button","Add questions");add.className="btn";add.type="button";add.onclick=()=>{$("questionExam").value=e.id;$("questionText").focus();window.scrollTo({top:$("questionForm").getBoundingClientRect().top+window.scrollY-20,behavior:"smooth"})};actions.append(add)}
+  card.append(actions);list.append(card)
+ })
+}
+async function loadResults(id){
+ const area=$("resultsArea");area.replaceChildren(safe("p","Loading results…","muted"));
+ try{const data=await api("/api/admin/exams/"+encodeURIComponent(id)+"/results");area.replaceChildren(safe("h3",data.exam.title));
+ if(!data.results.length){area.append(safe("p","No attempts have been submitted for this examination yet.","muted"));return}
+ const table=document.createElement("div");table.style.overflowX="auto";const t=document.createElement("table");t.style.cssText="border-collapse:collapse;width:100%;min-width:580px";
+ const thead=document.createElement("thead"),tr=document.createElement("tr");["Student","JTA Code","Department","Score","Status","Started","Submitted"].forEach(x=>{const th=safe("th",x);th.style.cssText="text-align:left;padding:9px;border-bottom:1px solid #dce4ef";tr.append(th)});thead.append(tr);t.append(thead);
+ const tbody=document.createElement("tbody");data.results.forEach(r=>{const row=document.createElement("tr");[r.full_name||"Unknown student",r.student_code||"—",r.department||"—",(r.score??0)+" / "+(r.total_marks??0),r.status||"—",r.started_at||"—",r.submitted_at||"—"].forEach(x=>{const td=safe("td",String(x));td.style.cssText="padding:9px;border-bottom:1px solid #edf0f5;font-size:13px";row.append(td)});tbody.append(row)});t.append(tbody);table.append(t);area.append(table)
+ }catch(err){area.replaceChildren(safe("p","Could not load results: "+err.message,"status err"))}
+}
+$("loginForm").addEventListener("submit",async e=>{e.preventDefault();secret=$("adminKey").value.trim();$("connectBtn").disabled=true;try{await api("/api/admin/exams");sessionStorage.setItem("jta_exam_admin_key",secret);$("loginCard").classList.add("hidden");$("app").classList.remove("hidden");await loadExams()}catch(err){secret="";msg("loginMsg","Could not connect: "+err.message,"err")}finally{$("connectBtn").disabled=false}});
+
+const page=document.body.dataset.page||"dashboard";
+const titles={dashboard:["Dashboard","Overview of your JTA examination activity."],upload:["Upload Questions","Add and organise questions in examination drafts."],publish:["Publish Examinations","Review drafts and control what students can access."],copy:["Question Library","Copy questions from one examination into another draft."],results:["Results & Examination Records","Review attempts, scores and manage examination records."]};
+const heading=titles[page]||titles.dashboard;$("pageTitle").textContent=heading[0];$("pageDescription").textContent=heading[1];
+document.querySelectorAll("[data-nav]").forEach(a=>a.classList.toggle("active",a.dataset.nav===page));
+if(page!=="dashboard")$("dashboardStats").classList.add("hidden");
+if(secret){$("adminKey").value=secret;api("/api/admin/exams").then(()=>{$("loginCard").classList.add("hidden");$("app").classList.remove("hidden");return loadExams()}).catch(()=>{sessionStorage.removeItem("jta_exam_admin_key");secret=""})}
+const groupSubjects={
+ Science:["English","Mathematics","Physics","Chemistry","Biology"],
+ Arts:["English","Literature in English","CRS","Government","IRS","Economics"],
+ Commercial:["English","Mathematics","Economics","Government","Commerce","Accounting"]
+};
+function updateSubjects(){
+ const group=$("department").value, type=$("examType").value, sel=$("subject");
+ const current=sel.value; sel.replaceChildren();
+ const subjects=type==="combined"?["Combined weekly test"]:groupSubjects[group]||[];
+ subjects.forEach(s=>{const o=document.createElement("option");o.value=s;o.textContent=s;sel.append(o)});
+ if(subjects.includes(current))sel.value=current;
+}
+$("department").addEventListener("change",updateSubjects);
+$("examType").addEventListener("change",updateSubjects);
+updateSubjects();
+$("examForm").addEventListener("submit",async e=>{e.preventDefault();$("createExamBtn").disabled=true;try{const d=await api("/api/admin/exams",{method:"POST",body:JSON.stringify({title:$("title").value.trim(),description:$("description").value.trim(),department:$("department").value,week_number:Number($("weekNumber").value),exam_type:$("examType").value,subject:$("subject").value,topics:$("topics").value.trim(),duration_minutes:Number($("duration").value)})});$("examForm").reset();$("duration").value=30;msg("examMsg","Draft created: "+d.exam.title,"ok");await loadExams();$("questionExam").value=d.exam.id}catch(err){msg("examMsg",err.message,"err")}finally{$("createExamBtn").disabled=false}});
+$("questionForm").addEventListener("submit",async e=>{e.preventDefault();const examId=$("questionExam").value;if(!examId){msg("questionMsg","Choose a draft examination first.","err");return}const options=[$("optA").value,$("optB").value,$("optC").value,$("optD").value,$("optE").value].map(x=>x.trim()).filter(Boolean);const correct=$("correct").value;if("ABCDE".indexOf(correct)>=options.length){msg("questionMsg","Fill in the selected correct option before saving.","err");return}const body={subject:$("questionSubject").value,question_text:$("questionText").value.trim(),options,correct_answer:correct,marks:Number($("marks").value)};$("addQuestionBtn").disabled=true;try{const d=await api("/api/admin/exams/"+encodeURIComponent(examId)+"/questions",{method:"POST",body:JSON.stringify(body)});msg("questionMsg",d.message,"ok");$("questionForm").reset();$("marks").value=1;await loadExams();$("questionExam").value=examId}catch(err){msg("questionMsg",err.message,"err")}finally{$("addQuestionBtn").disabled=false}});
+$("copyQuestionsBtn").addEventListener("click",async()=>{const source=$("copySource").value,target=$("copyTarget").value,subject=$("copySubject").value;if(!source||!target){msg("copyMsg","Choose both a source examination and a destination draft.","err");return}if(source===target){msg("copyMsg","Choose two different examinations.","err");return}if(!confirm("Copy the selected questions into the destination draft? Existing questions will remain, and duplicates may be created."))return;const btn=$("copyQuestionsBtn");btn.disabled=true;try{const result=await api("/api/admin/exams/"+encodeURIComponent(target)+"/copy-questions",{method:"POST",body:JSON.stringify({source_exam_id:source,subject})});msg("copyMsg",result.message,"ok");await loadExams()}catch(err){msg("copyMsg","Could not copy questions: "+err.message,"err")}finally{btn.disabled=false}});
+$("resetQuestionBtn").addEventListener("click",()=>$("questionForm").reset());
+$("refreshBtn").addEventListener("click",async()=>{try{await loadExams();msg("listMsg","Examinations refreshed.","ok")}catch(err){msg("listMsg",err.message,"err")}});
+$("disconnectBtn").addEventListener("click",()=>{secret="";sessionStorage.removeItem("jta_exam_admin_key");exams=[];$("adminKey").value="";$("app").classList.add("hidden");$("loginCard").classList.remove("hidden");$("examList").replaceChildren();$("resultsArea").replaceChildren(safe("p","Choose “View results” on an examination to see attempts and scores.","muted"))});
+})();
+</script>
+</body></html>
