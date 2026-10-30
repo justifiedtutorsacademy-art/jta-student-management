@@ -3,917 +3,118 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#1050BD">
-<title>JTA CBT Examination</title>
- 
+<meta name="theme-color" content="#142b4a">
+<title>JTA | Examination Manager</title>
 <style>
-:root {
-  --primary: #1050BD;
-  --accent: #A653D8;
-  --background: #EAF6FC;
-  --white: #FFFFFF;
-  --text: #202B3C;
-  --muted: #68758A;
-  --border: #D7E5F2;
-  --success: #16794B;
-  --danger: #B42318;
-  --purple: #963CC8;
-}
- 
-* { box-sizing: border-box; }
- 
-body {
-  margin: 0;
-  background: var(--background);
-  color: var(--text);
-  font-family: Arial, sans-serif;
-  line-height: 1.5;
-}
- 
-header {
-  background: linear-gradient(135deg, #1050BD, #7438C6, #A653D8);
-  color: white;
-  padding: 28px 16px;
-  text-align: center;
-  border-bottom: 5px solid #C17BE5;
-}
- 
-header h1 {
-  margin: 0 0 7px;
-  font-size: 25px;
-}
- 
-header p { margin: 0; color: #F4E9FF; }
- 
-main {
-  width: min(950px, 100%);
-  margin: 24px auto;
-  padding: 0 14px 30px;
-}
- 
-.panel {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  padding: 22px;
-  margin-bottom: 18px;
-  box-shadow: 0 5px 18px rgba(16, 80, 189, 0.07);
-}
- 
-h2 { margin-top: 0; line-height: 1.3; color: #1050BD; }
-h3 { color: #29364A; }
- 
-button {
-  background: linear-gradient(135deg, #1050BD, #285FD0);
-  color: white;
-  border: 0;
-  padding: 12px 18px;
-  border-radius: 9px;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  margin: 5px 5px 5px 0;
-  min-height: 44px;
-}
- 
-button.secondary {
-  background: #F0E5FA;
-  color: #6330A3;
-  border: 1px solid #DCC1F0;
-}
- 
-button.warning {
-  background: linear-gradient(135deg, #8737B9, #B34FD6);
-}
- 
-button:disabled { opacity: .55; cursor: not-allowed; }
- 
-input[type="radio"] {
-  margin-right: 9px;
-  transform: scale(1.15);
-  accent-color: #1050BD;
-}
- 
-.option {
-  display: block;
-  background: #F7FBFF;
-  border: 1px solid #D7E5F2;
-  border-radius: 11px;
-  padding: 15px;
-  margin: 11px 0;
-  cursor: pointer;
-}
- 
-.option:has(input:checked) {
-  border-color: #1050BD;
-  background: #E7F0FF;
-}
- 
-.muted { color: var(--muted); }
- 
-.message {
-  padding: 14px;
-  border-radius: 10px;
-  background: #E8F3FF;
-  border: 1px solid #C8DDF9;
-  margin: 12px 0;
-  overflow-wrap: anywhere;
-}
- 
-.error { color: var(--danger); }
-.success { color: var(--success); }
- 
-.exam-top {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin-bottom: 18px;
-}
- 
-.question-number {
-  color: var(--purple);
-  font-size: 14px;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
- 
-#questionText {
-  white-space: pre-wrap;
-  line-height: 1.7;
-  overflow-wrap: anywhere;
-}
- 
-#examList button {
-  width: 100%;
-  text-align: left;
-  padding: 16px;
-}
- 
-#timer {
-  font-size: 22px;
-  font-weight: bold;
-  color: #1050BD;
-  background: #E7F0FF;
-  border-radius: 9px;
-  padding: 8px 12px;
-}
- 
-#timer.urgent {
-  color: #B42318;
-  background: #FEECEC;
-}
- 
-.hidden { display: none !important; }
- 
-.result-card {
-  border: 1px solid #D9C5EF;
-  border-radius: 15px;
-  padding: 20px;
-  margin: 16px 0;
-  background: linear-gradient(180deg, #FFFFFF, #FAF6FF);
-}
- 
-.result-score {
-  font-size: 19px;
-  font-weight: bold;
-  color: #1050BD;
-}
- 
-.jamb-score {
-  background: linear-gradient(135deg, #EAF4FF, #F5E9FF);
-  border: 1px solid #D5B9ED;
-  border-radius: 14px;
-  padding: 20px;
-  margin: 16px 0;
-}
- 
-.jamb-score .big-score {
-  font-size: clamp(32px, 7vw, 44px);
-  font-weight: bold;
-  color: #1050BD;
-  line-height: 1.25;
-}
- 
-.stat-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  margin: 16px 0;
-}
- 
-.stat {
-  background: #F4F8FF;
-  border: 1px solid #D9E5F5;
-  border-radius: 11px;
-  padding: 14px;
-  overflow-wrap: anywhere;
-}
- 
-.stat-label { font-size: 13px; color: var(--muted); }
- 
-.stat-value {
-  font-size: 19px;
-  font-weight: bold;
-  color: #1050BD;
-  margin-top: 4px;
-}
- 
-.progress-track {
-  width: 100%;
-  height: 11px;
-  border-radius: 99px;
-  background: #E1D5EF;
-  overflow: hidden;
-  margin: 12px 0;
-}
- 
-.progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #1050BD, #A653D8);
-  width: 0;
-  border-radius: 99px;
-}
- 
-.disclaimer { color: var(--muted); font-size: 13px; }
- 
-footer {
-  text-align: center;
-  color: #65748A;
-  font-size: 13px;
-  padding: 22px 16px;
-  background: #E1F1FC;
-  border-top: 1px solid #D3E6F5;
-}
- 
-@media (max-width: 480px) {
-  header h1 { font-size: 21px; }
-  .panel { padding: 16px; border-radius: 14px; }
-  .stat-grid { grid-template-columns: 1fr 1fr; }
-}
- 
-.subject-picker { border:1px solid var(--border); border-radius:12px; padding:14px; margin:12px 0; background:#F7FBFF; }
-.subject-choice { display:flex; align-items:center; gap:10px; padding:11px; border:1px solid var(--border); border-radius:9px; margin:8px 0; background:white; }
-.subject-choice input { width:18px; height:18px; }
+:root{--navy:#142b4a;--navy2:#203f68;--blue:#2459a9;--gold:#e6b84b;--bg:#f3f6fb;--text:#172438;--muted:#64748b;--border:#dce4ef;--green:#16794b;--red:#b42332}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
+header{background:linear-gradient(125deg,var(--navy),var(--navy2));color:#fff;border-bottom:5px solid var(--gold);padding:20px 0}
+.wrap{width:min(1050px,calc(100% - 28px));margin:auto}h1{margin:0;font-size:clamp(21px,4vw,29px)}header p{margin:5px 0 0;color:#dbe7f7}
+main{padding:22px 0 45px}.card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:18px;box-shadow:0 10px 26px #142b4a0b}
+h2{font-size:20px;margin:0 0 5px}.muted,.hint{color:var(--muted);font-size:13px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.field{margin:10px 0}.field.full{grid-column:1/-1}label{display:block;font-weight:700;margin-bottom:5px;font-size:13px}
+input,select,textarea{width:100%;border:1px solid #cbd5e1;border-radius:9px;padding:11px;font:inherit;background:#fff}textarea{min-height:78px;resize:vertical}
+.btn{border:0;border-radius:10px;padding:11px 15px;font-weight:750;cursor:pointer;background:#e8eef7;color:var(--navy)}.primary{background:var(--blue);color:#fff}.success{background:#16794b;color:#fff}.danger{background:#b42332;color:#fff}.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.row .btn{margin:2px 0}.status{padding:10px 12px;border-radius:9px;background:#eef2f7;margin-top:12px;font-size:13px;white-space:pre-wrap}.status.ok{background:#e6f6ee;color:#16643f}.status.err{background:#fff0f0;color:#9b1c1c}.hidden{display:none!important}
+.exam{border:1px solid var(--border);border-radius:12px;padding:15px;margin:12px 0}.exam h3{margin:0 0 5px}.tag{display:inline-block;border-radius:999px;background:#eef2f7;padding:4px 9px;font-size:12px;margin:4px 4px 4px 0}.question-box{border:1px solid var(--border);padding:13px;border-radius:12px;margin:12px 0}.question-box h4{margin:0 0 8px}.question-box .grid{gap:8px}.small{font-size:12px;color:var(--muted)}.divider{height:1px;background:var(--border);margin:18px 0}
+@media(max-width:650px){.grid{grid-template-columns:1fr}.field.full{grid-column:auto}.card{padding:15px}.btn{width:100%}.row{align-items:stretch}.row .btn{flex:1}}
 </style>
 </head>
- 
 <body>
-<header>
-  <h1>Justified Tutor's Academy</h1>
-  <p>Computer-Based Test (CBT) Portal</p>
-</header>
- 
-<main>
-  <div id="notice" class="message hidden" role="status" aria-live="polite"></div>
- 
-  <section id="homePanel" class="panel">
-    <h2>Available Examinations</h2>
-    <p class="muted">
-      Select an available examination. Read each question carefully
-      and submit your answers before time expires.
-    </p>
- 
-    <button id="loadExamsBtn" type="button">Load Examinations</button>
-    <button id="loadResultsBtn" type="button" class="secondary">My Results</button>
- 
-    <div id="examList" style="margin-top:18px">
-      <p class="muted">Tap "Load Examinations" to begin.</p>
-    </div>
-  </section>
- 
-  <section id="examPanel" class="panel hidden">
-    <div class="exam-top">
-      <div>
-        <h2 id="examTitle">Examination</h2>
-        <div id="questionProgress" class="muted"></div>
-      </div>
-      <div>
-        <div class="muted">Time remaining</div>
-        <div id="timer">--:--</div>
-      </div>
-    </div>
- 
-    <hr style="border:0;border-top:1px solid var(--border)">
- 
-    <div id="questionArea">
-      <div id="questionNumber" class="question-number"></div>
-      <h3 id="questionText"></h3>
-      <div id="options"></div>
-    </div>
- 
-    <div style="margin-top:20px">
-      <button id="previousBtn" class="secondary" type="button">Previous</button>
-      <button id="nextBtn" type="button">Next</button>
-      <button id="submitBtn" class="warning" type="button">Submit Examination</button>
-    </div>
- 
-    <p class="muted">
-      Your answers are held on this page until submitted. Avoid refreshing
-      or closing the page during an examination.
-    </p>
-  </section>
- 
-  <section id="resultsPanel" class="panel hidden">
-    <h2>My Examination Results</h2>
-    <p class="muted">Review your raw marks, percentage and estimated score out of 400.</p>
-    <div id="resultsList"></div>
-    <button id="backBtn" type="button" class="secondary">Back to Examinations</button>
-  </section>
+<header><div class="wrap"><h1>JTA Examination Manager</h1><p>Create, edit, publish and review CBT examinations.</p></div></header>
+<main class="wrap">
+<section class="card" id="loginCard">
+<h2>Administrator access</h2><p class="muted">Use the same Cloudflare administrator secret as your existing admin dashboard. It stays in this page's memory only.</p>
+<form id="loginForm"><div class="field"><label for="adminKey">Administrator secret</label><input id="adminKey" type="password" autocomplete="current-password" required></div><button class="btn primary" id="connectBtn">Connect securely</button></form><div id="loginMsg" class="status hidden"></div>
+</section>
+<div id="app" class="hidden">
+<section class="card">
+<div class="row" style="justify-content:space-between"><div><h2>Create an examination</h2><p class="muted">New exams are saved as drafts until you publish them.</p></div><button class="btn" id="refreshBtn" type="button">Refresh exams</button></div>
+<form id="examForm"><div class="grid">
+<div class="field"><label for="title">Exam title</label><input id="title" maxlength="160" required placeholder="e.g. JTA Week 1 Chemistry CBT"></div>
+<div class="field"><label for="department">Student group</label><select id="department" required><option value="Science">Science</option><option value="Arts">Arts</option><option value="Commercial">Commercial</option></select><p class="hint">Only students in the selected group should see this exam.</p></div>
+<div class="field"><label for="weekNumber">Academic week</label><select id="weekNumber" required><option value="1" selected>Week 1</option><option value="2">Week 2</option><option value="3">Week 3</option><option value="4">Week 4</option><option value="5">Week 5</option><option value="6">Week 6</option><option value="7">Week 7</option><option value="8">Week 8</option><option value="9">Week 9</option><option value="10">Week 10</option><option value="11">Week 11</option><option value="12">Week 12</option><option value="13">Week 13</option><option value="14">Week 14</option><option value="15">Week 15</option><option value="16">Week 16</option><option value="17">Week 17</option><option value="18">Week 18</option><option value="19">Week 19</option><option value="20">Week 20</option><option value="21">Week 21</option><option value="22">Week 22</option><option value="23">Week 23</option><option value="24">Week 24</option><option value="25">Week 25</option><option value="26">Week 26</option><option value="27">Week 27</option><option value="28">Week 28</option><option value="29">Week 29</option><option value="30">Week 30</option><option value="31">Week 31</option><option value="32">Week 32</option><option value="33">Week 33</option><option value="34">Week 34</option><option value="35">Week 35</option><option value="36">Week 36</option><option value="37">Week 37</option><option value="38">Week 38</option><option value="39">Week 39</option><option value="40">Week 40</option><option value="41">Week 41</option><option value="42">Week 42</option><option value="43">Week 43</option><option value="44">Week 44</option><option value="45">Week 45</option><option value="46">Week 46</option><option value="47">Week 47</option><option value="48">Week 48</option><option value="49">Week 49</option><option value="50">Week 50</option><option value="51">Week 51</option><option value="52">Week 52</option><option value="53">Week 53</option><option value="54">Week 54</option><option value="55">Week 55</option><option value="56">Week 56</option><option value="57">Week 57</option><option value="58">Week 58</option><option value="59">Week 59</option><option value="60">Week 60</option></select></div>
+<div class="field"><label for="examType">Exam type</label><select id="examType" required><option value="individual">Individual subject test</option><option value="combined">Combined weekly test</option></select></div>
+<div class="field"><label for="subject">Subject</label><select id="subject" required></select></div>
+<div class="field full"><label for="topics">Topics covered</label><input id="topics" maxlength="500" required placeholder="e.g. Water, hardness of water, purification"></div>
+<div class="field"><label for="duration">Duration (minutes)</label><input id="duration" type="number" min="1" max="600" value="30" required></div>
+<div class="field full"><label for="description">Instructions / description (optional)</label><textarea id="description" maxlength="2000" placeholder="Read every question carefully."></textarea></div>
+</div><button class="btn primary" id="createExamBtn">＋ Create draft examination</button></form><div id="examMsg" class="status hidden"></div>
+</section>
+<section class="card">
+<h2>Add questions</h2><p class="muted">Select a draft, enter one question at a time, and add more as needed. Options are saved in A, B, C… order.</p>
+<div class="field"><label for="questionExam">Draft examination</label><select id="questionExam"><option value="">Load exams first</option></select></div>
+<form id="questionForm"><div class="field"><label for="questionText">Question text</label><textarea id="questionText" required maxlength="4000"></textarea></div>
+<div class="grid">
+<div class="field"><label for="optA">Option A</label><input id="optA" required maxlength="1000"></div>
+<div class="field"><label for="optB">Option B</label><input id="optB" required maxlength="1000"></div>
+<div class="field"><label for="optC">Option C (optional)</label><input id="optC" maxlength="1000"></div>
+<div class="field"><label for="optD">Option D (optional)</label><input id="optD" maxlength="1000"></div>
+<div class="field"><label for="optE">Option E (optional)</label><input id="optE" maxlength="1000"></div>
+<div class="field"><label for="correct">Correct option</label><select id="correct"><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select></div>
+<div class="field"><label for="marks">Marks</label><input id="marks" type="number" min="0.1" max="100" step="0.1" value="1" required></div>
+</div><button class="btn primary" id="addQuestionBtn">Save question</button> <button class="btn" type="button" id="resetQuestionBtn">Clear question</button></form><div id="questionMsg" class="status hidden"></div>
+</section>
+<section class="card"><h2>Examinations</h2><p class="muted">Publish a draft only after adding and checking its questions. Published exams appear in the student CBT portal.</p><div id="examList"><p class="muted">Connect to load examinations.</p></div><div id="listMsg" class="status hidden"></div></section>
+<section class="card"><h2>Student results</h2><div id="resultsArea"><p class="muted">Choose “View results” on an examination to see attempts and scores.</p></div></section>
+<div class="row"><a class="btn" href="admin.html" style="text-decoration:none;text-align:center">← Back to admin dashboard</a><button class="btn danger" id="disconnectBtn">Disconnect</button></div>
+</div>
 </main>
- 
-<footer>Justified Tutor's Academy · JTA CBT</footer>
- 
 <script>
+(() => {
 "use strict";
- 
-const API = "https://jta-student-backend.justifiedtutorsacademy.workers.dev";
- 
-const $ = id => document.getElementById(id);
- 
-let currentExam = null;
-let questions = [];
-let answers = {};
-let currentIndex = 0;
-let deadline = null;
-let timerInterval = null;
-let submitting = false;
- 
-function getToken() {
-  return sessionStorage.getItem("jta_student_token");
+const API="https://jta-student-backend.justifiedtutorsacademy.workers.dev";
+let secret="", exams=[];
+const $=id=>document.getElementById(id);
+function msg(id,text,type=""){const e=$(id);e.textContent=text;e.className="status"+(type?" "+type:"");e.classList.remove("hidden")}
+async function api(path,options={}){const headers={"X-Admin-Key":secret,...(options.body?{"Content-Type":"application/json"}:{})};const r=await fetch(API+path,{...options,headers:{...headers,...(options.headers||{})}});const d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.error||"Request failed ("+r.status+")");return d}
+function safe(tag,text,className=""){const e=document.createElement(tag);e.textContent=text??"";if(className)e.className=className;return e}
+async function loadExams(){
+ const data=await api("/api/admin/exams");exams=Array.isArray(data.exams)?data.exams:[];
+ const select=$("questionExam");select.replaceChildren();const placeholder=safe("option","Choose a draft exam");placeholder.value="";select.append(placeholder);
+ exams.filter(e=>e.status!=="published").forEach(e=>{const o=safe("option",e.title+" — "+e.status);o.value=e.id;select.append(o)});
+ const list=$("examList");list.replaceChildren();
+ if(!exams.length){list.append(safe("p","No examinations yet. Create your first draft above.","muted"));return}
+ exams.forEach(e=>{
+  const card=safe("article","");card.className="exam";card.append(safe("h3",e.title));
+  card.append(safe("p",(e.description||"No description") ,"muted"));
+  const tags=safe("div","");tags.append(safe("span","Group: "+(e.department_group||e.department),"tag"),safe("span","Week: "+(e.week_number||1),"tag"),safe("span","Subject: "+(e.subject||"Not set"),"tag"),safe("span","Topics: "+(e.topics||"Not set"),"tag"),safe("span","Type: "+(e.exam_type||"individual"),"tag"),safe("span","Duration: "+e.duration_minutes+" min","tag"),safe("span","Questions: "+e.question_count,"tag"),safe("span","Attempts: "+e.attempt_count,"tag"),safe("span","Status: "+e.status,"tag"));card.append(tags);
+  const actions=safe("div","");actions.className="row";
+  if(e.status!=="published"){const pub=safe("button","Publish");pub.className="btn success";pub.type="button";pub.onclick=async()=>{if(!confirm("Publish “"+e.title+"” for students in "+e.department+"?"))return;pub.disabled=true;try{await api("/api/admin/exams/"+encodeURIComponent(e.id)+"/publish",{method:"POST"});msg("listMsg","Examination published.","ok");await loadExams()}catch(err){msg("listMsg",err.message,"err");pub.disabled=false}};actions.append(pub)}
+  else{const un=safe("button","Return to draft");un.className="btn";un.type="button";un.onclick=async()=>{if(!confirm("Return this exam to draft? Students will no longer see it in the published exam list."))return;try{await api("/api/admin/exams/"+encodeURIComponent(e.id)+"/unpublish",{method:"POST"});msg("listMsg","Examination returned to draft.","ok");await loadExams()}catch(err){msg("listMsg",err.message,"err")}};actions.append(un)}
+  const res=safe("button","View results");res.className="btn primary";res.type="button";res.onclick=()=>loadResults(e.id);actions.append(res);
+  if(e.status!=="published"){const add=safe("button","Add questions");add.className="btn";add.type="button";add.onclick=()=>{$("questionExam").value=e.id;$("questionText").focus();window.scrollTo({top:$("questionForm").getBoundingClientRect().top+window.scrollY-20,behavior:"smooth"})};actions.append(add)}
+  card.append(actions);list.append(card)
+ })
 }
- 
-function showNotice(message, isError = false) {
-  const el = $("notice");
-  el.textContent = message;
-  el.classList.remove("hidden", "error", "success");
-  el.classList.add(isError ? "error" : "success");
+async function loadResults(id){
+ const area=$("resultsArea");area.replaceChildren(safe("p","Loading results…","muted"));
+ try{const data=await api("/api/admin/exams/"+encodeURIComponent(id)+"/results");area.replaceChildren(safe("h3",data.exam.title));
+ if(!data.results.length){area.append(safe("p","No attempts have been submitted for this examination yet.","muted"));return}
+ const table=document.createElement("div");table.style.overflowX="auto";const t=document.createElement("table");t.style.cssText="border-collapse:collapse;width:100%;min-width:580px";
+ const thead=document.createElement("thead"),tr=document.createElement("tr");["Student","JTA Code","Department","Score","Status","Started","Submitted"].forEach(x=>{const th=safe("th",x);th.style.cssText="text-align:left;padding:9px;border-bottom:1px solid #dce4ef";tr.append(th)});thead.append(tr);t.append(thead);
+ const tbody=document.createElement("tbody");data.results.forEach(r=>{const row=document.createElement("tr");[r.full_name||"Unknown student",r.student_code||"—",r.department||"—",(r.score??0)+" / "+(r.total_marks??0),r.status||"—",r.started_at||"—",r.submitted_at||"—"].forEach(x=>{const td=safe("td",String(x));td.style.cssText="padding:9px;border-bottom:1px solid #edf0f5;font-size:13px";row.append(td)});tbody.append(row)});t.append(tbody);table.append(t);area.append(table)
+ }catch(err){area.replaceChildren(safe("p","Could not load results: "+err.message,"status err"))}
 }
- 
-function clearNotice() {
-  $("notice").classList.add("hidden");
+$("loginForm").addEventListener("submit",async e=>{e.preventDefault();secret=$("adminKey").value.trim();$("connectBtn").disabled=true;try{await api("/api/admin/exams");$("loginCard").classList.add("hidden");$("app").classList.remove("hidden");await loadExams()}catch(err){secret="";msg("loginMsg","Could not connect: "+err.message,"err")}finally{$("connectBtn").disabled=false}});
+const groupSubjects={
+ Science:["English","Mathematics","Physics","Chemistry","Biology"],
+ Arts:["English","Literature in English","CRS","Government","IRS","Economics"],
+ Commercial:["English","Mathematics","Economics","Government","Commerce","Accounting"]
+};
+function updateSubjects(){
+ const group=$("department").value, type=$("examType").value, sel=$("subject");
+ const current=sel.value; sel.replaceChildren();
+ const subjects=type==="combined"?["Combined weekly test"]:groupSubjects[group]||[];
+ subjects.forEach(s=>{const o=document.createElement("option");o.value=s;o.textContent=s;sel.append(o)});
+ if(subjects.includes(current))sel.value=current;
 }
- 
-function showPanel(name) {
-  ["homePanel", "examPanel", "resultsPanel"].forEach(id => {
-    $(id).classList.toggle("hidden", id !== name);
-  });
-}
- 
-async function api(path, options = {}) {
-  const token = getToken();
- 
-  if (!token) {
-    throw new Error("Your login session was not found. Please log in first.");
-  }
- 
-  const headers = {
-    "Authorization": "Bearer " + token,
-    ...(options.body ? {"Content-Type": "application/json"} : {}),
-    ...(options.headers || {})
-  };
- 
-  const response = await fetch(API + path, {...options, headers});
-  const text = await response.text();
-  let data = {};
- 
-  try {
-    data = text ? JSON.parse(text) : {};
-  } catch {
-    throw new Error("The server returned an unexpected response.");
-  }
- 
-  if (!response.ok) {
-    throw new Error(data.error || data.message || ("Request failed: " + response.status));
-  }
- 
-  return data;
-}
- 
-function unwrapList(data, keys) {
-  if (Array.isArray(data)) return data;
-  for (const key of keys) {
-    if (Array.isArray(data[key])) return data[key];
-  }
-  return [];
-}
- 
-function getExamId(exam) {
-  return exam.id ?? exam.exam_id ?? exam.examId;
-}
- 
-function getExamTitle(exam) {
-  return exam.title || exam.name || exam.exam_title || "JTA Examination";
-}
- 
-function getTotalMarks(result) {
-  const value = Number(
-    result.total_marks ?? result.max_score ??
-    result.totalMarks ?? result.maxScore
-  );
-  return Number.isFinite(value) && value > 0 ? value : null;
-}
- 
-function getRawScore(result) {
-  const value = Number(result.score ?? result.total_score ?? result.marks);
-  return Number.isFinite(value) ? value : null;
-}
- 
-function formatDate(value) {
-  if (!value) return "Not available";
-  return String(value);
-}
- 
-function addStat(grid, label, value) {
-  const box = document.createElement("div");
-  box.className = "stat";
- 
-  const caption = document.createElement("div");
-  caption.className = "stat-label";
-  caption.textContent = label;
- 
-  const number = document.createElement("div");
-  number.className = "stat-value";
-  number.textContent = value;
- 
-  box.append(caption, number);
-  grid.appendChild(box);
-}
- 
-function renderResultCard(result) {
-  const item = document.createElement("article");
-  item.className = "result-card";
- 
-  const title = document.createElement("h3");
-  title.textContent = result.exam_title || result.title ||
-    result.exam_name || getExamTitle(currentExam || {});
-  item.appendChild(title);
- 
-  const rawScore = getRawScore(result);
-  const totalMarks = getTotalMarks(result);
- 
-  if (rawScore === null) {
-    const message = document.createElement("p");
-    message.textContent = "The score is not available from the server.";
-    item.appendChild(message);
-  } else {
-    const scoreLine = document.createElement("p");
-    scoreLine.className = "result-score";
-    scoreLine.textContent = totalMarks !== null
-      ? `Raw score: ${rawScore}/${totalMarks}`
-      : `Raw score: ${rawScore}`;
-    item.appendChild(scoreLine);
- 
-    if (totalMarks !== null) {
-      const percentage = Math.max(0, Math.min(100, rawScore / totalMarks * 100));
-      const estimated = Math.round(percentage * 4);
- 
-      const hero = document.createElement("div");
-      hero.className = "jamb-score";
- 
-      const caption = document.createElement("p");
-      caption.className = "muted";
-      caption.textContent = "ESTIMATED JAMB-STYLE SCORE";
- 
-      const big = document.createElement("div");
-      big.className = "big-score";
-      big.textContent = `${estimated}/400`;
- 
-      const percentText = document.createElement("p");
-      percentText.textContent = `Percentage: ${percentage.toFixed(1)}%`;
- 
-      const track = document.createElement("div");
-      track.className = "progress-track";
-      track.setAttribute("role", "progressbar");
-      track.setAttribute("aria-label", "Examination percentage");
-      track.setAttribute("aria-valuemin", "0");
-      track.setAttribute("aria-valuemax", "100");
-      track.setAttribute("aria-valuenow", percentage.toFixed(1));
- 
-      const fill = document.createElement("div");
-      fill.className = "progress-fill";
-      fill.style.width = percentage + "%";
-      track.appendChild(fill);
- 
-      const disclaimer = document.createElement("p");
-      disclaimer.className = "disclaimer";
-      disclaimer.textContent =
-        "This is a practice estimate based on your percentage, not an official JAMB UTME score.";
- 
-      hero.append(caption, big, percentText, track, disclaimer);
-      item.appendChild(hero);
- 
-      const grid = document.createElement("div");
-      grid.className = "stat-grid";
-      addStat(grid, "Raw marks", `${rawScore}/${totalMarks}`);
-      addStat(grid, "Percentage", `${percentage.toFixed(1)}%`);
-      addStat(grid, "Estimated score", `${estimated}/400`);
-      addStat(grid, "Status", result.status || "Submitted");
-      item.appendChild(grid);
-    } else {
-      const note = document.createElement("p");
-      note.className = "disclaimer";
-      note.textContent =
-        "The server did not return total marks. The score out of 400 cannot be calculated until the results API includes total_marks.";
-      item.appendChild(note);
-    }
-  }
- 
-  const date = document.createElement("p");
-  date.className = "muted";
-  date.textContent = "Submitted: " + formatDate(
-    result.submitted_at || result.submittedAt || result.taken_at
-  );
-  item.appendChild(date);
- 
-  return item;
-}
- 
-async function loadExams() {
-  clearNotice();
-  $("loadExamsBtn").disabled = true;
-  $("examList").textContent = "Loading examinations...";
- 
-  try {
-    const data = await api("/api/exams");
-    const exams = unwrapList(data, ["exams", "data", "results"]);
-    $("examList").replaceChildren();
- 
-    if (!exams.length) {
-      $("examList").textContent =
-        "No published examinations are available for your department yet.";
-      return;
-    }
- 
-    exams.forEach(exam => {
-      const card = document.createElement("div");
-      card.className = "panel";
- 
-      const title = document.createElement("h3");
-      title.textContent = getExamTitle(exam);
-      card.appendChild(title);
- 
-      const details = document.createElement("p");
-      details.className = "muted";
- 
-      const duration = Number(exam.duration_minutes ?? exam.durationMinutes);
-      const total = Number(exam.total_questions ?? exam.question_count);
- 
-      details.textContent = [
-        Number.isFinite(duration) && duration > 0 ? duration + " minutes" : "",
-        Number.isFinite(total) && total > 0 ? total + " questions" : "",
-        exam.department || ""
-      ].filter(Boolean).join(" · ") || "Online examination";
- 
-      card.appendChild(details);
- 
-      const start = document.createElement("button");
-      start.type = "button";
-      start.textContent = "Start Examination";
-      start.addEventListener("click", () => startExam(exam));
-      card.appendChild(start);
- 
-      $("examList").appendChild(card);
-    });
-  } catch (error) {
-    $("examList").textContent = error.message;
-    showNotice(error.message, true);
-  } finally {
-    $("loadExamsBtn").disabled = false;
-  }
-}
- 
-function normalizeQuestions(data) {
-  const list = unwrapList(data, ["questions", "data"]);
- 
-  return list.map((q, index) => ({
-    id: q.id ?? q.question_id ?? q.questionId ?? String(index + 1),
-    text: q.question ?? q.text ?? q.question_text ?? q.prompt ?? "",
-    options: q.options ?? q.options_json ?? q.choices ?? [],
-    subject: q.subject || ""
-  }));
-}
- 
-function allowedSubjectsForGroup(group) {
-  const value = String(group || "").trim().toLowerCase();
-  if (["science", "medical", "medicals", "engineering", "pure science"].includes(value))
-    return ["English Language", "Mathematics", "Physics", "Chemistry", "Biology"];
-  if (["arts", "art", "law and pure arts", "eng lit econs govt", "irs", "irs students", "irs students only"].includes(value))
-    return ["English Language", "Literature in English", "CRS", "Government", "IRS", "Economics"];
-  if (["commercial", "commercial 1", "commercial 2", "commerce"].includes(value))
-    return ["English Language", "Mathematics", "Economics", "Government", "Commerce", "Accounting"];
-  return [];
-}
- 
-async function chooseFourSubjects(exam) {
-  const group = exam.department || window.currentStudentDepartment || "";
-  const allowed = allowedSubjectsForGroup(group);
-  if (!allowed.length) throw new Error("Your department group could not be identified. Please contact JTA.");
-  const available = Array.isArray(exam.available_subjects) && exam.available_subjects.length
-    ? allowed.filter(s => exam.available_subjects.includes(s)) : allowed;
-  return new Promise(resolve => {
-    const overlay = document.createElement("div");
-    overlay.style.cssText = "position:fixed;inset:0;background:rgba(10,25,45,.65);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;";
-    const panel = document.createElement("div");
-    panel.className = "panel";
-    panel.style.cssText = "width:min(520px,100%);max-height:90vh;overflow:auto;margin:0;";
-    const heading = document.createElement("h2"); heading.textContent = "Choose exactly 4 subjects";
-    const note = document.createElement("p"); note.className = "muted"; note.textContent = "Select four subjects for this attempt. You can choose a different combination next time.";
-    const counter = document.createElement("p"); counter.setAttribute("aria-live","polite"); counter.textContent = "0 of 4 selected";
-    const choices = document.createElement("div");
-    const checks = [];
-    available.forEach(subject => {
-      const label = document.createElement("label"); label.className = "subject-choice";
-      const input = document.createElement("input"); input.type = "checkbox"; input.value = subject;
-      input.addEventListener("change", () => {
-        const checked = checks.filter(x => x.checked);
-        if (checked.length > 4) input.checked = false;
-        const count = checks.filter(x => x.checked).length;
-        counter.textContent = count + " of 4 selected";
-        checks.forEach(x => { if (!x.checked) x.disabled = count === 4; });
-        if (count < 4) checks.forEach(x => x.disabled = false);
-        ok.disabled = count !== 4;
-      });
-      checks.push(input);
-      const text = document.createElement("span"); text.textContent = subject;
-      label.append(input,text); choices.appendChild(label);
-    });
-    const actions = document.createElement("div");
-    const cancel = document.createElement("button"); cancel.type = "button"; cancel.className = "secondary"; cancel.textContent = "Cancel";
-    const ok = document.createElement("button"); ok.type = "button"; ok.textContent = "Continue"; ok.disabled = true;
-    cancel.addEventListener("click", () => { overlay.remove(); resolve(null); });
-    ok.addEventListener("click", () => { const selected = checks.filter(x=>x.checked).map(x=>x.value); overlay.remove(); resolve(selected); });
-    actions.append(cancel,ok); panel.append(heading,note,counter,choices,actions); overlay.appendChild(panel); document.body.appendChild(overlay);
-  });
-}
- 
-async function startExam(examOrId) {
-  const examObject = typeof examOrId === "object" && examOrId !== null ? examOrId : { id: examOrId };
-  const id = getExamId(examObject);
-  if (id === undefined || id === null || id === "") {
-    showNotice("This examination has no valid ID. Please contact the academy.", true);
-    return;
-  }
- 
-  let selectedSubjects = [];
-  if (String(examObject.exam_type || "").toLowerCase() === "combined") {
-    selectedSubjects = await chooseFourSubjects(examObject);
-    if (!selectedSubjects) return;
-  }
-  if (!confirm("Start this examination now? Follow the time limit carefully.")) return;
- 
-  clearNotice();
-  showNotice("Starting examination...");
- 
-  try {
-    const data = await api(
-      "/api/exams/" + encodeURIComponent(id) + "/start",
-      {method: "POST", body: JSON.stringify({subjects: selectedSubjects})}
-    );
- 
-    if (data.expired) {
-      showNotice("The time for this examination has expired.", true);
-      return;
-    }
- 
-    currentExam = data.exam || data;
-    questions = normalizeQuestions(data);
-    answers = {};
-    currentIndex = 0;
-    submitting = false;
- 
-    if (!questions.length) {
-      throw new Error("The server did not return any questions. Please check the backend.");
-    }
- 
-    const duration = Number(
-      data.duration_minutes ?? data.durationMinutes ??
-      currentExam.duration_minutes ?? currentExam.durationMinutes
-    );
- 
-    const endTime = data.deadline || data.deadline_at || data.ends_at || data.endTime;
- 
-    if (endTime) {
-      deadline = new Date(endTime).getTime();
-    } else if (Number.isFinite(duration) && duration > 0) {
-      deadline = Date.now() + duration * 60000;
-    } else {
-      deadline = null;
-    }
- 
-    $("examTitle").textContent = getExamTitle(currentExam);
-    showPanel("examPanel");
-    clearNotice();
-    renderQuestion();
-    startTimer();
-  } catch (error) {
-    showNotice(error.message, true);
-  }
-}
- 
-function renderQuestion() {
-  if (!questions.length) return;
- 
-  const q = questions[currentIndex];
-  $("questionNumber").textContent =
-    `Question ${currentIndex + 1} of ${questions.length}`;
-  $("questionProgress").textContent = `${Object.keys(answers).length} answered`;
-  $("questionText").textContent = q.text || "Question text unavailable.";
-  $("options").replaceChildren();
- 
-  let options = q.options;
- 
-  if (typeof options === "string") {
-    try { options = JSON.parse(options); }
-    catch { options = []; }
-  }
- 
-  if (options && !Array.isArray(options) && typeof options === "object") {
-    options = Object.entries(options).map(([key, value]) => ({
-      label: key,
-      text: value
-    }));
-  }
- 
-  if (!Array.isArray(options) || !options.length) {
-    const msg = document.createElement("p");
-    msg.className = "error";
-    msg.textContent = "Options are unavailable for this question.";
-    $("options").appendChild(msg);
-  } else {
-    options.forEach((option, index) => {
-      // Submit the option index expected by the backend scorer.
-      const value = String(index);
-      const labelText = typeof option === "object"
-        ? (option.text ?? option.label ?? option.option ?? option.value ?? "")
-        : option;
- 
-      const label = document.createElement("label");
-      label.className = "option";
- 
-      const radio = document.createElement("input");
-      radio.type = "radio";
-      radio.name = "answer";
-      radio.value = value;
-      radio.checked = String(answers[q.id] ?? "") === value;
- 
-      radio.addEventListener("change", () => {
-        answers[q.id] = radio.value;
-        $("questionProgress").textContent =
-          `${Object.keys(answers).length} answered`;
-      });
- 
-      label.appendChild(radio);
-      label.appendChild(document.createTextNode(" " + String(labelText)));
-      $("options").appendChild(label);
-    });
-  }
- 
-  $("previousBtn").disabled = currentIndex === 0;
-  $("nextBtn").disabled = currentIndex === questions.length - 1;
-}
- 
-function startTimer() {
-  stopTimer();
- 
-  function tick() {
-    if (!deadline || !Number.isFinite(deadline)) {
-      $("timer").textContent = "Server timed";
-      return;
-    }
- 
-    const remaining = Math.max(0, Math.floor((deadline - Date.now()) / 1000));
-    const minutes = Math.floor(remaining / 60);
-    const seconds = remaining % 60;
- 
-    $("timer").textContent =
-      String(minutes).padStart(2, "0") + ":" +
-      String(seconds).padStart(2, "0");
- 
-    $("timer").classList.toggle("urgent", remaining <= 300);
- 
-    if (remaining <= 0) {
-      stopTimer();
-      submitExam(true);
-    }
-  }
- 
-  tick();
-  timerInterval = setInterval(tick, 1000);
-}
- 
-function stopTimer() {
-  if (timerInterval) clearInterval(timerInterval);
-  timerInterval = null;
-}
- 
-$("previousBtn").addEventListener("click", () => {
-  if (currentIndex > 0) {
-    currentIndex--;
-    renderQuestion();
-  }
-});
- 
-$("nextBtn").addEventListener("click", () => {
-  if (currentIndex < questions.length - 1) {
-    currentIndex++;
-    renderQuestion();
-  }
-});
- 
-$("submitBtn").addEventListener("click", () => submitExam(false));
- 
-async function submitExam(autoSubmit) {
-  if (!currentExam || submitting) return;
- 
-  const unanswered = questions.length - Object.keys(answers).length;
- 
-  if (!autoSubmit && unanswered > 0) {
-    if (!confirm(`You have ${unanswered} unanswered question(s). Submit anyway?`)) return;
-  } else if (!autoSubmit) {
-    if (!confirm("Are you sure you want to submit your examination?")) return;
-  }
- 
-  submitting = true;
-  $("submitBtn").disabled = true;
-  showNotice(autoSubmit ? "Time is up. Submitting..." : "Submitting examination...");
- 
-  try {
-    const examId = getExamId(currentExam);
-    if (examId === undefined || examId === null) {
-      throw new Error("The examination ID is missing.");
-    }
- 
-const data = await api(
-      "/api/exams/" + encodeURIComponent(examId) + "/submit",
-      {method: "POST", body: JSON.stringify({answers})}
-    );
- 
-    stopTimer();
- 
-    const result = {
-      ...(data.result || data),
-      exam_title: getExamTitle(currentExam),
-      status: "submitted"
-    };
- 
-    currentExam = null;
-    questions = [];
-    answers = {};
- 
-    showPanel("resultsPanel");
-    $("resultsList").replaceChildren();
-    $("resultsList").appendChild(renderResultCard(result));
- 
-    showNotice("Your examination has been submitted successfully.");
-  } catch (error) {
-    showNotice(error.message, true);
-  } finally {
-    submitting = false;
-    $("submitBtn").disabled = false;
-  }
-}
- 
-async function loadResults() {
-  clearNotice();
-  showPanel("resultsPanel");
-  $("resultsList").textContent = "Loading results...";
- 
-  try {
-    const data = await api("/api/results");
-    const results = unwrapList(data, ["results", "data", "attempts"]);
- 
-    $("resultsList").replaceChildren();
- 
-    if (!results.length) {
-      $("resultsList").textContent = "No examination results are available yet.";
-      return;
-    }
- 
-    results.forEach(result => {
-      $("resultsList").appendChild(renderResultCard(result));
-    });
-  } catch (error) {
-    $("resultsList").textContent = error.message;
-    showNotice(error.message, true);
-  }
-}
- 
-$("loadExamsBtn").addEventListener("click", loadExams);
-$("loadResultsBtn").addEventListener("click", loadResults);
- 
-$("backBtn").addEventListener("click", () => {
-  showPanel("homePanel");
-  clearNotice();
-});
- 
-if (!getToken()) {
-  showNotice("Please log in through the JTA student login page before using the CBT portal.", true);
-} else {
-  loadExams();
-}
+$("department").addEventListener("change",updateSubjects);
+$("examType").addEventListener("change",updateSubjects);
+updateSubjects();
+$("examForm").addEventListener("submit",async e=>{e.preventDefault();$("createExamBtn").disabled=true;try{const d=await api("/api/admin/exams",{method:"POST",body:JSON.stringify({title:$("title").value.trim(),description:$("description").value.trim(),department:$("department").value,week_number:Number($("weekNumber").value),exam_type:$("examType").value,subject:$("subject").value,topics:$("topics").value.trim(),duration_minutes:Number($("duration").value)})});$("examForm").reset();$("duration").value=30;msg("examMsg","Draft created: "+d.exam.title,"ok");await loadExams();$("questionExam").value=d.exam.id}catch(err){msg("examMsg",err.message,"err")}finally{$("createExamBtn").disabled=false}});
+$("questionForm").addEventListener("submit",async e=>{e.preventDefault();const examId=$("questionExam").value;if(!examId){msg("questionMsg","Choose a draft examination first.","err");return}const options=[$("optA").value,$("optB").value,$("optC").value,$("optD").value,$("optE").value].map(x=>x.trim()).filter(Boolean);const correct=$("correct").value;if("ABCDE".indexOf(correct)>=options.length){msg("questionMsg","Fill in the selected correct option before saving.","err");return}const body={question_text:$("questionText").value.trim(),options,correct_answer:correct,marks:Number($("marks").value)};$("addQuestionBtn").disabled=true;try{const d=await api("/api/admin/exams/"+encodeURIComponent(examId)+"/questions",{method:"POST",body:JSON.stringify(body)});msg("questionMsg",d.message,"ok");$("questionForm").reset();$("marks").value=1;await loadExams();$("questionExam").value=examId}catch(err){msg("questionMsg",err.message,"err")}finally{$("addQuestionBtn").disabled=false}});
+$("resetQuestionBtn").addEventListener("click",()=>$("questionForm").reset());
+$("refreshBtn").addEventListener("click",async()=>{try{await loadExams();msg("listMsg","Examinations refreshed.","ok")}catch(err){msg("listMsg",err.message,"err")}});
+$("disconnectBtn").addEventListener("click",()=>{secret="";exams=[];$("adminKey").value="";$("app").classList.add("hidden");$("loginCard").classList.remove("hidden");$("examList").replaceChildren();$("resultsArea").replaceChildren(safe("p","Choose “View results” on an examination to see attempts and scores.","muted"))});
+})();
 </script>
-</body>
-</html>
- ??
- 
+</body></html>
