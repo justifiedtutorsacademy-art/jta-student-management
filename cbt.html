@@ -15,9 +15,12 @@
   --text: #202B3C;
   --muted: #68758A;
   --border: #D7E5F2;
-  --success: #1050BD;
+  --success: #16794B;
   --danger: #B42318;
   --purple: #963CC8;
+  --answered-bg: #E7F0FF;
+  --unanswered-bg: #F1F4F8;
+  --review-bg: #F3E8FF;
 }
  
 * { box-sizing: border-box; }
@@ -137,6 +140,72 @@ input[type="radio"] {
   font-weight: bold;
   margin-bottom: 10px;
 }
+
+.question-tools {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 14px 0;
+}
+
+.review-button {
+  background: #F3E8FF;
+  color: #7133A5;
+  border: 1px solid #D9B8F3;
+}
+
+.question-palette {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(42px, 1fr));
+  gap: 8px;
+  margin: 14px 0 18px;
+}
+
+.question-chip {
+  min-height: 42px;
+  min-width: 0;
+  margin: 0;
+  padding: 7px 4px;
+  border: 1px solid #CBD5E1;
+  border-radius: 8px;
+  background: var(--unanswered-bg);
+  color: #344054;
+  font-weight: 700;
+}
+
+.question-chip.answered {
+  background: var(--answered-bg);
+  border-color: #7BA8F5;
+  color: #174A9C;
+}
+
+.question-chip.review {
+  background: var(--review-bg);
+  border: 2px solid #963CC8;
+  color: #7133A5;
+}
+
+.question-chip.current {
+  outline: 3px solid #263B59;
+  outline-offset: 2px;
+}
+
+.question-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 8px 0 14px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.legend-item { display: inline-flex; align-items: center; gap: 6px; }
+.legend-swatch { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.legend-swatch.answered { background: var(--answered-bg); border: 1px solid #7BA8F5; }
+.legend-swatch.unanswered { background: var(--unanswered-bg); border: 1px solid #CBD5E1; }
+.legend-swatch.review { background: var(--review-bg); border: 1px solid #963CC8; }
  
 #questionText {
   white-space: pre-wrap;
@@ -255,81 +324,6 @@ footer {
 .subject-picker { border:1px solid var(--border); border-radius:12px; padding:14px; margin:12px 0; background:#F7FBFF; }
 .subject-choice { display:flex; align-items:center; gap:10px; padding:11px; border:1px solid var(--border); border-radius:9px; margin:8px 0; background:white; }
 .subject-choice input { width:18px; height:18px; }
-
-/* JTA multi-subject CBT layout */
-.exam-top{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
-#timer{font-size:24px;font-weight:800;color:#1050BD}
-.exam-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:18px 0 14px;flex-wrap:wrap}
-.subject-tabs{display:flex;gap:8px;overflow-x:auto;max-width:100%;padding:4px 2px 9px;flex:1}
-.subject-tab{white-space:nowrap;background:#EAF0FF;color:#254B91;border:0;border-bottom:4px solid transparent;border-radius:9px 9px 0 0;padding:10px 15px;margin:0}
-.subject-tab.active{background:#fff;color:#1050BD;border-bottom-color:#A653D8}
-.submit-top{background:#7438C6!important;white-space:nowrap}
-.exam-layout{display:grid;grid-template-columns:minmax(0,1fr);gap:18px}
-.question-card{background:#fff;border:1px solid #D7E5F2;border-radius:20px;padding:24px;box-shadow:0 8px 22px rgba(16,80,189,.06)}
-.question-number{display:flex;justify-content:space-between;gap:12px;color:#68758A;font-weight:700;margin-bottom:18px}
-#questionText{font-size:clamp(20px,3vw,28px);line-height:1.55;color:#202B3C;margin:24px 0}
-.option{background:#fff;border:1px solid #D7E5F2;border-radius:14px;padding:18px;margin:12px 0;font-size:18px;display:flex;align-items:center;gap:12px}
-.option:has(input:checked){border-color:#1050BD;background:#E7F0FF}
-input[type=radio]{accent-color:#1050BD}
-.question-controls{display:flex;justify-content:space-between;gap:12px;margin-top:28px;padding-top:18px;border-top:1px solid #D7E5F2}
-.question-controls button{min-width:130px;background:#1050BD}
-.navigator-card{background:#fff;border:1px solid #D7E5F2;border-radius:20px;padding:20px;margin-top:18px}
-.navigator-card h3{margin:0 0 5px;color:#254B91}
-.question-grid{display:grid;grid-template-columns:repeat(5,minmax(42px,1fr));gap:10px;margin-top:16px}
-.question-jump{background:#EAF0FF;color:#52627A;border-radius:10px;padding:10px 4px;margin:0;min-height:48px}
-.question-jump.answered{background:#E7F0FF;color:#254B91}
-.question-jump.current{background:#1050BD;color:#fff}
-.bottom-submit{display:none;background:#7438C6!important;width:100%;margin-top:14px}
-@media(min-width:760px){.exam-layout{grid-template-columns:minmax(0,1fr)}.navigator-card{margin-top:18px}.question-grid{grid-template-columns:repeat(10,minmax(42px,1fr))}}
-@media(max-width:520px){.panel{padding:16px}.question-card{padding:18px}.submit-top{font-size:13px;padding:10px}.question-grid{gap:7px}.question-jump{min-height:42px;padding:8px 2px}.question-controls button{min-width:0;flex:1}}
-
-
-/* Refined compact JTA exam styling: closer to the supplied reference */
-body{font-family:Inter,Arial,sans-serif;background:#F3F6FC;color:#202B3C;font-size:14px;line-height:1.45}
-header{padding:17px 14px 15px;border-bottom:3px solid #A653D8;background:linear-gradient(110deg,#1050BD,#7438C6,#A653D8);text-align:left}
-header h1{font-size:19px;line-height:1.25;margin:0 0 3px;font-weight:750;letter-spacing:.1px}
-header p{font-size:13px;color:#F4E9FF;margin:0}
-main{width:min(900px,100%);margin:18px auto;padding:0 12px 24px}
-.panel{padding:17px;border-radius:14px;margin-bottom:14px;box-shadow:0 3px 14px rgba(16,80,189,.06);border-color:#D7E5F2}
-h2{font-size:19px;margin-bottom:10px}
-h3{font-size:15px}
-button{font-size:13px;padding:9px 14px;min-height:39px;border-radius:8px;margin:3px 4px 3px 0}
-.exam-top{align-items:center;margin-bottom:10px;gap:10px}
-#examTitle{font-size:17px;margin:0 0 3px}
-#questionProgress,.exam-top .muted{font-size:12px}
-#timer{font-size:18px;padding:6px 10px;border-radius:8px}
-.exam-toolbar{margin:10px 0 11px;gap:8px;align-items:center}
-.subject-tabs{gap:5px;padding:2px 1px 7px}
-.subject-tab{font-size:12px;padding:8px 11px;min-height:35px;border-radius:7px 7px 0 0}
-.submit-top{font-size:12px;padding:8px 11px;min-height:35px}
-.exam-layout{gap:0}
-.question-card{border-radius:14px;padding:18px 18px 14px;box-shadow:0 3px 14px rgba(16,80,189,.06)}
-.question-number{font-size:12px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #D7E5F2}
-#questionText{font-size:16px;line-height:1.55;margin:16px 0 18px;color:#202B3C;font-weight:500}
-.option{font-size:14px;line-height:1.4;padding:12px 13px;margin:8px 0;border-radius:10px;gap:9px;min-height:54px}
-.option input[type=radio]{transform:scale(1.05);margin-right:3px}
-.question-controls{margin-top:16px;padding-top:13px;gap:10px}
-.question-controls button{font-size:13px;min-width:105px;min-height:39px}
-.navigator-card{margin-top:14px;padding:15px;border-radius:14px;box-shadow:0 3px 14px rgba(16,80,189,.05)}
-.navigator-card h3{font-size:14px;margin-bottom:3px}
-.navigator-card p{font-size:12px;margin:3px 0 0}
-.question-grid{gap:7px;margin-top:12px}
-.question-jump{font-size:12px;min-height:39px;padding:7px 3px;border-radius:8px}
-.bottom-submit{font-size:13px}
-footer{font-size:11px;padding:16px;background:#EAF0FF}
-.message{font-size:13px;padding:11px}
-@media(min-width:760px){.exam-layout{grid-template-columns:minmax(0,1fr)}.navigator-card{margin-top:14px}}
-@media(max-width:520px){
- header{padding:14px 13px 13px}header h1{font-size:17px}header p{font-size:12px}
- main{margin:12px auto;padding:0 10px 18px}.panel{padding:13px;border-radius:12px}
- .question-card{padding:14px 13px 12px}.question-number{font-size:11px}
- #questionText{font-size:15px;line-height:1.5;margin:13px 0 15px}
- .option{font-size:13px;padding:10px 11px;min-height:48px;margin:7px 0}
- .navigator-card{padding:13px}.question-grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
- .question-jump{min-height:37px;font-size:11px}
- .question-controls button{min-width:0;flex:1}
-}
-
 </style>
 </head>
  
@@ -369,29 +363,35 @@ footer{font-size:11px;padding:16px;background:#EAF0FF}
       </div>
     </div>
  
-    <div class="exam-toolbar">
-      <div id="subjectTabs" class="subject-tabs" aria-label="Exam subjects"></div>
-      <button id="topSubmitBtn" class="warning submit-top" type="button">➤ Submit exam</button>
+    <hr style="border:0;border-top:1px solid var(--border)">
+ 
+    <div class="question-legend" aria-label="Question status legend">
+      <span class="legend-item"><span class="legend-swatch answered"></span>Answered</span>
+      <span class="legend-item"><span class="legend-swatch unanswered"></span>Unanswered</span>
+      <span class="legend-item"><span class="legend-swatch review"></span>Marked for review</span>
     </div>
+    <div id="questionPalette" class="question-palette" aria-label="Question navigation"></div>
 
-    <div class="exam-layout">
-    <div id="questionArea" class="question-card">
+    <div id="questionArea">
       <div id="questionNumber" class="question-number"></div>
       <h3 id="questionText"></h3>
       <div id="options"></div>
+      <div class="question-tools">
+        <span id="reviewStatus" class="muted" aria-live="polite"></span>
+        <button id="reviewBtn" class="review-button" type="button">Mark for Review</button>
+      </div>
     </div>
-    <div class="question-controls">
-      <button id="previousBtn" class="secondary" type="button">‹ Previous</button>
-      <button id="nextBtn" type="button">Next ›</button>
+ 
+    <div style="margin-top:20px">
+      <button id="previousBtn" class="secondary" type="button">Previous</button>
+      <button id="nextBtn" type="button">Next</button>
+      <button id="submitBtn" class="warning" type="button">Submit Examination</button>
     </div>
-    </div>
-    <aside class="navigator-card">
-      <h3>◷ Question navigator</h3>
-      <p class="muted">Answered questions are marked in green. Tap any number to return to it.</p>
-      <div id="questionNavigator" class="question-grid"></div>
-    </aside>
-    <button id="submitBtn" class="warning bottom-submit" type="button">Submit Examination</button>
-    <p class="muted">Your answers are held on this page until submitted. Avoid refreshing or closing the page during an examination.</p>
+ 
+    <p class="muted">
+      Your answers are held on this page until submitted. Avoid refreshing
+      or closing the page during an examination.
+    </p>
   </section>
  
   <section id="resultsPanel" class="panel hidden">
@@ -413,8 +413,8 @@ const $ = id => document.getElementById(id);
  
 let currentExam = null;
 let questions = [];
-let activeSubjects = [];
 let answers = {};
+let flaggedQuestions = new Set();
 let currentIndex = 0;
 let deadline = null;
 let timerInterval = null;
@@ -638,7 +638,7 @@ async function loadExams() {
       details.className = "muted";
  
       const duration = Number(exam.duration_minutes ?? exam.durationMinutes);
-const total = Number(exam.total_questions ?? exam.question_count);
+      const total = Number(exam.total_questions ?? exam.question_count);
  
       details.textContent = [
         Number.isFinite(duration) && duration > 0 ? duration + " minutes" : "",
@@ -750,7 +750,6 @@ async function startExam(examOrId) {
     selectedSubjects = await chooseFourSubjects(examObject);
     if (!selectedSubjects) return;
   }
-  activeSubjects = selectedSubjects.slice();
   if (!confirm("Start this examination now? Follow the time limit carefully.")) return;
  
   clearNotice();
@@ -770,6 +769,7 @@ async function startExam(examOrId) {
     currentExam = data.exam || data;
     questions = normalizeQuestions(data);
     answers = {};
+    flaggedQuestions = new Set();
     currentIndex = 0;
     submitting = false;
  
@@ -802,77 +802,106 @@ async function startExam(examOrId) {
   }
 }
  
-function subjectForQuestion(q) {
-  return String(q.subject || activeSubjects[0] || currentExam?.subject || "Subject").trim();
-}
+function renderQuestionPalette() {
+  const palette = $("questionPalette");
+  palette.replaceChildren();
 
-function renderSubjectTabs() {
-  const host = $("subjectTabs");
-  host.replaceChildren();
-  const ordered = activeSubjects.length ? activeSubjects : [...new Set(questions.map(subjectForQuestion))];
-  ordered.forEach(subject => {
-    const indices = questions.map((q,i)=>subjectForQuestion(q)===subject?i:-1).filter(i=>i>=0);
-    if (!indices.length) return;
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "subject-tab" + (subjectForQuestion(questions[currentIndex])===subject ? " active" : "");
-    const answered = indices.filter(i=>Object.prototype.hasOwnProperty.call(answers,questions[i].id)).length;
-    btn.textContent = `${subject}  ${answered}/${indices.length}`;
-    btn.addEventListener("click",()=>{currentIndex=indices[0];renderQuestion();});
-    host.appendChild(btn);
+  questions.forEach((question, index) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "question-chip";
+    button.textContent = String(index + 1);
+    button.setAttribute("aria-label", `Go to question ${index + 1}`);
+
+    if (flaggedQuestions.has(String(question.id))) {
+      button.classList.add("review");
+      button.setAttribute("aria-label", `Question ${index + 1}, marked for review`);
+    } else if (Object.prototype.hasOwnProperty.call(answers, question.id)) {
+      button.classList.add("answered");
+      button.setAttribute("aria-label", `Question ${index + 1}, answered`);
+    } else {
+      button.setAttribute("aria-label", `Question ${index + 1}, unanswered`);
+    }
+
+    if (index === currentIndex) button.classList.add("current");
+    button.addEventListener("click", () => {
+      currentIndex = index;
+      renderQuestion();
+    });
+    palette.appendChild(button);
   });
 }
 
-function renderNavigator() {
-  const host = $("questionNavigator");
-  host.replaceChildren();
-  questions.forEach((q,index)=>{
-    const btn=document.createElement("button");
-    btn.type="button";
-    btn.className="question-jump";
-    if(Object.prototype.hasOwnProperty.call(answers,q.id)) btn.classList.add("answered");
-    if(index===currentIndex) btn.classList.add("current");
-    btn.textContent=String(index+1);
-    btn.setAttribute("aria-label",`Go to question ${index+1}, ${subjectForQuestion(q)}`);
-    btn.addEventListener("click",()=>{currentIndex=index;renderQuestion();});
-    host.appendChild(btn);
-  });
+function updateQuestionStatus() {
+  const q = questions[currentIndex];
+  const isFlagged = flaggedQuestions.has(String(q.id));
+  $("reviewBtn").textContent = isFlagged ? "Remove Review Flag" : "Mark for Review";
+  $("reviewStatus").textContent = isFlagged ? "This question is marked for review." : "";
+  $("questionProgress").textContent = `${Object.keys(answers).length} answered · ${flaggedQuestions.size} for review`;
+  renderQuestionPalette();
 }
 
 function renderQuestion() {
   if (!questions.length) return;
+ 
   const q = questions[currentIndex];
-  const subject = subjectForQuestion(q);
-  const sameSubject = questions.filter(x=>subjectForQuestion(x)===subject);
-  const withinSubject = sameSubject.indexOf(q)+1;
-  $("questionNumber").textContent = `${subject}  ·  Question ${withinSubject} of ${sameSubject.length}  ·  Overall ${currentIndex+1} of ${questions.length}`;
-  $("questionProgress").textContent = `${Object.keys(answers).length} of ${questions.length} answered`;
+  $("questionNumber").textContent =
+    `Question ${currentIndex + 1} of ${questions.length}`;
   $("questionText").textContent = q.text || "Question text unavailable.";
   $("options").replaceChildren();
+ 
   let options = q.options;
-  if (typeof options === "string") { try { options = JSON.parse(options); } catch { options = []; } }
-  if (options && !Array.isArray(options) && typeof options === "object") options = Object.entries(options).map(([key,value])=>({label:key,text:value}));
+ 
+  if (typeof options === "string") {
+    try { options = JSON.parse(options); }
+    catch { options = []; }
+  }
+ 
+  if (options && !Array.isArray(options) && typeof options === "object") {
+    options = Object.entries(options).map(([key, value]) => ({
+      label: key,
+      text: value
+    }));
+  }
+ 
   if (!Array.isArray(options) || !options.length) {
-    const msg=document.createElement("p");msg.className="error";msg.textContent="Options are unavailable for this question.";$("options").appendChild(msg);
+    const msg = document.createElement("p");
+    msg.className = "error";
+    msg.textContent = "Options are unavailable for this question.";
+    $("options").appendChild(msg);
   } else {
-    options.forEach((option,index)=>{
-      const value=String(index);
-      const labelText=typeof option==="object"?(option.text??option.label??option.option??option.value??""):option;
-      const label=document.createElement("label");label.className="option";
-      const radio=document.createElement("input");radio.type="radio";radio.name="answer";radio.value=value;
-      radio.checked=String(answers[q.id]??"")===value;
-      radio.addEventListener("change",()=>{answers[q.id]=radio.value;renderQuestion();});
-      const letter=document.createElement("strong");letter.textContent=String.fromCharCode(65+index);
-      label.append(radio,letter,document.createTextNode(String(labelText)));
+    options.forEach((option, index) => {
+      // Submit the option index expected by the backend scorer.
+      const value = String(index);
+      const labelText = typeof option === "object"
+        ? (option.text ?? option.label ?? option.option ?? option.value ?? "")
+        : option;
+ 
+      const label = document.createElement("label");
+      label.className = "option";
+ 
+      const radio = document.createElement("input");
+      radio.type = "radio";
+      radio.name = "answer";
+      radio.value = value;
+      radio.checked = String(answers[q.id] ?? "") === value;
+ 
+      radio.addEventListener("change", () => {
+        answers[q.id] = radio.value;
+        updateQuestionStatus();
+      });
+ 
+      label.appendChild(radio);
+      label.appendChild(document.createTextNode(" " + String(labelText)));
       $("options").appendChild(label);
     });
   }
-  $("previousBtn").disabled=currentIndex===0;
-  $("nextBtn").disabled=currentIndex===questions.length-1;
-  renderSubjectTabs();
-  renderNavigator();
+ 
+  $("previousBtn").disabled = currentIndex === 0;
+  $("nextBtn").disabled = currentIndex === questions.length - 1;
+  updateQuestionStatus();
 }
-
+ 
 function startTimer() {
   stopTimer();
  
@@ -907,6 +936,14 @@ function stopTimer() {
   timerInterval = null;
 }
  
+$("reviewBtn").addEventListener("click", () => {
+  if (!questions.length) return;
+  const questionId = String(questions[currentIndex].id);
+  if (flaggedQuestions.has(questionId)) flaggedQuestions.delete(questionId);
+  else flaggedQuestions.add(questionId);
+  updateQuestionStatus();
+});
+
 $("previousBtn").addEventListener("click", () => {
   if (currentIndex > 0) {
     currentIndex--;
@@ -922,7 +959,6 @@ $("nextBtn").addEventListener("click", () => {
 });
  
 $("submitBtn").addEventListener("click", () => submitExam(false));
-$("topSubmitBtn").addEventListener("click", () => submitExam(false));
  
 async function submitExam(autoSubmit) {
   if (!currentExam || submitting) return;
@@ -937,7 +973,6 @@ async function submitExam(autoSubmit) {
  
   submitting = true;
   $("submitBtn").disabled = true;
-  $("topSubmitBtn").disabled = true;
   showNotice(autoSubmit ? "Time is up. Submitting..." : "Submitting examination...");
  
   try {
@@ -961,7 +996,6 @@ const data = await api(
  
     currentExam = null;
     questions = [];
-    activeSubjects = [];
     answers = {};
  
     showPanel("resultsPanel");
@@ -974,7 +1008,6 @@ const data = await api(
   } finally {
     submitting = false;
     $("submitBtn").disabled = false;
-    $("topSubmitBtn").disabled = false;
   }
 }
  
@@ -1018,4 +1051,4 @@ if (!getToken()) {
 }
 </script>
 </body>
-</html> 
+</html>
