@@ -283,6 +283,53 @@ input[type=radio]{accent-color:#155541}
 @media(min-width:760px){.exam-layout{grid-template-columns:minmax(0,1fr)}.navigator-card{margin-top:18px}.question-grid{grid-template-columns:repeat(10,minmax(42px,1fr))}}
 @media(max-width:520px){.panel{padding:16px}.question-card{padding:18px}.submit-top{font-size:13px;padding:10px}.question-grid{gap:7px}.question-jump{min-height:42px;padding:8px 2px}.question-controls button{min-width:0;flex:1}}
 
+
+/* Refined compact JTA exam styling: closer to the supplied reference */
+body{font-family:Inter,Arial,sans-serif;background:#f3f7f5;color:#26332f;font-size:14px;line-height:1.45}
+header{padding:17px 14px 15px;border-bottom:3px solid #d8b44b;background:linear-gradient(110deg,#103f35,#155947);text-align:left}
+header h1{font-size:19px;line-height:1.25;margin:0 0 3px;font-weight:750;letter-spacing:.1px}
+header p{font-size:13px;color:#dcebe5;margin:0}
+main{width:min(900px,100%);margin:18px auto;padding:0 12px 24px}
+.panel{padding:17px;border-radius:14px;margin-bottom:14px;box-shadow:0 3px 14px rgba(20,65,52,.045);border-color:#e0e8e4}
+h2{font-size:19px;margin-bottom:10px}
+h3{font-size:15px}
+button{font-size:13px;padding:9px 14px;min-height:39px;border-radius:8px;margin:3px 4px 3px 0}
+.exam-top{align-items:center;margin-bottom:10px;gap:10px}
+#examTitle{font-size:17px;margin:0 0 3px}
+#questionProgress,.exam-top .muted{font-size:12px}
+#timer{font-size:18px;padding:6px 10px;border-radius:8px}
+.exam-toolbar{margin:10px 0 11px;gap:8px;align-items:center}
+.subject-tabs{gap:5px;padding:2px 1px 7px}
+.subject-tab{font-size:12px;padding:8px 11px;min-height:35px;border-radius:7px 7px 0 0}
+.submit-top{font-size:12px;padding:8px 11px;min-height:35px}
+.exam-layout{gap:0}
+.question-card{border-radius:14px;padding:18px 18px 14px;box-shadow:0 3px 14px rgba(20,65,52,.045)}
+.question-number{font-size:12px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #e8eeeb}
+#questionText{font-size:16px;line-height:1.55;margin:16px 0 18px;color:#1d2c27;font-weight:500}
+.option{font-size:14px;line-height:1.4;padding:12px 13px;margin:8px 0;border-radius:10px;gap:9px;min-height:54px}
+.option input[type=radio]{transform:scale(1.05);margin-right:3px}
+.question-controls{margin-top:16px;padding-top:13px;gap:10px}
+.question-controls button{font-size:13px;min-width:105px;min-height:39px}
+.navigator-card{margin-top:14px;padding:15px;border-radius:14px;box-shadow:0 3px 14px rgba(20,65,52,.04)}
+.navigator-card h3{font-size:14px;margin-bottom:3px}
+.navigator-card p{font-size:12px;margin:3px 0 0}
+.question-grid{gap:7px;margin-top:12px}
+.question-jump{font-size:12px;min-height:39px;padding:7px 3px;border-radius:8px}
+.bottom-submit{font-size:13px}
+footer{font-size:11px;padding:16px;background:#eef4f1}
+.message{font-size:13px;padding:11px}
+@media(min-width:760px){.exam-layout{grid-template-columns:minmax(0,1fr)}.navigator-card{margin-top:14px}}
+@media(max-width:520px){
+ header{padding:14px 13px 13px}header h1{font-size:17px}header p{font-size:12px}
+ main{margin:12px auto;padding:0 10px 18px}.panel{padding:13px;border-radius:12px}
+ .question-card{padding:14px 13px 12px}.question-number{font-size:11px}
+ #questionText{font-size:15px;line-height:1.5;margin:13px 0 15px}
+ .option{font-size:13px;padding:10px 11px;min-height:48px;margin:7px 0}
+ .navigator-card{padding:13px}.question-grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+ .question-jump{min-height:37px;font-size:11px}
+ .question-controls button{min-width:0;flex:1}
+}
+
 </style>
 </head>
  
