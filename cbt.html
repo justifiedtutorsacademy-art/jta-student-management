@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#1050BD">
 <title>JTA CBT Examination</title>
-
+ 
 <style>
 :root {
   --primary: #1050BD;
@@ -19,9 +19,9 @@
   --danger: #B42318;
   --purple: #963CC8;
 }
-
+ 
 * { box-sizing: border-box; }
-
+ 
 body {
   margin: 0;
   background: var(--background);
@@ -29,7 +29,7 @@ body {
   font-family: Arial, sans-serif;
   line-height: 1.5;
 }
-
+ 
 header {
   background: linear-gradient(135deg, #1050BD, #7438C6, #A653D8);
   color: white;
@@ -37,20 +37,20 @@ header {
   text-align: center;
   border-bottom: 5px solid #C17BE5;
 }
-
+ 
 header h1 {
   margin: 0 0 7px;
   font-size: 25px;
 }
-
+ 
 header p { margin: 0; color: #F4E9FF; }
-
+ 
 main {
   width: min(950px, 100%);
   margin: 24px auto;
   padding: 0 14px 30px;
 }
-
+ 
 .panel {
   background: var(--white);
   border: 1px solid var(--border);
@@ -59,10 +59,10 @@ main {
   margin-bottom: 18px;
   box-shadow: 0 5px 18px rgba(16, 80, 189, 0.07);
 }
-
+ 
 h2 { margin-top: 0; line-height: 1.3; color: #1050BD; }
 h3 { color: #29364A; }
-
+ 
 button {
   background: linear-gradient(135deg, #1050BD, #285FD0);
   color: white;
@@ -75,25 +75,25 @@ button {
   margin: 5px 5px 5px 0;
   min-height: 44px;
 }
-
+ 
 button.secondary {
   background: #F0E5FA;
   color: #6330A3;
   border: 1px solid #DCC1F0;
 }
-
+ 
 button.warning {
   background: linear-gradient(135deg, #8737B9, #B34FD6);
 }
-
+ 
 button:disabled { opacity: .55; cursor: not-allowed; }
-
+ 
 input[type="radio"] {
   margin-right: 9px;
   transform: scale(1.15);
   accent-color: #1050BD;
 }
-
+ 
 .option {
   display: block;
   background: #F7FBFF;
@@ -103,14 +103,14 @@ input[type="radio"] {
   margin: 11px 0;
   cursor: pointer;
 }
-
+ 
 .option:has(input:checked) {
   border-color: #1050BD;
   background: #E7F0FF;
 }
-
+ 
 .muted { color: var(--muted); }
-
+ 
 .message {
   padding: 14px;
   border-radius: 10px;
@@ -119,10 +119,10 @@ input[type="radio"] {
   margin: 12px 0;
   overflow-wrap: anywhere;
 }
-
+ 
 .error { color: var(--danger); }
 .success { color: var(--success); }
-
+ 
 .exam-top {
   display: flex;
   justify-content: space-between;
@@ -130,26 +130,26 @@ input[type="radio"] {
   flex-wrap: wrap;
   margin-bottom: 18px;
 }
-
+ 
 .question-number {
   color: var(--purple);
   font-size: 14px;
   font-weight: bold;
   margin-bottom: 10px;
 }
-
+ 
 #questionText {
   white-space: pre-wrap;
   line-height: 1.7;
   overflow-wrap: anywhere;
 }
-
+ 
 #examList button {
   width: 100%;
   text-align: left;
   padding: 16px;
 }
-
+ 
 #timer {
   font-size: 22px;
   font-weight: bold;
@@ -158,14 +158,14 @@ input[type="radio"] {
   border-radius: 9px;
   padding: 8px 12px;
 }
-
+ 
 #timer.urgent {
   color: #B42318;
   background: #FEECEC;
 }
-
+ 
 .hidden { display: none !important; }
-
+ 
 .result-card {
   border: 1px solid #D9C5EF;
   border-radius: 15px;
@@ -173,13 +173,13 @@ input[type="radio"] {
   margin: 16px 0;
   background: linear-gradient(180deg, #FFFFFF, #FAF6FF);
 }
-
+ 
 .result-score {
   font-size: 19px;
   font-weight: bold;
   color: #1050BD;
 }
-
+ 
 .jamb-score {
   background: linear-gradient(135deg, #EAF4FF, #F5E9FF);
   border: 1px solid #D5B9ED;
@@ -187,21 +187,21 @@ input[type="radio"] {
   padding: 20px;
   margin: 16px 0;
 }
-
+ 
 .jamb-score .big-score {
   font-size: clamp(32px, 7vw, 44px);
   font-weight: bold;
   color: #1050BD;
   line-height: 1.25;
 }
-
+ 
 .stat-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
   margin: 16px 0;
 }
-
+ 
 .stat {
   background: #F4F8FF;
   border: 1px solid #D9E5F5;
@@ -209,16 +209,16 @@ input[type="radio"] {
   padding: 14px;
   overflow-wrap: anywhere;
 }
-
+ 
 .stat-label { font-size: 13px; color: var(--muted); }
-
+ 
 .stat-value {
   font-size: 19px;
   font-weight: bold;
   color: #1050BD;
   margin-top: 4px;
 }
-
+ 
 .progress-track {
   width: 100%;
   height: 11px;
@@ -227,16 +227,16 @@ input[type="radio"] {
   overflow: hidden;
   margin: 12px 0;
 }
-
+ 
 .progress-fill {
   height: 100%;
   background: linear-gradient(90deg, #1050BD, #A653D8);
   width: 0;
   border-radius: 99px;
 }
-
+ 
 .disclaimer { color: var(--muted); font-size: 13px; }
-
+ 
 footer {
   text-align: center;
   color: #65748A;
@@ -245,39 +245,71 @@ footer {
   background: #E1F1FC;
   border-top: 1px solid #D3E6F5;
 }
-
+ 
 @media (max-width: 480px) {
   header h1 { font-size: 21px; }
   .panel { padding: 16px; border-radius: 14px; }
   .stat-grid { grid-template-columns: 1fr 1fr; }
 }
+ 
+.subject-picker { border:1px solid var(--border); border-radius:12px; padding:14px; margin:12px 0; background:#F7FBFF; }
+.subject-choice { display:flex; align-items:center; gap:10px; padding:11px; border:1px solid var(--border); border-radius:9px; margin:8px 0; background:white; }
+.subject-choice input { width:18px; height:18px; }
+
+/* JTA multi-subject CBT layout */
+.exam-top{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+#timer{font-size:24px;font-weight:800;color:#104536}
+.exam-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:18px 0 14px;flex-wrap:wrap}
+.subject-tabs{display:flex;gap:8px;overflow-x:auto;max-width:100%;padding:4px 2px 9px;flex:1}
+.subject-tab{white-space:nowrap;background:#edf3f0;color:#174638;border:0;border-bottom:4px solid transparent;border-radius:9px 9px 0 0;padding:10px 15px;margin:0}
+.subject-tab.active{background:#fff;color:#104536;border-bottom-color:#d8b44b}
+.submit-top{background:#ad5a25!important;white-space:nowrap}
+.exam-layout{display:grid;grid-template-columns:minmax(0,1fr);gap:18px}
+.question-card{background:#fff;border:1px solid #d9e4df;border-radius:20px;padding:24px;box-shadow:0 8px 22px rgba(20,65,52,.06)}
+.question-number{display:flex;justify-content:space-between;gap:12px;color:#718078;font-weight:700;margin-bottom:18px}
+#questionText{font-size:clamp(20px,3vw,28px);line-height:1.55;color:#182d27;margin:24px 0}
+.option{background:#fff;border:1px solid #dce4e0;border-radius:14px;padding:18px;margin:12px 0;font-size:18px;display:flex;align-items:center;gap:12px}
+.option:has(input:checked){border-color:#155541;background:#eff7f3}
+input[type=radio]{accent-color:#155541}
+.question-controls{display:flex;justify-content:space-between;gap:12px;margin-top:28px;padding-top:18px;border-top:1px solid #e4eae7}
+.question-controls button{min-width:130px;background:#104536}
+.navigator-card{background:#fff;border:1px solid #d9e4df;border-radius:20px;padding:20px;margin-top:18px}
+.navigator-card h3{margin:0 0 5px;color:#183b30}
+.question-grid{display:grid;grid-template-columns:repeat(5,minmax(42px,1fr));gap:10px;margin-top:16px}
+.question-jump{background:#edf3f0;color:#596b63;border-radius:10px;padding:10px 4px;margin:0;min-height:48px}
+.question-jump.answered{background:#d9eee3;color:#14563d}
+.question-jump.current{background:#104536;color:#fff}
+.bottom-submit{display:none;background:#ad5a25!important;width:100%;margin-top:14px}
+@media(min-width:760px){.exam-layout{grid-template-columns:minmax(0,1fr)}.navigator-card{margin-top:18px}.question-grid{grid-template-columns:repeat(10,minmax(42px,1fr))}}
+@media(max-width:520px){.panel{padding:16px}.question-card{padding:18px}.submit-top{font-size:13px;padding:10px}.question-grid{gap:7px}.question-jump{min-height:42px;padding:8px 2px}.question-controls button{min-width:0;flex:1}}
+
 </style>
 </head>
-
+ 
 <body>
 <header>
   <h1>Justified Tutor's Academy</h1>
   <p>Computer-Based Test (CBT) Portal</p>
 </header>
-
+ 
 <main>
   <div id="notice" class="message hidden" role="status" aria-live="polite"></div>
-
+ 
   <section id="homePanel" class="panel">
     <h2>Available Examinations</h2>
     <p class="muted">
       Select an available examination. Read each question carefully
       and submit your answers before time expires.
     </p>
-
+ 
     <button id="loadExamsBtn" type="button">Load Examinations</button>
     <button id="loadResultsBtn" type="button" class="secondary">My Results</button>
-
+ 
     <div id="examList" style="margin-top:18px">
       <p class="muted">Tap "Load Examinations" to begin.</p>
     </div>
   </section>
-
+ 
   <section id="examPanel" class="panel hidden">
     <div class="exam-top">
       <div>
@@ -289,27 +321,32 @@ footer {
         <div id="timer">--:--</div>
       </div>
     </div>
+ 
+    <div class="exam-toolbar">
+      <div id="subjectTabs" class="subject-tabs" aria-label="Exam subjects"></div>
+      <button id="topSubmitBtn" class="warning submit-top" type="button">➤ Submit exam</button>
+    </div>
 
-    <hr style="border:0;border-top:1px solid var(--border)">
-
-    <div id="questionArea">
+    <div class="exam-layout">
+    <div id="questionArea" class="question-card">
       <div id="questionNumber" class="question-number"></div>
       <h3 id="questionText"></h3>
       <div id="options"></div>
     </div>
-
-    <div style="margin-top:20px">
-      <button id="previousBtn" class="secondary" type="button">Previous</button>
-      <button id="nextBtn" type="button">Next</button>
-      <button id="submitBtn" class="warning" type="button">Submit Examination</button>
+    <div class="question-controls">
+      <button id="previousBtn" class="secondary" type="button">‹ Previous</button>
+      <button id="nextBtn" type="button">Next ›</button>
     </div>
-
-    <p class="muted">
-      Your answers are held on this page until submitted. Avoid refreshing
-      or closing the page during an examination.
-    </p>
+    </div>
+    <aside class="navigator-card">
+      <h3>◷ Question navigator</h3>
+      <p class="muted">Answered questions are marked in green. Tap any number to return to it.</p>
+      <div id="questionNavigator" class="question-grid"></div>
+    </aside>
+    <button id="submitBtn" class="warning bottom-submit" type="button">Submit Examination</button>
+    <p class="muted">Your answers are held on this page until submitted. Avoid refreshing or closing the page during an examination.</p>
   </section>
-
+ 
   <section id="resultsPanel" class="panel hidden">
     <h2>My Examination Results</h2>
     <p class="muted">Review your raw marks, percentage and estimated score out of 400.</p>
@@ -317,75 +354,76 @@ footer {
     <button id="backBtn" type="button" class="secondary">Back to Examinations</button>
   </section>
 </main>
-
+ 
 <footer>Justified Tutor's Academy · JTA CBT</footer>
-
+ 
 <script>
 "use strict";
-
+ 
 const API = "https://jta-student-backend.justifiedtutorsacademy.workers.dev";
-
+ 
 const $ = id => document.getElementById(id);
-
+ 
 let currentExam = null;
 let questions = [];
+let activeSubjects = [];
 let answers = {};
 let currentIndex = 0;
 let deadline = null;
 let timerInterval = null;
 let submitting = false;
-
+ 
 function getToken() {
   return sessionStorage.getItem("jta_student_token");
 }
-
+ 
 function showNotice(message, isError = false) {
   const el = $("notice");
   el.textContent = message;
   el.classList.remove("hidden", "error", "success");
   el.classList.add(isError ? "error" : "success");
 }
-
+ 
 function clearNotice() {
   $("notice").classList.add("hidden");
 }
-
+ 
 function showPanel(name) {
   ["homePanel", "examPanel", "resultsPanel"].forEach(id => {
     $(id).classList.toggle("hidden", id !== name);
   });
 }
-
+ 
 async function api(path, options = {}) {
   const token = getToken();
-
+ 
   if (!token) {
     throw new Error("Your login session was not found. Please log in first.");
   }
-
+ 
   const headers = {
     "Authorization": "Bearer " + token,
     ...(options.body ? {"Content-Type": "application/json"} : {}),
     ...(options.headers || {})
   };
-
+ 
   const response = await fetch(API + path, {...options, headers});
   const text = await response.text();
   let data = {};
-
+ 
   try {
     data = text ? JSON.parse(text) : {};
   } catch {
     throw new Error("The server returned an unexpected response.");
   }
-
+ 
   if (!response.ok) {
     throw new Error(data.error || data.message || ("Request failed: " + response.status));
   }
-
+ 
   return data;
 }
-
+ 
 function unwrapList(data, keys) {
   if (Array.isArray(data)) return data;
   for (const key of keys) {
@@ -393,15 +431,15 @@ function unwrapList(data, keys) {
   }
   return [];
 }
-
+ 
 function getExamId(exam) {
   return exam.id ?? exam.exam_id ?? exam.examId;
 }
-
+ 
 function getExamTitle(exam) {
   return exam.title || exam.name || exam.exam_title || "JTA Examination";
 }
-
+ 
 function getTotalMarks(result) {
   const value = Number(
     result.total_marks ?? result.max_score ??
@@ -409,45 +447,45 @@ function getTotalMarks(result) {
   );
   return Number.isFinite(value) && value > 0 ? value : null;
 }
-
+ 
 function getRawScore(result) {
   const value = Number(result.score ?? result.total_score ?? result.marks);
   return Number.isFinite(value) ? value : null;
 }
-
+ 
 function formatDate(value) {
   if (!value) return "Not available";
   return String(value);
 }
-
+ 
 function addStat(grid, label, value) {
   const box = document.createElement("div");
   box.className = "stat";
-
+ 
   const caption = document.createElement("div");
   caption.className = "stat-label";
   caption.textContent = label;
-
+ 
   const number = document.createElement("div");
   number.className = "stat-value";
   number.textContent = value;
-
+ 
   box.append(caption, number);
   grid.appendChild(box);
 }
-
+ 
 function renderResultCard(result) {
   const item = document.createElement("article");
   item.className = "result-card";
-
+ 
   const title = document.createElement("h3");
   title.textContent = result.exam_title || result.title ||
     result.exam_name || getExamTitle(currentExam || {});
   item.appendChild(title);
-
+ 
   const rawScore = getRawScore(result);
   const totalMarks = getTotalMarks(result);
-
+ 
   if (rawScore === null) {
     const message = document.createElement("p");
     message.textContent = "The score is not available from the server.";
@@ -459,25 +497,25 @@ function renderResultCard(result) {
       ? `Raw score: ${rawScore}/${totalMarks}`
       : `Raw score: ${rawScore}`;
     item.appendChild(scoreLine);
-
+ 
     if (totalMarks !== null) {
       const percentage = Math.max(0, Math.min(100, rawScore / totalMarks * 100));
       const estimated = Math.round(percentage * 4);
-
+ 
       const hero = document.createElement("div");
       hero.className = "jamb-score";
-
+ 
       const caption = document.createElement("p");
       caption.className = "muted";
       caption.textContent = "ESTIMATED JAMB-STYLE SCORE";
-
+ 
       const big = document.createElement("div");
       big.className = "big-score";
       big.textContent = `${estimated}/400`;
-
+ 
       const percentText = document.createElement("p");
       percentText.textContent = `Percentage: ${percentage.toFixed(1)}%`;
-
+ 
       const track = document.createElement("div");
       track.className = "progress-track";
       track.setAttribute("role", "progressbar");
@@ -485,20 +523,20 @@ function renderResultCard(result) {
       track.setAttribute("aria-valuemin", "0");
       track.setAttribute("aria-valuemax", "100");
       track.setAttribute("aria-valuenow", percentage.toFixed(1));
-
+ 
       const fill = document.createElement("div");
       fill.className = "progress-fill";
       fill.style.width = percentage + "%";
       track.appendChild(fill);
-
+ 
       const disclaimer = document.createElement("p");
       disclaimer.className = "disclaimer";
       disclaimer.textContent =
         "This is a practice estimate based on your percentage, not an official JAMB UTME score.";
-
+ 
       hero.append(caption, big, percentText, track, disclaimer);
       item.appendChild(hero);
-
+ 
       const grid = document.createElement("div");
       grid.className = "stat-grid";
       addStat(grid, "Raw marks", `${rawScore}/${totalMarks}`);
@@ -514,61 +552,61 @@ function renderResultCard(result) {
       item.appendChild(note);
     }
   }
-
+ 
   const date = document.createElement("p");
   date.className = "muted";
   date.textContent = "Submitted: " + formatDate(
     result.submitted_at || result.submittedAt || result.taken_at
   );
   item.appendChild(date);
-
+ 
   return item;
 }
-
+ 
 async function loadExams() {
   clearNotice();
   $("loadExamsBtn").disabled = true;
   $("examList").textContent = "Loading examinations...";
-
+ 
   try {
     const data = await api("/api/exams");
     const exams = unwrapList(data, ["exams", "data", "results"]);
     $("examList").replaceChildren();
-
+ 
     if (!exams.length) {
       $("examList").textContent =
         "No published examinations are available for your department yet.";
       return;
     }
-
+ 
     exams.forEach(exam => {
       const card = document.createElement("div");
       card.className = "panel";
-
+ 
       const title = document.createElement("h3");
       title.textContent = getExamTitle(exam);
       card.appendChild(title);
-
+ 
       const details = document.createElement("p");
       details.className = "muted";
-
+ 
       const duration = Number(exam.duration_minutes ?? exam.durationMinutes);
       const total = Number(exam.total_questions ?? exam.question_count);
-
+ 
       details.textContent = [
         Number.isFinite(duration) && duration > 0 ? duration + " minutes" : "",
         Number.isFinite(total) && total > 0 ? total + " questions" : "",
         exam.department || ""
       ].filter(Boolean).join(" · ") || "Online examination";
-
+ 
       card.appendChild(details);
-
+ 
       const start = document.createElement("button");
       start.type = "button";
       start.textContent = "Start Examination";
-      start.addEventListener("click", () => startExam(getExamId(exam)));
+      start.addEventListener("click", () => startExam(exam));
       card.appendChild(start);
-
+ 
       $("examList").appendChild(card);
     });
   } catch (error) {
@@ -578,56 +616,127 @@ async function loadExams() {
     $("loadExamsBtn").disabled = false;
   }
 }
-
+ 
 function normalizeQuestions(data) {
   const list = unwrapList(data, ["questions", "data"]);
-
+ 
   return list.map((q, index) => ({
     id: q.id ?? q.question_id ?? q.questionId ?? String(index + 1),
     text: q.question ?? q.text ?? q.question_text ?? q.prompt ?? "",
-    options: q.options ?? q.options_json ?? q.choices ?? []
+    options: q.options ?? q.options_json ?? q.choices ?? [],
+    subject: q.subject || ""
   }));
 }
-
-async function startExam(id) {
+ 
+function allowedSubjectsForGroup(group) {
+  const value = String(group || "").trim().toLowerCase();
+  if (["science", "medical", "medicals", "engineering", "pure science"].includes(value))
+    return ["English Language", "Mathematics", "Physics", "Chemistry", "Biology"];
+  if (["arts", "art", "law and pure arts", "eng lit econs govt", "irs", "irs students", "irs students only"].includes(value))
+    return ["English Language", "Literature in English", "CRS", "Government", "IRS", "Economics"];
+  if (["commercial", "commercial 1", "commercial 2", "commerce"].includes(value))
+    return ["English Language", "Mathematics", "Economics", "Government", "Commerce", "Accounting"];
+  return [];
+}
+ 
+async function chooseFourSubjects(exam) {
+  const group = exam.department || window.currentStudentDepartment || "";
+  const allowed = allowedSubjectsForGroup(group);
+  if (!allowed.length) throw new Error("Your department group could not be identified. Please contact JTA.");
+  // Show every subject allowed for the student's department. The exam may
+  // currently contain questions for only some subjects; do not hide choices.
+  // The backend should validate question availability when the student starts.
+  const available = allowed;
+  return new Promise(resolve => {
+    const overlay = document.createElement("div");
+    overlay.style.cssText = "position:fixed;inset:0;background:rgba(10,25,45,.65);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;";
+    const panel = document.createElement("div");
+    panel.className = "panel";
+    panel.style.cssText = "width:min(520px,100%);max-height:90vh;overflow:auto;margin:0;";
+    const heading = document.createElement("h2"); heading.textContent = "Choose exactly 4 subjects";
+    const note = document.createElement("p"); note.className = "muted"; note.textContent = "Select four subjects for this attempt. You can choose a different combination next time.";
+    const counter = document.createElement("p"); counter.setAttribute("aria-live","polite"); counter.textContent = "0 of 4 selected";
+    const choices = document.createElement("div");
+    const checks = [];
+    available.forEach(subject => {
+      const label = document.createElement("label"); label.className = "subject-choice";
+      const input = document.createElement("input"); input.type = "checkbox"; input.value = subject;
+      input.addEventListener("change", () => {
+        const checked = checks.filter(x => x.checked);
+        if (checked.length > 4) input.checked = false;
+        const count = checks.filter(x => x.checked).length;
+        counter.textContent = count + " of 4 selected";
+        checks.forEach(x => { if (!x.checked) x.disabled = count === 4; });
+        if (count < 4) checks.forEach(x => x.disabled = false);
+        ok.disabled = count !== 4;
+      });
+      checks.push(input);
+      const text = document.createElement("span"); text.textContent = subject;
+      label.append(input,text); choices.appendChild(label);
+    });
+    const actions = document.createElement("div");
+    const cancel = document.createElement("button"); cancel.type = "button"; cancel.className = "secondary"; cancel.textContent = "Cancel";
+    const ok = document.createElement("button"); ok.type = "button"; ok.textContent = "Continue"; ok.disabled = true;
+    cancel.addEventListener("click", () => { overlay.remove(); resolve(null); });
+    ok.addEventListener("click", () => { const selected = checks.filter(x=>x.checked).map(x=>x.value); overlay.remove(); resolve(selected); });
+    actions.append(cancel,ok); panel.append(heading,note,counter,choices,actions); overlay.appendChild(panel); document.body.appendChild(overlay);
+  });
+}
+ 
+async function startExam(examOrId) {
+  const examObject = typeof examOrId === "object" && examOrId !== null ? examOrId : { id: examOrId };
+  const id = getExamId(examObject);
   if (id === undefined || id === null || id === "") {
     showNotice("This examination has no valid ID. Please contact the academy.", true);
     return;
   }
-
+ 
+  let selectedSubjects = [];
+  // Some API responses omit exam_type or return it under a different property.
+  // Show the subject picker for combined exams, and use the combined flow when
+  // the type is missing so the backend never receives an empty subject selection.
+  const examType = String(
+    examObject.exam_type ?? examObject.examType ?? examObject.type ?? examObject.format ?? ""
+  ).trim().toLowerCase();
+  const isCombinedExam = examType.includes("combined") || examType === "";
+  if (isCombinedExam) {
+    selectedSubjects = await chooseFourSubjects(examObject);
+    if (!selectedSubjects) return;
+  }
+  activeSubjects = selectedSubjects.slice();
   if (!confirm("Start this examination now? Follow the time limit carefully.")) return;
-
+ 
   clearNotice();
   showNotice("Starting examination...");
-
+ 
   try {
     const data = await api(
       "/api/exams/" + encodeURIComponent(id) + "/start",
-      {method: "POST", body: JSON.stringify({})}
+      {method: "POST", body: JSON.stringify({subjects: selectedSubjects})}
     );
-
+ 
     if (data.expired) {
       showNotice("The time for this examination has expired.", true);
       return;
     }
-
+ 
     currentExam = data.exam || data;
     questions = normalizeQuestions(data);
     answers = {};
     currentIndex = 0;
     submitting = false;
-
+ 
     if (!questions.length) {
       throw new Error("The server did not return any questions. Please check the backend.");
     }
-
+ 
     const duration = Number(
       data.duration_minutes ?? data.durationMinutes ??
       currentExam.duration_minutes ?? currentExam.durationMinutes
     );
-
+ 
     const endTime = data.deadline || data.deadline_at || data.ends_at || data.endTime;
-
+ 
     if (endTime) {
       deadline = new Date(endTime).getTime();
     } else if (Number.isFinite(duration) && duration > 0) {
@@ -635,7 +744,7 @@ async function startExam(id) {
     } else {
       deadline = null;
     }
-
+ 
     $("examTitle").textContent = getExamTitle(currentExam);
     showPanel("examPanel");
     clearNotice();
@@ -645,364 +754,199 @@ async function startExam(id) {
     showNotice(error.message, true);
   }
 }
+ 
+function subjectForQuestion(q) {
+  return String(q.subject || activeSubjects[0] || currentExam?.subject || "Subject").trim();
+}
+
+function renderSubjectTabs() {
+  const host = $("subjectTabs");
+  host.replaceChildren();
+  const ordered = activeSubjects.length ? activeSubjects : [...new Set(questions.map(subjectForQuestion))];
+  ordered.forEach(subject => {
+    const indices = questions.map((q,i)=>subjectForQuestion(q)===subject?i:-1).filter(i=>i>=0);
+    if (!indices.length) return;
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "subject-tab" + (subjectForQuestion(questions[currentIndex])===subject ? " active" : "");
+    const answered = indices.filter(i=>Object.prototype.hasOwnProperty.call(answers,questions[i].id)).length;
+    btn.textContent = `${subject}  ${answered}/${indices.length}`;
+    btn.addEventListener("click",()=>{currentIndex=indices[0];renderQuestion();});
+    host.appendChild(btn);
+  });
+}
+
+function renderNavigator() {
+  const host = $("questionNavigator");
+  host.replaceChildren();
+  questions.forEach((q,index)=>{
+    const btn=document.createElement("button");
+    btn.type="button";
+    btn.className="question-jump";
+    if(Object.prototype.hasOwnProperty.call(answers,q.id)) btn.classList.add("answered");
+    if(index===currentIndex) btn.classList.add("current");
+    btn.textContent=String(index+1);
+    btn.setAttribute("aria-label",`Go to question ${index+1}, ${subjectForQuestion(q)}`);
+    btn.addEventListener("click",()=>{currentIndex=index;renderQuestion();});
+    host.appendChild(btn);
+  });
+}
 
 function renderQuestion() {
   if (!questions.length) return;
-
   const q = questions[currentIndex];
-  $("questionNumber").textContent =
-    `Question ${currentIndex + 1} of ${questions.length}`;
-  $("questionProgress").textContent = `${Object.keys(answers).length} answered`;
+  const subject = subjectForQuestion(q);
+  const sameSubject = questions.filter(x=>subjectForQuestion(x)===subject);
+  const withinSubject = sameSubject.indexOf(q)+1;
+  $("questionNumber").textContent = `${subject}  ·  Question ${withinSubject} of ${sameSubject.length}  ·  Overall ${currentIndex+1} of ${questions.length}`;
+  $("questionProgress").textContent = `${Object.keys(answers).length} of ${questions.length} answered`;
   $("questionText").textContent = q.text || "Question text unavailable.";
   $("options").replaceChildren();
-
   let options = q.options;
-
-  if (typeof options === "string") {
-    try { options = JSON.parse(options); }
-    catch { options = []; }
-  }
-
-  if (options && !Array.isArray(options) && typeof options === "object") {
-    options = Object.entries(options).map(([key, value]) => ({
-      label: key,
-      text: value
-    }));
-  }
-
+  if (typeof options === "string") { try { options = JSON.parse(options); } catch { options = []; } }
+  if (options && !Array.isArray(options) && typeof options === "object") options = Object.entries(options).map(([key,value])=>({label:key,text:value}));
   if (!Array.isArray(options) || !options.length) {
-    const msg = document.createElement("p");
-    msg.className = "error";
-    msg.textContent = "Options are unavailable for this question.";
-    $("options").appendChild(msg);
+    const msg=document.createElement("p");msg.className="error";msg.textContent="Options are unavailable for this question.";$("options").appendChild(msg);
   } else {
-    options.forEach((option, index) => {
-      // Submit the option index expected by the backend scorer.
-      const value = String(index);
-      const labelText = typeof option === "object"
-        ? (option.text ?? option.label ?? option.option ?? option.value ?? "")
-        : option;
-
-      const label = document.createElement("label");
-      label.className = "option";
-
-      const radio = document.createElement("input");
-      radio.type = "radio";
-      radio.name = "answer";
-      radio.value = value;
-      radio.checked = String(answers[q.id] ?? "") === value;
-
-      radio.addEventListener("change", () => {
-        answers[q.id] = radio.value;
-        $("questionProgress").textContent =
-          `${Object.keys(answers).length} answered`;
-      });
-
-      label.appendChild(radio);
-      label.appendChild(document.createTextNode(" " + String(labelText)));
+    options.forEach((option,index)=>{
+      const value=String(index);
+      const labelText=typeof option==="object"?(option.text??option.label??option.option??option.value??""):option;
+      const label=document.createElement("label");label.className="option";
+      const radio=document.createElement("input");radio.type="radio";radio.name="answer";radio.value=value;
+      radio.checked=String(answers[q.id]??"")===value;
+      radio.addEventListener("change",()=>{answers[q.id]=radio.value;renderQuestion();});
+      const letter=document.createElement("strong");letter.textContent=String.fromCharCode(65+index);
+      label.append(radio,letter,document.createTextNode(String(labelText)));
       $("options").appendChild(label);
     });
   }
-
-  $("previousBtn").disabled = currentIndex === 0;
-  $("nextBtn").disabled = currentIndex === questions.length - 1;
+  $("previousBtn").disabled=currentIndex===0;
+  $("nextBtn").disabled=currentIndex===questions.length-1;
+  renderSubjectTabs();
+  renderNavigator();
 }
 
 function startTimer() {
   stopTimer();
-
+ 
   function tick() {
     if (!deadline || !Number.isFinite(deadline)) {
       $("timer").textContent = "Server timed";
       return;
     }
-
+ 
     const remaining = Math.max(0, Math.floor((deadline - Date.now()) / 1000));
     const minutes = Math.floor(remaining / 60);
     const seconds = remaining % 60;
-
+ 
     $("timer").textContent =
       String(minutes).padStart(2, "0") + ":" +
       String(seconds).padStart(2, "0");
-
+ 
     $("timer").classList.toggle("urgent", remaining <= 300);
-
+ 
     if (remaining <= 0) {
       stopTimer();
       submitExam(true);
     }
   }
-
+ 
   tick();
   timerInterval = setInterval(tick, 1000);
 }
-
+ 
 function stopTimer() {
   if (timerInterval) clearInterval(timerInterval);
   timerInterval = null;
 }
-
+ 
 $("previousBtn").addEventListener("click", () => {
   if (currentIndex > 0) {
     currentIndex--;
     renderQuestion();
   }
 });
-
+ 
 $("nextBtn").addEventListener("click", () => {
   if (currentIndex < questions.length - 1) {
     currentIndex++;
     renderQuestion();
   }
 });
-
+ 
 $("submitBtn").addEventListener("click", () => submitExam(false));
-
+$("topSubmitBtn").addEventListener("click", () => submitExam(false));
+ 
 async function submitExam(autoSubmit) {
   if (!currentExam || submitting) return;
-
+ 
   const unanswered = questions.length - Object.keys(answers).length;
-
+ 
   if (!autoSubmit && unanswered > 0) {
     if (!confirm(`You have ${unanswered} unanswered question(s). Submit anyway?`)) return;
   } else if (!autoSubmit) {
     if (!confirm("Are you sure you want to submit your examination?")) return;
   }
-
+ 
   submitting = true;
   $("submitBtn").disabled = true;
+  $("topSubmitBtn").disabled = true;
   showNotice(autoSubmit ? "Time is up. Submitting..." : "Submitting examination...");
-
+ 
   try {
     const examId = getExamId(currentExam);
     if (examId === undefined || examId === null) {
       throw new Error("The examination ID is missing.");
     }
-
-const data = await api(
-      "/api/exams/" + encodeURIComponent(id) + "/start",
-      {method: "POST", body: JSON.stringify({})}
-    );
-
-    if (data.expired) {
-      showNotice("The time for this examination has expired.", true);
-      return;
-    }
-
-    currentExam = data.exam || data;
-    questions = normalizeQuestions(data);
-    answers = {};
-    currentIndex = 0;
-    submitting = false;
-
-    if (!questions.length) {
-      throw new Error("The server did not return any questions. Please check the backend.");
-    }
-
-    const duration = Number(
-      data.duration_minutes ?? data.durationMinutes ??
-      currentExam.duration_minutes ?? currentExam.durationMinutes
-    );
-
-    const endTime = data.deadline || data.deadline_at || data.ends_at || data.endTime;
-
-    if (endTime) {
-      deadline = new Date(endTime).getTime();
-    } else if (Number.isFinite(duration) && duration > 0) {
-      deadline = Date.now() + duration * 60000;
-    } else {
-      deadline = null;
-    }
-
-    $("examTitle").textContent = getExamTitle(currentExam);
-    showPanel("examPanel");
-    clearNotice();
-    renderQuestion();
-    startTimer();
-  } catch (error) {
-    showNotice(error.message, true);
-  }
-}
-
-function renderQuestion() {
-  if (!questions.length) return;
-
-  const q = questions[currentIndex];
-  $("questionNumber").textContent =
-    `Question ${currentIndex + 1} of ${questions.length}`;
-  $("questionProgress").textContent = `${Object.keys(answers).length} answered`;
-  $("questionText").textContent = q.text || "Question text unavailable.";
-  $("options").replaceChildren();
-
-  let options = q.options;
-
-  if (typeof options === "string") {
-    try { options = JSON.parse(options); }
-    catch { options = []; }
-  }
-
-  if (options && !Array.isArray(options) && typeof options === "object") {
-    options = Object.entries(options).map(([key, value]) => ({
-      label: key,
-      text: value
-    }));
-  }
-
-  if (!Array.isArray(options) || !options.length) {
-    const msg = document.createElement("p");
-    msg.className = "error";
-    msg.textContent = "Options are unavailable for this question.";
-    $("options").appendChild(msg);
-  } else {
-    options.forEach((option, index) => {
-      // Submit the option index expected by the backend scorer.
-      const value = String(index);
-      const labelText = typeof option === "object"
-        ? (option.text ?? option.label ?? option.option ?? option.value ?? "")
-        : option;
-
-      const label = document.createElement("label");
-      label.className = "option";
-
-      const radio = document.createElement("input");
-      radio.type = "radio";
-      radio.name = "answer";
-      radio.value = value;
-      radio.checked = String(answers[q.id] ?? "") === value;
-
-      radio.addEventListener("change", () => {
-        answers[q.id] = radio.value;
-        $("questionProgress").textContent =
-          `${Object.keys(answers).length} answered`;
-      });
-
-      label.appendChild(radio);
-      label.appendChild(document.createTextNode(" " + String(labelText)));
-      $("options").appendChild(label);
-    });
-  }
-
-  $("previousBtn").disabled = currentIndex === 0;
-  $("nextBtn").disabled = currentIndex === questions.length - 1;
-}
-
-function startTimer() {
-  stopTimer();
-
-  function tick() {
-    if (!deadline || !Number.isFinite(deadline)) {
-      $("timer").textContent = "Server timed";
-      return;
-    }
-
-    const remaining = Math.max(0, Math.floor((deadline - Date.now()) / 1000));
-    const minutes = Math.floor(remaining / 60);
-    const seconds = remaining % 60;
-
-    $("timer").textContent =
-      String(minutes).padStart(2, "0") + ":" +
-      String(seconds).padStart(2, "0");
-
-    $("timer").classList.toggle("urgent", remaining <= 300);
-
-    if (remaining <= 0) {
-      stopTimer();
-      submitExam(true);
-    }
-  }
-
-  tick();
-  timerInterval = setInterval(tick, 1000);
-}
-
-function stopTimer() {
-  if (timerInterval) clearInterval(timerInterval);
-  timerInterval = null;
-}
-
-$("previousBtn").addEventListener("click", () => {
-  if (currentIndex > 0) {
-    currentIndex--;
-    renderQuestion();
-  }
-});
-
-$("nextBtn").addEventListener("click", () => {
-  if (currentIndex < questions.length - 1) {
-    currentIndex++;
-    renderQuestion();
-  }
-});
-
-$("submitBtn").addEventListener("click", () => submitExam(false));
-
-async function submitExam(autoSubmit) {
-  if (!currentExam || submitting) return;
-
-  const unanswered = questions.length - Object.keys(answers).length;
-
-  if (!autoSubmit && unanswered > 0) {
-    if (!confirm(`You have ${unanswered} unanswered question(s). Submit anyway?`)) return;
-  } else if (!autoSubmit) {
-    if (!confirm("Are you sure you want to submit your examination?")) return;
-  }
-
-  submitting = true;
-  $("submitBtn").disabled = true;
-  showNotice(autoSubmit ? "Time is up. Submitting..." : "Submitting examination...");
-
-  try {
-    const examId = getExamId(currentExam);
-    if (examId === undefined || examId === null) {
-      throw new Error("The examination ID is missing.");
-    }
-
+ 
 const data = await api(
       "/api/exams/" + encodeURIComponent(examId) + "/submit",
       {method: "POST", body: JSON.stringify({answers})}
     );
-
+ 
     stopTimer();
-
+ 
     const result = {
       ...(data.result || data),
       exam_title: getExamTitle(currentExam),
       status: "submitted"
     };
-
+ 
     currentExam = null;
     questions = [];
+    activeSubjects = [];
     answers = {};
-
+ 
     showPanel("resultsPanel");
     $("resultsList").replaceChildren();
     $("resultsList").appendChild(renderResultCard(result));
-
+ 
     showNotice("Your examination has been submitted successfully.");
   } catch (error) {
     showNotice(error.message, true);
   } finally {
     submitting = false;
     $("submitBtn").disabled = false;
+    $("topSubmitBtn").disabled = false;
   }
 }
-
+ 
 async function loadResults() {
   clearNotice();
   showPanel("resultsPanel");
   $("resultsList").textContent = "Loading results...";
-
+ 
   try {
     const data = await api("/api/results");
     const results = unwrapList(data, ["results", "data", "attempts"]);
-
+ 
     $("resultsList").replaceChildren();
-
+ 
     if (!results.length) {
       $("resultsList").textContent = "No examination results are available yet.";
       return;
     }
-
+ 
     results.forEach(result => {
       $("resultsList").appendChild(renderResultCard(result));
     });
@@ -1011,15 +955,15 @@ async function loadResults() {
     showNotice(error.message, true);
   }
 }
-
+ 
 $("loadExamsBtn").addEventListener("click", loadExams);
 $("loadResultsBtn").addEventListener("click", loadResults);
-
+ 
 $("backBtn").addEventListener("click", () => {
   showPanel("homePanel");
   clearNotice();
 });
-
+ 
 if (!getToken()) {
   showNotice("Please log in through the JTA student login page before using the CBT portal.", true);
 } else {
