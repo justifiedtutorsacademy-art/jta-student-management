@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#142b4a">
+  <title>JTA | Administrator Dashboard</title>
+  <style>
+    :root{--navy:#142b4a;--navy2:#203f68;--blue:#2459a9;--gold:#e6b84b;--bg:#f3f6fb;--white:#fff;--text:#172438;--muted:#64748b;--border:#dce4ef;--green:#16794b;--red:#b42332;--shadow:0 12px 32px rgba(20,43,74,.07)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
+    button,input,select{font:inherit}button{cursor:pointer;transition:transform .15s,filter .15s}button:hover:not(:disabled){filter:brightness(1.04);transform:translateY(-1px)}button:disabled{opacity:.55;cursor:not-allowed}
+    .topbar{background:linear-gradient(125deg,var(--navy),var(--navy2));color:#fff;border-bottom:5px solid var(--gold);padding:23px 0}.wrap{width:min(1120px,calc(100% - 32px));margin:auto}.brand{display:flex;align-items:center;gap:14px}.brand-mark{width:48px;height:48px;display:grid;place-items:center;border-radius:15px;background:var(--gold);color:var(--navy);font-size:19px;font-weight:900;letter-spacing:-1px;box-shadow:0 5px 16px #0002}.brand h1{margin:0;font-size:clamp(20px,3vw,27px);line-height:1.2}.brand p{margin:5px 0 0;color:#dbe7f7;font-size:14px}.topbar-inner{display:flex;justify-content:space-between;align-items:center;gap:16px}.secure-label{font-size:12px;border:1px solid #ffffff45;background:#ffffff12;padding:8px 12px;border-radius:999px;white-space:nowrap}
+    main{padding:28px 0 48px}.intro{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:22px}.eyebrow{color:var(--blue);font-weight:800;text-transform:uppercase;letter-spacing:.12em;font-size:11px;margin:0 0 6px}.intro h2{font-size:clamp(24px,4vw,32px);letter-spacing:-.035em;line-height:1.15;margin:0}.intro p{color:var(--muted);margin:8px 0 0}.card{background:var(--white);border:1px solid var(--border);border-radius:18px;padding:22px;margin-bottom:20px;box-shadow:var(--shadow)}.card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:17px}.card h2{font-size:19px;letter-spacing:-.02em;margin:0}.subtext{font-size:13px;color:var(--muted);margin:5px 0 0}.pill{display:inline-flex;align-items:center;gap:7px;border-radius:999px;padding:6px 10px;background:#eef4ff;color:var(--blue);font-size:12px;font-weight:800;white-space:nowrap}.pill:before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+    .login-card{max-width:540px;margin:30px auto;padding:clamp(22px,5vw,34px)}.login-icon{width:54px;height:54px;border-radius:16px;background:#fff4d5;color:#805c00;display:grid;place-items:center;font-size:25px;margin-bottom:16px}.field-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 14px}.field{min-width:0}.field.full{grid-column:1/-1}label{display:block;font-size:13px;font-weight:750;margin:13px 0 7px}input,select{width:100%;min-height:46px;border:1px solid #cbd5e1;border-radius:10px;padding:10px 12px;background:#fff;color:var(--text);outline:none}input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px #2459a91b}.btn{border:0;border-radius:10px;min-height:44px;padding:10px 15px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;gap:8px}.btn-primary{background:var(--blue);color:#fff}.btn-gold{background:var(--gold);color:var(--navy)}.btn-soft{background:#eaf0f8;color:var(--navy)}.btn-danger{background:#fff0f0;color:var(--red)}.btn-success{background:var(--green);color:#fff}.btn-block{width:100%;margin-top:17px}.status{padding:12px 14px;border-radius:11px;background:#edf3fc;color:var(--navy);overflow-wrap:anywhere;margin-top:14px;font-size:14px}.status.error{background:#fff0f0;color:#9b1c1c}.status.success{background:#e9f8ef;color:#17623b}.hidden{display:none!important}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:20px}.stat{background:#fff;border:1px solid var(--border);border-radius:16px;padding:17px;box-shadow:0 5px 20px #142b4a08;min-width:0}.stat-top{display:flex;align-items:center;justify-content:space-between;gap:8px}.stat-label{color:var(--muted);font-size:12px;font-weight:750}.stat-icon{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:#edf3fc;color:var(--blue);font-weight:900}.stat-value{font-size:29px;font-weight:850;letter-spacing:-.04em;margin-top:10px;line-height:1.1}.stat-note{font-size:12px;color:var(--muted);margin-top:6px}
+    .toolbar{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:end}.toolbar .btn{min-width:150px}.list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.item{border:1px solid var(--border);border-radius:14px;padding:16px;min-width:0;background:linear-gradient(180deg,#fff,#fcfdff)}.item h3{font-size:16px;margin:0 0 8px;overflow-wrap:anywhere}.item p{margin:7px 0;font-size:13px;color:#42526a;overflow-wrap:anywhere}.code{color:var(--blue)!important;font-weight:850}.item-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}.item-actions .btn{flex:1;min-width:100px}.empty{border:1px dashed #cbd5e1;border-radius:14px;padding:26px 16px;text-align:center;color:var(--muted);grid-column:1/-1}.empty strong{display:block;color:var(--text);margin-bottom:4px}.section-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start}.section-grid .card{height:100%}.toolbar-label{margin-top:0}.note{font-size:12px;color:var(--muted);margin-top:12px}.admin-session{display:flex;align-items:center;justify-content:space-between;gap:16px}.admin-session p{margin:5px 0 0;color:var(--muted);font-size:13px}.admin-session .btn{flex-shrink:0}footer{text-align:center;padding:20px;color:var(--muted);font-size:12px}
+    @media(max-width:800px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.section-grid{grid-template-columns:1fr}.list{grid-template-columns:1fr}.intro{align-items:flex-start;flex-direction:column}.secure-label{display:none}}
+    @media(max-width:520px){.wrap{width:min(100% - 22px,1120px)}.topbar{padding:18px 0}.brand-mark{width:42px;height:42px;border-radius:13px}.card{padding:17px;border-radius:15px}.stats{gap:9px}.stat{padding:13px}.stat-value{font-size:25px}.stat-icon{width:29px;height:29px}.field-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.toolbar{grid-template-columns:1fr}.toolbar .btn{width:100%}.admin-session{align-items:stretch;flex-direction:column}.admin-session .btn{width:100%}.item-actions .btn{flex-basis:100%}}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <div class="brand"><div class="brand-mark" aria-hidden="true">JTA</div><div><h1>Justified Tutor's Academy</h1><p>Administrator workspace · Student success starts here</p></div></div>
+      <div class="secure-label">● Secure administrator access</div>
+    </div>
+  </header>
+  <main class="wrap">
+    <section class="card login-card" id="loginPanel">
+      <div class="login-icon" aria-hidden="true">🔐</div>
+      <p class="eyebrow">Welcome back</p><h2>Administrator access</h2>
+      <p class="subtext">Enter your existing Cloudflare administrator secret to manage student applications and coach accounts. Never share this secret with students or coaches.</p>
+      <form id="loginForm">
+        <label for="adminKey">Administrator secret</label>
+        <input id="adminKey" type="password" autocomplete="current-password" required placeholder="Enter your admin secret">
+        <button class="btn btn-primary btn-block" type="submit" id="loginButton">Connect to dashboard <span aria-hidden="true">→</span></button>
+      </form>
+      <div id="loginMessage" class="status hidden" role="status" aria-live="polite"></div>
+    </section>
+ 
+    <section id="dashboard" class="hidden">
+      <div class="intro"><div><p class="eyebrow">JTA management</p><h2>Dashboard overview</h2><p>Manage applications and your student-support team from one place.</p></div><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><a class="btn btn-gold" href="analytics.html" target="_blank" rel="noopener" style="text-decoration:none">📊 Analytics Dashboard</a><span class="pill">Administrator connected</span></div></div>
+      <div class="stats" aria-label="Dashboard summary">
+        <div class="stat"><div class="stat-top"><span class="stat-label">Pending applications</span><span class="stat-icon">…</span></div><div class="stat-value" id="pendingCount">—</div><div class="stat-note">Awaiting review</div></div>
+        <div class="stat"><div class="stat-top"><span class="stat-label">Approved students</span><span class="stat-icon">✓</span></div><div class="stat-value" id="approvedCount">—</div><div class="stat-note">Approved applications</div></div>
+        <div class="stat"><div class="stat-top"><span class="stat-label">Rejected applications</span><span class="stat-icon">×</span></div><div class="stat-value" id="rejectedCount">—</div><div class="stat-note">Rejected applications</div></div>
+        <div class="stat"><div class="stat-top"><span class="stat-label">Registered coaches</span><span class="stat-icon">★</span></div><div class="stat-value" id="coachCount">—</div><div class="stat-note">Coach accounts in the system</div></div>
+      </div>
+ 
+      <div class="section-grid">
+        <section class="card">
+          <div class="card-head"><div><h2>Student applications</h2><p class="subtext">Review applications and approve eligible students.</p></div><span class="pill">Students</span></div>
+          <div class="toolbar">
+            <div><label class="toolbar-label" for="statusFilter">Application status</label><select id="statusFilter"><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option></select></div>
+            <button class="btn btn-soft" id="refreshButton" type="button">↻ Refresh list</button>
+          </div>
+          <div id="listMessage" class="status" role="status" aria-live="polite">Connect to load applications.</div>
+          <div id="applications" class="list"></div>
+        </section>
+ 
+        <section class="card" id="coachManagement">
+          <div class="card-head"><div><h2>Coach management</h2><p class="subtext">Create coach accounts and review the coaches registered in JTA.</p></div><span class="pill">Team</span></div>
+          <form id="coachForm">
+            <div class="field-grid">
+              <div class="field full"><label for="coachName">Coach's full name</label><input id="coachName" name="full_name" required maxlength="120" autocomplete="name" placeholder="Enter full name"></div>
+              <div class="field"><label for="coachEmail">Email address</label><input id="coachEmail" name="email" type="email" required autocomplete="email" placeholder="coach@example.com"></div>
+              <div class="field"><label for="coachPhone">Phone number</label><input id="coachPhone" name="phone" type="tel" required maxlength="30" autocomplete="tel" placeholder="Coach's phone"></div>
+              <div class="field full"><label for="coachPassword">Temporary password</label><input id="coachPassword" name="password" type="password" minlength="8" required autocomplete="new-password" placeholder="At least 8 characters"><p class="note">Use a strong, unique password and share it privately with the coach.</p></div>
+            </div>
+            <button class="btn btn-primary btn-block" type="submit" id="createCoachButton">＋ Create coach account</button>
+          </form>
+          <div id="coachMessage" class="status hidden" role="status" aria-live="polite"></div>
+          <div class="card-head" style="margin-top:25px;margin-bottom:10px"><div><h2 style="font-size:16px">Registered coaches</h2><p class="subtext">Coach names, contact details and account status.</p></div><button class="btn btn-soft" type="button" id="refreshCoachesButton">↻ Refresh</button></div>
+          <div id="coachesMessage" class="status" role="status" aria-live="polite">Coach list has not been loaded yet.</div>
+          <div id="coaches" class="list"></div>
+          <p class="note">Student assignment and follow-up notes need their own backend endpoints; this page will not claim those actions are available until they are implemented.</p>
+        </section>
+      </div>
+ 
+      <section class="card" id="assignmentManagement">
+        <div class="card-head"><div><h2>Student–coach assignments</h2><p class="subtext">Assign an approved student, transfer them to another active coach, or end an assignment without deleting student history.</p></div><span class="pill">Assignments</span></div>
+        <form id="assignmentForm">
+          <div class="field-grid">
+            <div class="field"><label for="assignmentCoach">Active coach</label><select id="assignmentCoach" required><option value="">Load coaches first</option></select></div>
+            <div class="field"><label for="assignmentStudent">Approved student</label><select id="assignmentStudent" required><option value="">Load students first</option></select></div>
+          </div>
+          <button class="btn btn-primary btn-block" type="submit" id="assignStudentButton">Assign / transfer student</button>
+        </form>
+        <div id="assignmentMessage" class="status" role="status" aria-live="polite">Connect to load approved students and assignments.</div>
+        <div class="card-head" style="margin-top:25px;margin-bottom:10px"><div><h2 style="font-size:16px">Approved students and current assignments</h2><p class="subtext">Ending an assignment does not delete attendance, scores or follow-up notes.</p></div><button class="btn btn-soft" type="button" id="refreshAssignmentsButton">↻ Refresh</button></div>
+        <div id="assignments" class="list"></div>
+      </section>
+ 
+      
+      <section class="card" id="examManagementLink">
+       <div class="card-head">
+        <div><h2>Examination management</h2>
+        <p class="subtext">Create exams, add multiple-choice questions, save drafts, publish exams, and review student results.</p></div>
+        <span class="pill">CBT</span>
+       </div>
+       <a class="btn btn-primary btn-block" href="exam-management.html" style="display:block;text-align:center;text-decoration:none">Open examination manager →</a>
+      </section>
+
+<section class="card admin-session">
+        <div><h2>Administrator session</h2><p>Your secret stays in this page's temporary memory and is not saved to local storage.</p></div>
+        <button class="btn btn-soft" id="logoutButton" type="button">Disconnect and clear secret</button>
+      </section>
+    </section>
+  </main>
+  <footer>Justified Tutor's Academy · Student Management System</footer>
+<script>
+(() => {
+  "use strict";
+  const API = "https://jta-student-backend.justifiedtutorsacademy.workers.dev";
+  let adminSecret = "";
+  const ADMIN_SESSION_KEY = "jta_exam_admin_key";
+  function saveAdminSession(secret) {
+    try { sessionStorage.setItem(ADMIN_SESSION_KEY, secret); } catch (_) {}
+  }
+  function readAdminSession() {
+    try { return sessionStorage.getItem(ADMIN_SESSION_KEY) || ""; } catch (_) { return ""; }
+  }
+  function clearAdminSession() {
+    try { sessionStorage.removeItem(ADMIN_SESSION_KEY); } catch (_) {}
+  }
+  let applicationBusy = false;
+  let coachBusy = false;
+  let cachedCoaches = [];
+  let cachedStudents = [];
+  let assignmentBusy = false;
+  const $ = id => document.getElementById(id);
+ 
+  function showMessage(element, message, type = "") {
+    element.textContent = message;
+    element.className = "status" + (type ? " " + type : "");
+    element.classList.remove("hidden");
+  }
+  async function apiRequest(path, options = {}) {
+    const headers = { "X-Admin-Key": adminSecret, ...(options.body ? { "Content-Type": "application/json" } : {}) };
+    const response = await fetch(API + path, { ...options, headers: { ...headers, ...(options.headers || {}) } });
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(result.error || "Request failed (" + response.status + ").");
+    return result;
+  }
+  function addText(parent, tag, value, className = "") {
+    const element = document.createElement(tag);
+    element.textContent = value == null ? "" : String(value);
+    if (className) element.className = className;
+    parent.appendChild(element);
+    return element;
+  }
+  function makeApplicationCard(application) {
+    const card = document.createElement("article"); card.className = "item";
+    addText(card, "h3", application.full_name || "Unnamed student");
+    addText(card, "p", "JTA Code: " + (application.student_code || "Not assigned"), "code");
+    addText(card, "p", "Email: " + (application.email || "Not provided"));
+    addText(card, "p", "Phone: " + (application.phone || "Not provided"));
+    addText(card, "p", "Parent/Guardian: " + (application.parent_phone || "Not provided"));
+    addText(card, "p", "Data phone: " + (application.data_phone || "Not provided"));
+    addText(card, "p", "Network: " + (application.network || "Not provided"));
+    addText(card, "p", "Department: " + (application.department || "Not provided"));
+    addText(card, "p", "Status: " + (application.status || "Unknown"));
+    addText(card, "p", "Application ID: " + (application.id || "Not provided"));
+    if ($("statusFilter").value === "pending") {
+      const actions = document.createElement("div"); actions.className = "item-actions";
+      const approve = document.createElement("button"); approve.type = "button"; approve.className = "btn btn-success"; approve.textContent = "Approve";
+      const reject = document.createElement("button"); reject.type = "button"; reject.className = "btn btn-danger"; reject.textContent = "Reject";
+      approve.addEventListener("click", () => reviewApplication(application.id, "approved", approve, reject));
+      reject.addEventListener("click", () => reviewApplication(application.id, "rejected", approve, reject));
+      actions.append(approve, reject); card.appendChild(actions);
+    }
+    return card;
+  }
+  async function loadApplications() {
+    if (!adminSecret || applicationBusy) return;
+    applicationBusy = true; $("refreshButton").disabled = true; $("applications").replaceChildren();
+    showMessage($("listMessage"), "Loading applications…");
+    try {
+      const status = $("statusFilter").value;
+      const result = await apiRequest("/api/admin/applications?status=" + encodeURIComponent(status));
+      const applications = Array.isArray(result.applications) ? result.applications : [];
+      if (!applications.length) {
+        showMessage($("listMessage"), "No " + status + " applications found.");
+      } else {
+        showMessage($("listMessage"), applications.length + " " + status + " application(s) found.", "success");
+        applications.forEach(application => $("applications").appendChild(makeApplicationCard(application)));
+      }
+    } catch (error) {
+      showMessage($("listMessage"), error.message, "error");
+      if (/unauthorized|admin access denied/i.test(error.message)) disconnect("Your administrator session was rejected. Please sign in again.");
+    } finally { applicationBusy = false; $("refreshButton").disabled = false; }
+  }
+  async function reviewApplication(id, decision, approve, reject) {
+    const action = decision === "approved" ? "approve" : "reject";
+    if (!confirm("Are you sure you want to " + action + " this application?")) return;
+    approve.disabled = true; reject.disabled = true;
+    try {
+      await apiRequest("/api/admin/review", { method: "POST", body: JSON.stringify({ applicationId: id, decision }) });
+      showMessage($("listMessage"), "Application " + decision + " successfully.", "success");
+      await refreshSummary(); await loadApplications();
+    } catch (error) { alert("Could not update application: " + error.message); approve.disabled = false; reject.disabled = false; }
+  }
+  function makeCoachCard(coach) {
+    const card = document.createElement("article"); card.className = "item";
+    addText(card, "h3", coach.full_name || "Unnamed coach");
+    addText(card, "p", "Email: " + (coach.email || "Not provided"));
+    addText(card, "p", "Phone: " + (application.phone || "Not provided"));
+    addText(card, "p", "Parent/Guardian: " + (application.parent_phone || "Not provided"));
+    addText(card, "p", "Data phone: " + (application.data_phone || "Not provided"));
+    addText(card, "p", "Network: " + (application.network || "Not provided"));
+    addText(card, "p", "Department: " + (application.department || "Not provided"));
+    addText(card, "p", "Status: " + (application.status || "Unknown"));
+    addText(card, "p", "Application ID: " + (application.id || "Not provided"));
+    if ($("statusFilter").value === "pending") {
+      const actions = document.createElement("div"); actions.className = "item-actions";
+      const approve = document.createElement("button"); approve.type = "button"; approve.className = "btn btn-success"; approve.textContent = "Approve";
+      const reject = document.createElement("button"); reject.type = "button"; reject.className = "btn btn-danger"; reject.textContent = "Reject";
+      approve.addEventListener("click", () => reviewApplication(application.id, "approved", approve, reject));
+      reject.addEventListener("click", () => reviewApplication(application.id, "rejected", approve, reject));
+      actions.append(approve, reject); card.appendChild(actions);
+    }
+    return card;
+  }
+  async function loadApplications() {
+    if (!adminSecret || applicationBusy) return;
+    applicationBusy = true; $("refreshButton").disabled = true; $("applications").replaceChildren();
+    showMessage($("listMessage"), "Loading applications…");
+    try {
+      const status = $("statusFilter").value;
+      const result = await apiRequest("/api/admin/applications?status=" + encodeURIComponent(status));
+      const applications = Array.isArray(result.applications) ? result.applications : [];
+      if (!applications.length) {
+        showMessage($("listMessage"), "No " + status + " applications found.");
+      } else {
+        showMessage($("listMessage"), applications.length + " " + status + " application(s) found.", "success");
+        applications.forEach(application => $("applications").appendChild(makeApplicationCard(application)));
+      }
+    } catch (error) {
+      showMessage($("listMessage"), error.message, "error");
+      if (/unauthorized|admin access denied/i.test(error.message)) disconnect("Your administrator session was rejected. Please sign in again.");
+    } finally { applicationBusy = false; $("refreshButton").disabled = false; }
+  }
+  async function reviewApplication(id, decision, approve, reject) {
+    const action = decision === "approved" ? "approve" : "reject";
+    if (!confirm("Are you sure you want to " + action + " this application?")) return;
+    approve.disabled = true; reject.disabled = true;
+    try {
+      await apiRequest("/api/admin/review", { method: "POST", body: JSON.stringify({ applicationId: id, decision }) });
+      showMessage($("listMessage"), "Application " + decision + " successfully.", "success");
+      await refreshSummary(); await loadApplications();
+    } catch (error) { alert("Could not update application: " + error.message); approve.disabled = false; reject.disabled = false; }
+  }
+  function makeCoachCard(coach) {
+    const card = document.createElement("article"); card.className = "item";
+    addText(card, "h3", coach.full_name || "Unnamed coach");
+    addText(card, "p", "Email: " + (coach.email || "Not provided"));
+    addText(card, "p", "Phone: " + (coach.phone || "Not provided"));
+    addText(card, "p", "Status: " + (coach.status || "Unknown"));
+    if (coach.created_at) addText(card, "p", "Created: " + coach.created_at);
+    const actions = document.createElement("div"); actions.className = "item-actions";
+    const button = document.createElement("button"); button.type = "button";
+    const active = coach.status === "active";
+    button.className = "btn " + (active ? "btn-danger" : "btn-success");
+    button.textContent = active ? "Suspend coach" : "Reactivate coach";
+    button.addEventListener("click", () => changeCoachStatus(coach, active ? "inactive" : "active", button));
+    actions.appendChild(button); card.appendChild(actions);
+    return card;
+  }
+  async function changeCoachStatus(coach, status, button) {
+    const verb = status === "inactive" ? "suspend" : "reactivate";
+    if (!confirm("Are you sure you want to " + verb + " " + (coach.full_name || "this coach") + "?")) return;
+    button.disabled = true;
+    try {
+      await apiRequest("/api/admin/coach-status", { method: "POST", body: JSON.stringify({ coachId: coach.id, status }) });
+      showMessage($("coachesMessage"), "Coach " + (status === "active" ? "reactivated" : "suspended") + " successfully.", "success");
+      await loadCoaches();
+      await loadAssignments();
+    } catch (error) {
+      alert("Could not " + verb + " coach: " + error.message);
+      button.disabled = false;
+    }
+  }
+  function fillSelect(select, items, placeholder, getValue, getLabel) {
+    select.replaceChildren();
+    const first = document.createElement("option"); first.value = ""; first.textContent = placeholder; select.appendChild(first);
+    items.forEach(item => {
+      const option = document.createElement("option");
+      option.value = getValue(item); option.textContent = getLabel(item); select.appendChild(option);
+    });
+  }
+  function refreshAssignmentSelects() {
+    const activeCoaches = cachedCoaches.filter(c => c.status === "active");
+    fillSelect($("assignmentCoach"), activeCoaches, "Choose an active coach", c => c.id, c => c.full_name + " — " + c.email);
+    fillSelect($("assignmentStudent"), cachedStudents, "Choose an approved student", s => s.id, s => (s.student_code || "No JTA code") + " — " + s.full_name);
+  }
+  function makeAssignmentCard(student) {
+    const card = document.createElement("article"); card.className = "item";
+    addText(card, "h3", student.full_name || "Unnamed student");
+    addText(card, "p", "JTA Code: " + (student.student_code || "Not assigned"), "code");
+    addText(card, "p", "Email: " + (student.email || "Not provided"));
+    addText(card, "p", "Department: " + (student.department || "Not provided"));
+    const currentCoach = cachedCoaches.find(c => c.id === student.coach_id);
+    addText(card, "p", "Current coach: " + (currentCoach ? currentCoach.full_name : (student.coach_id ? "Coach account unavailable" : "Unassigned")));
+    if (student.coach_id) {
+      const actions = document.createElement("div"); actions.className = "item-actions";
+      const endButton = document.createElement("button"); endButton.type = "button"; endButton.className = "btn btn-danger"; endButton.textContent = "End assignment";
+      endButton.addEventListener("click", async () => {
+        if (!confirm("End the current coach assignment for " + student.full_name + "? Their historical records will be preserved.")) return;
+        endButton.disabled = true;
+        try {
+          await apiRequest("/api/admin/end-assignment", { method: "POST", body: JSON.stringify({ studentId: student.id }) });
+          showMessage($("assignmentMessage"), "Assignment ended. Student history was preserved.", "success");
+          await loadAssignments();
+        } catch (error) { alert("Could not end assignment: " + error.message); endButton.disabled = false; }
+      });
+      actions.appendChild(endButton); card.appendChild(actions);
+    }
+    return card;
+  }
+  async function loadAssignments() {
+    if (!adminSecret || assignmentBusy) return;
+    assignmentBusy = true; $("refreshAssignmentsButton").disabled = true; $("assignments").replaceChildren();
+    showMessage($("assignmentMessage"), "Loading approved students and assignments…");
+    try {
+      const result = await apiRequest("/api/admin/assignable-students");
+      cachedStudents = Array.isArray(result.students) ? result.students : [];
+      refreshAssignmentSelects();
+      if (!cachedStudents.length) showMessage($("assignmentMessage"), "No approved students are available for assignment yet.");
+      else {
+        showMessage($("assignmentMessage"), cachedStudents.length + " approved student(s) found.", "success");
+        cachedStudents.forEach(student => $("assignments").appendChild(makeAssignmentCard(student)));
+      }
+    } catch (error) {
+      showMessage($("assignmentMessage"), "Could not load assignments: " + error.message, "error");
+    } finally { assignmentBusy = false; $("refreshAssignmentsButton").disabled = false; }
+  }
+  async function loadCoaches() {
+    if (!adminSecret || coachBusy) return;
+    coachBusy = true; $("refreshCoachesButton").disabled = true; $("coaches").replaceChildren();
+    showMessage($("coachesMessage"), "Loading registered coaches…");
+    try {
+      const result = await apiRequest("/api/admin/coaches");
+      const coaches = Array.isArray(result.coaches) ? result.coaches : [];
+      cachedCoaches = coaches;
+      refreshAssignmentSelects();
+      $("coachCount").textContent = String(coaches.length);
+      if (!coaches.length) showMessage($("coachesMessage"), "No coaches have been created yet.");
+      else {
+        showMessage($("coachesMessage"), coaches.length + " coach account(s) found.", "success");
+        coaches.forEach(coach => $("coaches").appendChild(makeCoachCard(coach)));
+      }
+    } catch (error) {
+      showMessage($("coachesMessage"), "Could not load coaches: " + error.message, "error");
+      $("coachCount").textContent = "—";
+    } finally { coachBusy = false; $("refreshCoachesButton").disabled = false; }
+  }
+  async function refreshSummary() {
+    if (!adminSecret) return;
+    const statuses = ["pending", "approved", "rejected"];
+    await Promise.all(statuses.map(async status => {
+      const target = status === "pending" ? "pendingCount" : status === "approved" ? "approvedCount" : "rejectedCount";
+      try {
+        const result = await apiRequest("/api/admin/applications?status=" + status);
+        $(target).textContent = String(Array.isArray(result.applications) ? result.applications.length : 0);
+      } catch (_) { $(target).textContent = "—"; }
+    }));
+  }
+  function disconnect(message = "You have disconnected.") {
+    clearAdminSession();
+    adminSecret = ""; cachedCoaches = []; cachedStudents = []; $("adminKey").value = ""; $("applications").replaceChildren(); $("coaches").replaceChildren(); $("assignments").replaceChildren();
+    $("dashboard").classList.add("hidden"); $("loginPanel").classList.remove("hidden");
+    $("listMessage").className = "status hidden"; $("coachesMessage").className = "status hidden"; $("assignmentMessage").className = "status hidden";
+    showMessage($("loginMessage"), message, "success");
+    ["pendingCount", "approvedCount", "rejectedCount", "coachCount"].forEach(id => $(id).textContent = "—");
+  }
+  $("loginForm").addEventListener("submit", async event => {
+    event.preventDefault();
+    const candidate = $("adminKey").value.trim();
+    if (!candidate) { showMessage($("loginMessage"), "Enter your administrator secret.", "error"); return; }
+    adminSecret = candidate; $("loginButton").disabled = true; $("loginMessage").classList.add("hidden");
+    try {
+      await apiRequest("/api/admin/applications?status=pending");
+      saveAdminSession(adminSecret);
+      $("loginPanel").classList.add("hidden"); $("dashboard").classList.remove("hidden"); $("statusFilter").value = "pending";
+      await Promise.all([loadApplications(), loadCoaches(), refreshSummary()]);
+      await loadAssignments();
+    } catch (error) {
+      clearAdminSession();
+      adminSecret = ""; $("adminKey").value = "";
+      showMessage($("loginMessage"), "Could not connect: " + error.message, "error");
+    } finally { $("loginButton").disabled = false; }
+  });
+  $("coachForm").addEventListener("submit", async event => {
+    event.preventDefault();
+    const full_name = $("coachName").value.trim();
+    const email = $("coachEmail").value.trim().toLowerCase();
+    const phone = $("coachPhone").value.trim();
+    const password = $("coachPassword").value;
+    if (!full_name || !email || !phone || password.length < 8) {
+      showMessage($("coachMessage"), "Complete all fields and use a password of at least 8 characters.", "error"); return;
+    }
+    const button = $("createCoachButton"); button.disabled = true; button.textContent = "Creating coach…";
+    try {
+      await apiRequest("/api/admin/coaches", { method: "POST", body: JSON.stringify({ full_name, email, phone, password }) });
+      $("coachForm").reset();
+      showMessage($("coachMessage"), "Coach account created successfully. Please share the login details privately with the coach.", "success");
+      await loadCoaches();
+    } catch (error) {
+      showMessage($("coachMessage"), "Could not create coach: " + error.message, "error");
+    } finally { button.disabled = false; button.textContent = "＋ Create coach account"; }
+  });
+  $("refreshButton").addEventListener("click", loadApplications);
+  $("statusFilter").addEventListener("change", loadApplications);
+  $("refreshCoachesButton").addEventListener("click", async () => { await loadCoaches(); await loadAssignments(); });
+  $("assignmentForm").addEventListener("submit", async event => {
+    event.preventDefault();
+    const coachId = $("assignmentCoach").value;
+    const studentId = $("assignmentStudent").value;
+    if (!coachId || !studentId) { showMessage($("assignmentMessage"), "Choose both an active coach and an approved student.", "error"); return; }
+    const student = cachedStudents.find(s => s.id === studentId);
+    const currentCoach = cachedCoaches.find(c => c.id === student?.coach_id);
+    const message = currentCoach ? "This will transfer " + student.full_name + " from " + currentCoach.full_name + " to the selected coach. Continue?" : "Assign this student to the selected coach?";
+    if (!confirm(message)) return;
+    $("assignStudentButton").disabled = true;
+    try {
+      const result = await apiRequest("/api/admin/assign-student", { method: "POST", body: JSON.stringify({ coachId, studentId }) });
+      showMessage($("assignmentMessage"), result.message || "Student assignment saved.", "success");
+      await loadAssignments();
+    } catch (error) { showMessage($("assignmentMessage"), "Could not assign student: " + error.message, "error"); }
+    finally { $("assignStudentButton").disabled = false; }
+  });
+  $("refreshAssignmentsButton").addEventListener("click", loadAssignments);
+  $("logoutButton").addEventListener("click", () => disconnect());
+
+  // Reuse the same-tab session shared with the exam-management pages.
+  const savedAdminSecret = readAdminSession();
+  if (savedAdminSecret) {
+    $("adminKey").value = savedAdminSecret;
+    $("loginForm").requestSubmit();
+  }
+})();
+</script>
+</body>
+</html>
+  
