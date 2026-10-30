@@ -196,6 +196,21 @@ input[type="radio"] {
   color: #7133A5;
 }
 
+.question-chip:not(.answered):not(.review) {
+  background: #FEE2E2 !important;
+  border-color: #F87171 !important;
+  color: #991B1B !important;
+}
+.question-chip.answered {
+  background: #DCFCE7 !important;
+  border-color: #22A06B !important;
+  color: #166534 !important;
+}
+.question-chip.review {
+  background: #F3E8FF !important;
+  border: 2px solid #963CC8 !important;
+  color: #7133A5 !important;
+}
 .question-chip.current {
   outline: 3px solid #263B59;
   outline-offset: 2px;
@@ -400,8 +415,8 @@ footer {
     <div id="questionPalette" class="question-palette" aria-label="Question navigation"></div>
  
     <p class="muted">
-      Your answers are held on this page until submitted. Avoid refreshing
-      or closing the page during an examination.
+      Your answers are saved on this device as you work. If the page reloads,
+      reopen the portal on the same device and browser to continue your exam.
     </p>
   </section>
  
@@ -430,6 +445,66 @@ let currentIndex = 0;
 let deadline = null;
 let timerInterval = null;
 let submitting = false;
+
+// Keep an in-progress attempt on this device so a reload or brief connection
+// loss does not send the student back to the examination list.
+const ACTIVE_ATTEMPT_KEY = "jta_cbt_active_attempt_v1";
+
+function saveActiveAttempt() {
+  if (!currentExam || !questions.length) return;
+  try {
+    localStorage.setItem(ACTIVE_ATTEMPT_KEY, JSON.stringify({
+      savedAt: Date.now(),
+      studentKey: String(getToken() || "").slice(-16),
+      exam: currentExam,
+      questions,
+      answers,
+      flaggedQuestions: Array.from(flaggedQuestions),
+      currentIndex,
+      deadline
+    }));
+  } catch (error) {
+    console.warn("Could not save the active examination on this device.", error);
+    showNotice("Your browser could not save this exam locally. Keep this page open until submission.", true);
+  }
+}
+
+function clearSavedAttempt() {
+  try { localStorage.removeItem(ACTIVE_ATTEMPT_KEY); } catch (_) {}
+}
+
+function restoreActiveAttempt() {
+  let saved;
+  try {
+    const raw = localStorage.getItem(ACTIVE_ATTEMPT_KEY);
+    if (!raw) return false;
+    saved = JSON.parse(raw);
+  } catch (error) {
+    clearSavedAttempt();
+    return false;
+  }
+
+  if (!saved || !saved.exam || !Array.isArray(saved.questions) || !saved.questions.length ||
+      saved.studentKey !== String(getToken() || "").slice(-16)) {
+    clearSavedAttempt();
+    return false;
+  }
+
+  currentExam = saved.exam;
+  questions = saved.questions;
+  answers = saved.answers && typeof saved.answers === "object" ? saved.answers : {};
+  flaggedQuestions = new Set(Array.isArray(saved.flaggedQuestions) ? saved.flaggedQuestions.map(String) : []);
+  currentIndex = Math.max(0, Math.min(Number(saved.currentIndex) || 0, questions.length - 1));
+  deadline = Number.isFinite(Number(saved.deadline)) ? Number(saved.deadline) : null;
+  submitting = false;
+
+  $("examTitle").textContent = getExamTitle(currentExam);
+  showPanel("examPanel");
+  renderQuestion();
+  startTimer();
+  showNotice("Your previous examination has been restored. Continue where you left off.");
+  return true;
+}
  
 function getToken() {
   return sessionStorage.getItem("jta_student_token");
@@ -806,6 +881,7 @@ async function startExam(examOrId) {
     $("examTitle").textContent = getExamTitle(currentExam);
     showPanel("examPanel");
     clearNotice();
+    saveActiveAttempt();
     renderQuestion();
     startTimer();
   } catch (error) {
@@ -1005,9 +1081,12 @@ const data = await api(
       status: "submitted"
     };
  
+    clearSavedAttempt();
     currentExam = null;
     questions = [];
     answers = {};
+    flaggedQuestions = new Set();
+    deadline = null;
  
     showPanel("resultsPanel");
     $("resultsList").replaceChildren();
@@ -1055,9 +1134,12 @@ $("backBtn").addEventListener("click", () => {
   clearNotice();
 });
  
+window.addEventListener("beforeunload", saveActiveAttempt);
+window.addEventListener("pagehide", saveActiveAttempt);
+
 if (!getToken()) {
   showNotice("Please log in through the JTA student login page before using the CBT portal.", true);
-} else {
+} else if (!restoreActiveAttempt()) {
   loadExams();
 }
 </script>
