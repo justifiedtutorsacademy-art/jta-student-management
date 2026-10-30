@@ -18,8 +18,8 @@
   --success: #16794B;
   --danger: #B42318;
   --purple: #963CC8;
-  --answered-bg: #E7F0FF;
-  --unanswered-bg: #F1F4F8;
+  --answered-bg: #DCFCE7;
+  --unanswered-bg: #FEE2E2;
   --review-bg: #F3E8FF;
 }
  
@@ -154,6 +154,9 @@ input[type="radio"] {
   background: #F3E8FF;
   color: #7133A5;
   border: 1px solid #D9B8F3;
+  padding: 12px 18px;
+  min-width: 190px;
+  font-weight: 700;
 }
 
 .question-palette {
@@ -177,8 +180,14 @@ input[type="radio"] {
 
 .question-chip.answered {
   background: var(--answered-bg);
-  border-color: #7BA8F5;
-  color: #174A9C;
+  border-color: #22A06B;
+  color: #166534;
+}
+
+.question-chip:not(.answered):not(.review) {
+  background: var(--unanswered-bg);
+  border-color: #F87171;
+  color: #991B1B;
 }
 
 .question-chip.review {
@@ -203,8 +212,8 @@ input[type="radio"] {
 
 .legend-item { display: inline-flex; align-items: center; gap: 6px; }
 .legend-swatch { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
-.legend-swatch.answered { background: var(--answered-bg); border: 1px solid #7BA8F5; }
-.legend-swatch.unanswered { background: var(--unanswered-bg); border: 1px solid #CBD5E1; }
+.legend-swatch.answered { background: var(--answered-bg); border: 1px solid #22A06B; }
+.legend-swatch.unanswered { background: var(--unanswered-bg); border: 1px solid #F87171; }
 .legend-swatch.review { background: var(--review-bg); border: 1px solid #963CC8; }
  
 #questionText {
@@ -370,15 +379,13 @@ footer {
       <span class="legend-item"><span class="legend-swatch unanswered"></span>Unanswered</span>
       <span class="legend-item"><span class="legend-swatch review"></span>Marked for review</span>
     </div>
-    <div id="questionPalette" class="question-palette" aria-label="Question navigation"></div>
-
     <div id="questionArea">
       <div id="questionNumber" class="question-number"></div>
       <h3 id="questionText"></h3>
       <div id="options"></div>
       <div class="question-tools">
-        <span id="reviewStatus" class="muted" aria-live="polite"></span>
-        <button id="reviewBtn" class="review-button" type="button">Mark for Review</button>
+        <span id="reviewStatus" class="muted" aria-live="polite">Flag difficult questions to return to them before submitting.</span>
+        <button id="reviewBtn" class="review-button" type="button">⚑ Mark for Review</button>
       </div>
     </div>
  
@@ -387,6 +394,10 @@ footer {
       <button id="nextBtn" type="button">Next</button>
       <button id="submitBtn" class="warning" type="button">Submit Examination</button>
     </div>
+
+    <h3 style="margin-top:22px">Question navigator</h3>
+    <p class="muted" style="margin-top:-6px">Green = answered · Red = unanswered · Purple = marked for review. Tap any number to return to it.</p>
+    <div id="questionPalette" class="question-palette" aria-label="Question navigation"></div>
  
     <p class="muted">
       Your answers are held on this page until submitted. Avoid refreshing
