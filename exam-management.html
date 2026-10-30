@@ -95,38 +95,6 @@ async function loadExams(){
   if(e.status!=="published"){const pub=safe("button","Publish");pub.className="btn success";pub.type="button";pub.onclick=async()=>{if(!confirm("Publish “"+e.title+"” for students in "+e.department+"?"))return;pub.disabled=true;try{await api("/api/admin/exams/"+encodeURIComponent(e.id)+"/publish",{method:"POST"});msg("listMsg","Examination published.","ok");await loadExams()}catch(err){msg("listMsg",err.message,"err");pub.disabled=false}};actions.append(pub)}
   else{const un=safe("button","Return to draft");un.className="btn";un.type="button";un.onclick=async()=>{if(!confirm("Return this exam to draft? Students will no longer see it in the published exam list."))return;try{await api("/api/admin/exams/"+encodeURIComponent(e.id)+"/unpublish",{method:"POST"});msg("listMsg","Examination returned to draft.","ok");await loadExams()}catch(err){msg("listMsg",err.message,"err")}};actions.append(un)}
   const del=safe("button","Delete exam");del.className="btn danger";del.type="button";del.onclick=async()=>{const warning="Delete “"+e.title+"”? This permanently removes the exam, its questions, all student attempts, answers, and results. This cannot be undone.";if(!confirm(warning))return;del.disabled=true;try{const result=await api("/api/admin/exams/"+encodeURIComponent(e.id),{method:"DELETE"});msg("listMsg",result.message||"Examination deleted.","ok");await loadExams()}catch(err){msg("listMsg","Could not delete examination: "+err.message,"err");del.disabled=false}};actions.append(del);
-  const res=safe("button","View results");res.className="btn primary";res.type="button";res.onclick=()=>loon><option>Chemistry</option><option>Biology</option><option>Literature in English</option><option>CRS</option><option>Government</option><option>IRS</option><option>Economics</option><option>Commerce</option><option>Accounting</option></select></div><div class="field"><label for="copyTarget">Copy into draft exam</label><select id="copyTarget"><option value="">Load examinations first</option></select></div></div><button class="btn primary" id="copyQuestionsBtn" type="button">Copy questions</button><div id="copyMsg" class="status hidden"></div></section>
-<section class="card"><h2>Examinations</h2><p class="muted">Publish a draft only after adding and checking its questions. Published exams appear in the student CBT portal.</p><div id="examList"><p class="muted">Connect to load examinations.</p></div><div id="listMsg" class="status hidden"></div></section>
-<section class="card"><h2>Student results</h2><div id="resultsArea"><p class="muted">Choose “View results” on an examination to see attempts and scores.</p></div></section>
-<div class="row"><a class="btn" href="admin.html" style="text-decoration:none;text-align:center">← Back to admin dashboard</a><button class="btn danger" id="disconnectBtn">Disconnect</button></div>
-</div>
-</main>
-<script>
-(() => {
-"use strict";
-const API="https://jta-student-backend.justifiedtutorsacademy.workers.dev";
-let secret="", exams=[];
-const $=id=>document.getElementById(id);
-function msg(id,text,type=""){const e=$(id);e.textContent=text;e.className="status"+(type?" "+type:"");e.classList.remove("hidden")}
-async function api(path,options={}){const headers={"X-Admin-Key":secret,...(options.body?{"Content-Type":"application/json"}:{})};const r=await fetch(API+path,{...options,headers:{...headers,...(options.headers||{})}});const d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.error||"Request failed ("+r.status+")");return d}
-function safe(tag,text,className=""){const e=document.createElement(tag);e.textContent=text??"";if(className)e.className=className;return e}
-async function loadExams(){
- const data=await api("/api/admin/exams");exams=Array.isArray(data.exams)?data.exams:[];
- const select=$("questionExam");select.replaceChildren();const placeholder=safe("option","Choose a draft exam");placeholder.value="";select.append(placeholder);
- exams.filter(e=>e.status!=="published").forEach(e=>{const o=safe("option",e.title+" — "+e.status);o.value=e.id;select.append(o)});
- const sourceSelect=$("copySource"), targetSelect=$("copyTarget");
- if(sourceSelect && targetSelect){ sourceSelect.replaceChildren(safe("option","Choose source exam")); targetSelect.replaceChildren(safe("option","Choose destination draft")); exams.forEach(e=>{const a=safe("option",e.title+" — "+e.department+" — "+e.status);a.value=e.id;sourceSelect.append(a); if(e.status!=="published"){const b=safe("option",e.title+" — "+e.department);b.value=e.id;targetSelect.append(b)}}); }
-
- const list=$("examList");list.replaceChildren();
- if(!exams.length){list.append(safe("p","No examinations yet. Create your first draft above.","muted"));return}
- exams.forEach(e=>{
-  const card=safe("article","");card.className="exam";card.append(safe("h3",e.title));
-  card.append(safe("p",(e.description||"No description") ,"muted"));
-  const tags=safe("div","");tags.append(safe("span","Group: "+(e.department_group||e.department),"tag"),safe("span","Week: "+(e.week_number||1),"tag"),safe("span","Subject: "+(e.subject||"Not set"),"tag"),safe("span","Topics: "+(e.topics||"Not set"),"tag"),safe("span","Type: "+(e.exam_type||"individual"),"tag"),safe("span","Duration: "+e.duration_minutes+" min","tag"),safe("span","Questions: "+e.question_count,"tag"),safe("span","Attempts: "+e.attempt_count,"tag"),safe("span","Status: "+e.status,"tag"));card.append(tags);
-  const actions=safe("div","");actions.className="row";
-  if(e.status!=="published"){const pub=safe("button","Publish");pub.className="btn success";pub.type="button";pub.onclick=async()=>{if(!confirm("Publish “"+e.title+"” for students in "+e.department+"?"))return;pub.disabled=true;try{await api("/api/admin/exams/"+encodeURIComponent(e.id)+"/publish",{method:"POST"});msg("listMsg","Examination published.","ok");await loadExams()}catch(err){msg("listMsg",err.message,"err");pub.disabled=false}};actions.append(pub)}
-  else{const un=safe("button","Return to draft");un.className="btn";un.type="button";un.onclick=async()=>{if(!confirm("Return this exam to draft? Students will no longer see it in the published exam list."))return;try{await api("/api/admin/exams/"+encodeURIComponent(e.id)+"/unpublish",{method:"POST"});msg("listMsg","Examination returned to draft.","ok");await loadExams()}catch(err){msg("listMsg",err.message,"err")}};actions.append(un)}
-  const del=safe("button","Delete exam");del.className="btn danger";del.type="button";del.onclick=async()=>{const warning="Delete “"+e.title+"”? This permanently removes the exam, its questions, all student attempts, answers, and results. This cannot be undone.";if(!confirm(warning))return;del.disabled=true;try{const result=await api("/api/admin/exams/"+encodeURIComponent(e.id),{method:"DELETE"});msg("listMsg",result.message||"Examination deleted.","ok");await loadExams()}catch(err){msg("listMsg","Could not delete examination: "+err.message,"err");del.disabled=false}};actions.append(del);
   const res=safe("button","View results");res.className="btn primary";res.type="button";res.onclick=()=>loadResults(e.id);actions.append(res);
   if(e.status!=="published"){const add=safe("button","Add questions");add.className="btn";add.type="button";add.onclick=()=>{$("questionExam").value=e.id;$("questionText").focus();window.scrollTo({top:$("questionForm").getBoundingClientRect().top+window.scrollY-20,behavior:"smooth"})};actions.append(add)}
   card.append(actions);list.append(card)
@@ -141,7 +109,14 @@ async function loadResults(id){
  const tbody=document.createElement("tbody");data.results.forEach(r=>{const row=document.createElement("tr");[r.full_name||"Unknown student",r.student_code||"—",r.department||"—",(r.score??0)+" / "+(r.total_marks??0),r.status||"—",r.started_at||"—",r.submitted_at||"—"].forEach(x=>{const td=safe("td",String(x));td.style.cssText="padding:9px;border-bottom:1px solid #edf0f5;font-size:13px";row.append(td)});tbody.append(row)});t.append(tbody);table.append(t);area.append(table)
  }catch(err){area.replaceChildren(safe("p","Could not load results: "+err.message,"status err"))}
 }
-$("loginForm").addEventListener("submit",async e=>{e.preventDefault();secret=$("adminKey").value.trim();$("connectBtn").disabled=true;try{await api("/api/admin/exams");$("loginCard").classList.add("hidden");$("app").classList.remove("hidden");await loadExams()}catch(err){secret="";msg("loginMsg","Could not connect: "+err.message,"err")}finally{$("connectBtn").disabled=false}});
+$("loginForm").addEventListener("submit",async e=>{e.preventDefault();secret=$("adminKey").value.trim();$("connectBtn").disabled=true;try{await api("/api/admin/exams");sessionStorage.setItem("jta_exam_admin_key",secret);$("loginCard").classList.add("hidden");$("app").classList.remove("hidden");await loadExams()}catch(err){secret="";msg("loginMsg","Could not connect: "+err.message,"err")}finally{$("connectBtn").disabled=false}});
+
+const page=document.body.dataset.page||"dashboard";
+const titles={dashboard:["Dashboard","Overview of your JTA examination activity."],upload:["Upload Questions","Add and organise questions in examination drafts."],publish:["Publish Examinations","Review drafts and control what students can access."],copy:["Question Library","Copy questions from one examination into another draft."],results:["Results & Examination Records","Review attempts, scores and manage examination records."]};
+const heading=titles[page]||titles.dashboard;$("pageTitle").textContent=heading[0];$("pageDescription").textContent=heading[1];
+document.querySelectorAll("[data-nav]").forEach(a=>a.classList.toggle("active",a.dataset.nav===page));
+if(page!=="dashboard")$("dashboardStats").classList.add("hidden");
+if(secret){$("adminKey").value=secret;api("/api/admin/exams").then(()=>{$("loginCard").classList.add("hidden");$("app").classList.remove("hidden");return loadExams()}).catch(()=>{sessionStorage.removeItem("jta_exam_admin_key");secret=""})}
 const groupSubjects={
  Science:["English","Mathematics","Physics","Chemistry","Biology"],
  Arts:["English","Literature in English","CRS","Government","IRS","Economics"],
@@ -162,9 +137,7 @@ $("questionForm").addEventListener("submit",async e=>{e.preventDefault();const e
 $("copyQuestionsBtn").addEventListener("click",async()=>{const source=$("copySource").value,target=$("copyTarget").value,subject=$("copySubject").value;if(!source||!target){msg("copyMsg","Choose both a source examination and a destination draft.","err");return}if(source===target){msg("copyMsg","Choose two different examinations.","err");return}if(!confirm("Copy the selected questions into the destination draft? Existing questions will remain, and duplicates may be created."))return;const btn=$("copyQuestionsBtn");btn.disabled=true;try{const result=await api("/api/admin/exams/"+encodeURIComponent(target)+"/copy-questions",{method:"POST",body:JSON.stringify({source_exam_id:source,subject})});msg("copyMsg",result.message,"ok");await loadExams()}catch(err){msg("copyMsg","Could not copy questions: "+err.message,"err")}finally{btn.disabled=false}});
 $("resetQuestionBtn").addEventListener("click",()=>$("questionForm").reset());
 $("refreshBtn").addEventListener("click",async()=>{try{await loadExams();msg("listMsg","Examinations refreshed.","ok")}catch(err){msg("listMsg",err.message,"err")}});
-$("disconnectBtn").addEventListener("click",()=>{secret="";exams=[];$("adminKey").value="";$("app").classList.add("hidden");$("loginCard").classList.remove("hidden");$("examList").replaceChildren();$("resultsArea").replaceChildren(safe("p","Choose “View results” on an examination to see attempts and scores.","muted"))});
+$("disconnectBtn").addEventListener("click",()=>{secret="";sessionStorage.removeItem("jta_exam_admin_key");exams=[];$("adminKey").value="";$("app").classList.add("hidden");$("loginCard").classList.remove("hidden");$("examList").replaceChildren();$("resultsArea").replaceChildren(safe("p","Choose “View results” on an examination to see attempts and scores.","muted"))});
 })();
 </script>
 </body></html>
-
-
