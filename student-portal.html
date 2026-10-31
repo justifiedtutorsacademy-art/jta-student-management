@@ -158,7 +158,18 @@ const refreshButton=document.getElementById("refreshButton");
 const attendanceButton=document.getElementById("attendanceButton");
 
 function showStatus(text,success=false){statusBox.style.display="block";statusBox.style.background=success?"#E5F7EC":"#FDECEC";statusBox.style.color=success?"#176638":"#A12626";statusBox.textContent=text}
-async function apiRequest(path,options={}){const response=await fetch(API_BASE+path,{...options,headers:{"Content-Type":"application/json","Authorization":"Bearer "+token,...(options.headers||{})}});const data=await response.json().catch(()=>({}));if(!response.ok)throw new Error(data.message||data.error||"The request could not be completed.");return data}
+function redirectToLogin(){
+  sessionStorage.removeItem("jta_student_token");
+  window.location.replace("login.html");
+}
+async function apiRequest(path,options={}){
+  if(!sessionStorage.getItem("jta_student_token")){redirectToLogin();throw new Error("Your session has ended. Please log in again.");}
+  const response=await fetch(API_BASE+path,{...options,headers:{"Content-Type":"application/json","Authorization":"Bearer "+sessionStorage.getItem("jta_student_token"),...(options.headers||{})}});
+  const data=await response.json().catch(()=>({}));
+  if(response.status===401||response.status===403){redirectToLogin();throw new Error("Your session has expired. Please log in again.");}
+  if(!response.ok)throw new Error(data.message||data.error||"The request could not be completed.");
+  return data;
+}
 function safeText(value){return value===null||value===undefined||value===""?"Not provided":String(value)}
 function formatAttendanceTime(value){
   if(!value)return "Time unavailable";
@@ -177,7 +188,7 @@ function renderTable(container,columns,rows,emptyMessage){
   table.appendChild(tbody);wrapper.appendChild(table);container.className="";container.replaceChildren(wrapper);
 }
 async function loadPortal(){
-  if(!token){showStatus("Please log in before opening your student portal.");["fullName","studentCode","email","department"].forEach(id=>document.getElementById(id).textContent="Not signed in");document.getElementById("attendanceList").textContent="Sign in to view your attendance.";document.getElementById("scoresList").textContent="Sign in to view your scores.";return}
+  if(!sessionStorage.getItem("jta_student_token")){redirectToLogin();return}
   refreshButton.disabled=true;refreshButton.textContent="Loading...";
   try{
     const data=await apiRequest("/api/me");const student=data.student||{};
@@ -195,7 +206,7 @@ async function loadPortal(){
       {key:"test_name",label:"Test"},{key:"score",label:"Score"},{key:"max_score",label:"Maximum"},{key:"taken_at",label:"Date"}
     ],data.scores||[],"No test scores have been added yet.");
     showStatus("Your student information has been loaded.",true);
-  }catch(error){showStatus(error.message+" If your session has expired, log in again.");if(/unauthorized|session|token|sign in/i.test(error.message))sessionStorage.removeItem("jta_student_token")}
+  }catch(error){if(!sessionStorage.getItem("jta_student_token"))return;showStatus(error.message+" If your session has expired, log in again.")}
   finally{refreshButton.disabled=false;refreshButton.textContent="Refresh My Information"}
 }
 document.getElementById("attendanceForm").addEventListener("submit",async function(event){
@@ -216,8 +227,12 @@ function showView(name){document.querySelectorAll(".portal-view").forEach(view=>
 document.querySelectorAll(".nav-item").forEach(button=>button.addEventListener("click",()=>showView(button.dataset.view)));
 document.querySelectorAll("[data-open-view]").forEach(button=>button.addEventListener("click",()=>showView(button.dataset.openView)));
 document.getElementById("menuToggle").addEventListener("click",openDrawer);document.getElementById("menuClose").addEventListener("click",closeDrawer);document.getElementById("drawerShade").addEventListener("click",closeDrawer);
-function logout(){sessionStorage.removeItem("jta_student_token");window.location.href="login.html"}
+function logout(){sessionStorage.removeItem("jta_student_token");window.location.replace("login.html")}
 document.getElementById("logoutButton").addEventListener("click",logout);document.getElementById("headerLogout").addEventListener("click",logout);
+// If the browser restores this page from its back-forward cache after logout, re-check access.
+window.addEventListener("pageshow",event=>{
+  if(event.persisted&&!sessionStorage.getItem("jta_student_token"))redirectToLogin();
+});
 loadPortal();
 </script>
 </body>
