@@ -444,6 +444,9 @@ let flaggedQuestions = new Set();
 let currentIndex = 0;
 let deadline = null;
 let timerInterval = null;
+let autoSubmitRetryTimer = null;
+let autoSubmitRetryDelay = 5000;
+let autoSubmitPending = false;
 let submitting = false;
 
 // Keep an in-progress attempt on this device so a reload or brief connection
@@ -497,6 +500,7 @@ function restoreActiveAttempt() {
   currentIndex = Math.max(0, Math.min(Number(saved.currentIndex) || 0, questions.length - 1));
   deadline = Number.isFinite(Number(saved.deadline)) ? Number(saved.deadline) : null;
   submitting = false;
+  autoSubmitPending = !!(deadline && Date.now() >= deadline);
 
   $("examTitle").textContent = getExamTitle(currentExam);
   showPanel("examPanel");
@@ -926,6 +930,7 @@ function updateQuestionStatus() {
   $("reviewStatus").textContent = isFlagged ? "This question is marked for review." : "";
   $("questionProgress").textContent = `${Object.keys(answers).length} answered · ${flaggedQuestions.size} for review`;
   renderQuestionPalette();
+  saveActiveAttempt();
 }
 
 function renderQuestion() {
@@ -991,33 +996,35 @@ function renderQuestion() {
  
 function startTimer() {
   stopTimer();
- 
+
   function tick() {
     if (!deadline || !Number.isFinite(deadline)) {
       $("timer").textContent = "Server timed";
       return;
     }
- 
+
     const remaining = Math.max(0, Math.floor((deadline - Date.now()) / 1000));
     const minutes = Math.floor(remaining / 60);
     const seconds = remaining % 60;
- 
+
     $("timer").textContent =
       String(minutes).padStart(2, "0") + ":" +
       String(seconds).padStart(2, "0");
- 
+
     $("timer").classList.toggle("urgent", remaining <= 300);
- 
+
     if (remaining <= 0) {
       stopTimer();
+      autoSubmitPending = true;
+      saveActiveAttempt();
       submitExam(true);
     }
   }
- 
+
   tick();
-  timerInterval = setInterval(tick, 1000);
+  if (deadline && deadline > Date.now()) timerInterval = setInterval(tick, 1000);
 }
- 
+
 function stopTimer() {
   if (timerInterval) clearInterval(timerInterval);
   timerInterval = null;
@@ -1047,60 +1054,116 @@ $("nextBtn").addEventListener("click", () => {
  
 $("submitBtn").addEventListener("click", () => submitExam(false));
  
+function scheduleAutoSubmitRetry() {
+  if (!autoSubmitPending || autoSubmitRetryTimer) return;
+  const delay = autoSubmitRetryDelay;
+  autoSubmitRetryDelay = Math.min(autoSubmitRetryDelay * 2, 60000);
+  showNotice("Time is up. Your answers are saved on this device. Submission will retry automatically when the connection is available.", true);
+  autoSubmitRetryTimer = setTimeout(() => {
+    autoSubmitRetryTimer = null;
+    if (navigator.onLine) submitExam(true);
+    else scheduleAutoSubmitRetry();
+  }, delay);
+}
+
 async function submitExam(autoSubmit) {
   if (!currentExam || submitting) return;
- 
+
   const unanswered = questions.length - Object.keys(answers).length;
- 
+
+  if (!autoSubmit && autoSubmitPending) {
+    showNotice("Time is up. The examination is being submitted automatically.", true);
+    return;
+  }
+
   if (!autoSubmit && unanswered > 0) {
     if (!confirm(`You have ${unanswered} unanswered question(s). Submit anyway?`)) return;
   } else if (!autoSubmit) {
     if (!confirm("Are you sure you want to submit your examination?")) return;
   }
- 
+
+  if (autoSubmit) {
+    autoSubmitPending = true;
+    saveActiveAttempt();
+  }
+
   submitting = true;
   $("submitBtn").disabled = true;
-  showNotice(autoSubmit ? "Time is up. Submitting..." : "Submitting examination...");
- 
+  showNotice(autoSubmit ? "Time is up. Submitting your examination..." : "Submitting examination...");
+
   try {
     const examId = getExamId(currentExam);
     if (examId === undefined || examId === null) {
       throw new Error("The examination ID is missing.");
     }
- 
-const data = await api(
+
+    const data = await api(
       "/api/exams/" + encodeURIComponent(examId) + "/submit",
-      {method: "POST", body: JSON.stringify({answers})}
+      {method: "POST", body: JSON.stringify({answers, autoSubmit: !!autoSubmit})}
     );
- 
+
     stopTimer();
- 
+    if (autoSubmitRetryTimer) clearTimeout(autoSubmitRetryTimer);
+    autoSubmitRetryTimer = null;
+    autoSubmitPending = false;
+    autoSubmitRetryDelay = 5000;
+
     const result = {
       ...(data.result || data),
       exam_title: getExamTitle(currentExam),
       status: "submitted"
     };
- 
+
     clearSavedAttempt();
     currentExam = null;
     questions = [];
     answers = {};
     flaggedQuestions = new Set();
     deadline = null;
- 
+
     showPanel("resultsPanel");
     $("resultsList").replaceChildren();
     $("resultsList").appendChild(renderResultCard(result));
- 
-    showNotice("Your examination has been submitted successfully.");
+
+    showNotice(autoSubmit ? "Time is up. Your examination was submitted successfully." : "Your examination has been submitted successfully.");
   } catch (error) {
-    showNotice(error.message, true);
+    if (autoSubmit) {
+      // Keep the attempt and answers locally until the server confirms receipt.
+      saveActiveAttempt();
+      scheduleAutoSubmitRetry();
+    } else {
+      showNotice(error.message, true);
+    }
   } finally {
     submitting = false;
     $("submitBtn").disabled = false;
   }
 }
- 
+
+window.addEventListener("online", () => {
+  if (autoSubmitPending && currentExam && !submitting) {
+    if (autoSubmitRetryTimer) clearTimeout(autoSubmitRetryTimer);
+    autoSubmitRetryTimer = null;
+    submitExam(true);
+  }
+});
+
+window.addEventListener("focus", () => {
+  if (currentExam && deadline && Date.now() >= deadline && !submitting) {
+    stopTimer();
+    autoSubmitPending = true;
+    submitExam(true);
+  }
+});
+
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden && currentExam && deadline && Date.now() >= deadline && !submitting) {
+    stopTimer();
+    autoSubmitPending = true;
+    submitExam(true);
+  }
+});
+
 async function loadResults() {
   clearNotice();
   showPanel("resultsPanel");
