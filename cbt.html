@@ -1121,11 +1121,14 @@ async function submitExam(autoSubmit) {
     flaggedQuestions = new Set();
     deadline = null;
 
-    showPanel("resultsPanel");
+    // Close the active exam centre only after the server confirms submission.
+    // Keep the student on the examination home screen and show a clear success message.
     $("resultsList").replaceChildren();
     $("resultsList").appendChild(renderResultCard(result));
-
-    showNotice(autoSubmit ? "Time is up. Your examination was submitted successfully." : "Your examination has been submitted successfully.");
+    showPanel("homePanel");
+    showNotice(autoSubmit
+      ? "Exam submitted successfully. Your examination has been closed."
+      : "Your examination has been submitted successfully. Your examination has been closed.");
   } catch (error) {
     if (autoSubmit) {
       // Keep the attempt and answers locally until the server confirms receipt.
