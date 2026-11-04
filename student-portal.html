@@ -140,7 +140,7 @@ footer{background:#17245B;color:#DDE2FF;font-size:11px;line-height:2}footer stro
       <div class="page-heading"><span class="eyebrow">MY PROGRESS</span><h2>Academic Dashboard</h2><p>A quick view of your personal JTA learning records.</p></div>
       <div class="grid"><section class="card"><h3>My Attendance Summary</h3><p class="empty">Your attendance history is available on the Home page.</p><button class="full-button" type="button" data-open-view="home">View Home & Attendance</button></section><section class="card"><h3>My Examination Records</h3><p class="empty">Your saved examination scores are available in the Test Centre.</p><button class="full-button" type="button" data-open-view="test">View Test Results</button></section></div>
     </section>
-    <section id="view-study" class="portal-view hidden"><div class="page-heading"><span class="eyebrow">LEARNING RESOURCES</span><h2>Study</h2><p>Access learning materials and academic support from JTA.</p></div><div class="coming-card"><div class="coming-icon">♧</div><h3>Study resources are coming soon</h3><p>JTA notes, topic-by-topic lessons and revision materials will appear here when published.</p></div></section>
+    <section id="view-study" class="portal-view hidden"><div class="page-heading"><span class="eyebrow">LEARNING RESOURCES</span><h2>Study Materials</h2><p>Download notes, revision resources and lessons published for your department.</p></div><div id="materialsStatus" class="empty">Loading your learning materials...</div><div id="materialsGrid" class="grid"></div></section>
     <section id="view-chat" class="portal-view hidden"><div class="page-heading"><span class="eyebrow">STUDENT COMMUNITY</span><h2>Chat</h2><p>Stay connected with the JTA learning community.</p></div><div class="coming-card"><div class="coming-icon">▤</div><h3>Student Chat is coming soon</h3><p>This section will provide the official JTA student communication space.</p></div></section>
     <section id="view-news" class="portal-view hidden"><div class="page-heading"><span class="eyebrow">UPDATES & ANNOUNCEMENTS</span><h2>News</h2><p>Important announcements from Justified Tutor's Academy.</p></div><div class="coming-card"><div class="coming-icon">▥</div><h3>JTA News is coming soon</h3><p>Class announcements, examination updates and important notices will be published here.</p></div></section>
     <section id="view-connect" class="portal-view hidden"><div class="page-heading"><span class="eyebrow">GET SUPPORT</span><h2>Connect</h2><p>Find ways to reach and get support from JTA.</p></div><div class="coming-card"><div class="coming-icon">⌘</div><h3>JTA Connect is coming soon</h3><p>Support contacts and student guidance links will be added here.</p></div></section>
@@ -209,6 +209,33 @@ async function loadPortal(){
   }catch(error){if(!sessionStorage.getItem("jta_student_token"))return;showStatus(error.message+" If your session has expired, log in again.")}
   finally{refreshButton.disabled=false;refreshButton.textContent="Refresh My Information"}
 }
+async function loadMaterials(){
+  const status=document.getElementById("materialsStatus"), grid=document.getElementById("materialsGrid");
+  status.style.display="block";status.textContent="Loading published JTA materials...";grid.replaceChildren();
+  try{
+    const data=await apiRequest("/api/materials");const materials=data.materials||[];
+    if(!materials.length){status.textContent="No learning materials have been published for your department yet.";return;}
+    status.style.display="none";
+    materials.forEach(material=>{
+      const card=document.createElement("section");card.className="card";
+      const heading=document.createElement("h3");heading.textContent=material.title||"JTA Learning Material";
+      const meta=document.createElement("p");meta.className="empty";meta.textContent=[material.category,material.subject,material.department].filter(Boolean).join(" · ");
+      const description=document.createElement("p");description.textContent=material.description||"Published learning resource.";
+      const file=document.createElement("p");file.textContent=(material.file_name||"File")+" · "+(Number(material.file_size||0)/1048576).toFixed(2)+" MB";
+      const button=document.createElement("button");button.type="button";button.className="full-button gold-button";button.textContent="Download material";
+      button.addEventListener("click",async()=>{
+        button.disabled=true;button.textContent="Preparing download...";
+        try{const response=await fetch(API_BASE+"/api/materials/"+encodeURIComponent(material.id)+"/download",{headers:{"Authorization":"Bearer "+sessionStorage.getItem("jta_student_token")}});
+          if(response.status===401||response.status===403){redirectToLogin();return;}
+          if(!response.ok){const err=await response.json().catch(()=>({}));throw new Error(err.error||"Download failed.");}
+          const blob=await response.blob();const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=material.file_name||"JTA-material";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);
+        }catch(error){showStatus(error.message)}finally{button.disabled=false;button.textContent="Download material";}
+      });
+      card.append(heading,meta,description,file,button);grid.appendChild(card);
+    });
+  }catch(error){status.textContent=error.message||"Could not load learning materials.";}
+}
+
 document.getElementById("attendanceForm").addEventListener("submit",async function(event){
   event.preventDefault();if(!token){showStatus("Please log in before marking attendance.");return}
   const classDate=document.getElementById("classDate").value;if(!classDate){showStatus("Please select the class date.");return}
@@ -223,7 +250,7 @@ document.getElementById("classDate").value=[today.getFullYear(),String(today.get
 
 function closeDrawer(){document.getElementById("sideDrawer").classList.remove("open");document.getElementById("drawerShade").classList.remove("show");document.getElementById("menuToggle").setAttribute("aria-expanded","false")}
 function openDrawer(){document.getElementById("sideDrawer").classList.add("open");document.getElementById("drawerShade").classList.add("show");document.getElementById("menuToggle").setAttribute("aria-expanded","true")}
-function showView(name){document.querySelectorAll(".portal-view").forEach(view=>view.classList.add("hidden"));const target=document.getElementById("view-"+name);if(target)target.classList.remove("hidden");document.querySelectorAll(".nav-item").forEach(button=>button.classList.toggle("active",button.dataset.view===name));closeDrawer();window.scrollTo({top:0,behavior:"smooth"})}
+function showView(name){if(name==="study")loadMaterials();document.querySelectorAll(".portal-view").forEach(view=>view.classList.add("hidden"));const target=document.getElementById("view-"+name);if(target)target.classList.remove("hidden");document.querySelectorAll(".nav-item").forEach(button=>button.classList.toggle("active",button.dataset.view===name));closeDrawer();window.scrollTo({top:0,behavior:"smooth"})}
 document.querySelectorAll(".nav-item").forEach(button=>button.addEventListener("click",()=>showView(button.dataset.view)));
 document.querySelectorAll("[data-open-view]").forEach(button=>button.addEventListener("click",()=>showView(button.dataset.openView)));
 document.getElementById("menuToggle").addEventListener("click",openDrawer);document.getElementById("menuClose").addEventListener("click",closeDrawer);document.getElementById("drawerShade").addEventListener("click",closeDrawer);
