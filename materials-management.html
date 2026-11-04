@@ -1,9 +1,128 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#142b4a"><title>JTA | Learning Materials Manager</title><style>
-:root{--navy:#142b4a;--blue:#2459a9;--gold:#e6b84b;--bg:#f3f6fb;--text:#172438;--muted:#64748b;--border:#dce4ef}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,system-ui,sans-serif;line-height:1.5}.top{background:linear-gradient(125deg,var(--navy),#203f68);color:#fff;border-bottom:5px solid var(--gold);padding:22px}.wrap{width:min(1000px,calc(100% - 28px));margin:auto}.top h1{margin:0;font-size:23px}.top p{margin:4px 0 0;color:#dbe7f7}.card{background:white;border:1px solid var(--border);border-radius:16px;padding:20px;margin:20px 0;box-shadow:0 8px 25px #142b4a0b}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field.full{grid-column:1/-1}label{display:block;font-weight:700;font-size:13px;margin:10px 0 6px}input,select,textarea{width:100%;padding:11px;border:1px solid #cbd5e1;border-radius:9px;font:inherit;background:white}textarea{min-height:78px;resize:vertical}.btn{border:0;border-radius:9px;padding:11px 15px;font-weight:800;cursor:pointer;background:var(--blue);color:white}.btn.gold{background:var(--gold);color:var(--navy)}.btn.soft{background:#eaf0f8;color:var(--navy)}.btn.danger{background:#fff0f0;color:#b42332}.btn:disabled{opacity:.6}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.status{padding:12px;border-radius:9px;background:#edf3fc;margin-top:12px;white-space:pre-wrap}.status.error{background:#fff0f0;color:#9b1c1c}.list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.item{border:1px solid var(--border);border-radius:12px;padding:15px;min-width:0}.item h3{margin:0 0 6px;overflow-wrap:anywhere}.item p{font-size:13px;color:#526178;overflow-wrap:anywhere}.tag{display:inline-block;background:#eef4ff;color:var(--blue);padding:4px 8px;border-radius:30px;font-size:11px;font-weight:700}.muted{color:var(--muted);font-size:12px}@media(max-width:650px){.grid,.list{grid-template-columns:1fr}.field.full{grid-column:auto}}
-</style></head><body><header class="top"><div class="wrap"><h1>JUSTIFIED TUTOR'S ACADEMY</h1><p>Learning Materials Management · 300+ IN JAMB IS OUR CALLING</p></div></header><main class="wrap">
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#142b4a"><title>JTA | Learning Materials Manager</title>
+<style>
+:root{--navy:#142b4a;--blue:#2459a9;--gold:#e6b84b;--bg:#f3f6fb;--text:#172438;--muted:#64748b;--border:#dce4ef}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,system-ui,sans-serif;line-height:1.5}
+.top{background:linear-gradient(125deg,var(--navy),#203f68);color:#fff;border-bottom:5px solid var(--gold);padding:22px}
+.wrap{width:min(1000px,calc(100% - 28px));margin:auto}.top h1{margin:0;font-size:23px}.top p{margin:4px 0 0;color:#dbe7f7}
+.card{background:white;border:1px solid var(--border);border-radius:16px;padding:20px;margin:20px 0;box-shadow:0 8px 25px #142b4a0b}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.full{grid-column:1/-1}
+label{display:block;font-weight:700;font-size:13px;margin:10px 0 6px}
+input,select,textarea{width:100%;padding:11px;border:1px solid #cbd5e1;border-radius:9px;font:inherit;background:white}textarea{min-height:78px;resize:vertical}
+.btn{border:0;border-radius:9px;padding:11px 15px;font-weight:800;cursor:pointer;background:var(--blue);color:white;text-decoration:none;display:inline-block}
+.btn.gold{background:var(--gold);color:var(--navy)}.btn.soft{background:#eaf0f8;color:var(--navy)}.btn.danger{background:#fff0f0;color:#b42332}
+.btn:disabled{opacity:.6}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.status{padding:12px;border-radius:9px;background:#edf3fc;margin-top:12px;white-space:pre-wrap}.status.error{background:#fff0f0;color:#9b1c1c}
+.list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.item{border:1px solid var(--border);border-radius:12px;padding:15px;min-width:0}.item h3{margin:0 0 6px;overflow-wrap:anywhere}.item p{font-size:13px;color:#526178;overflow-wrap:anywhere}
+.tag{display:inline-block;background:#eef4ff;color:var(--blue);padding:4px 8px;border-radius:30px;font-size:11px;font-weight:700}.muted{color:var(--muted);font-size:12px}
+hr{border:0;border-top:1px solid var(--border);margin:18px 0}
+@media(max-width:650px){.grid,.list{grid-template-columns:1fr}.full{grid-column:auto}}
+</style></head><body>
+<header class="top"><div class="wrap"><h1>JUSTIFIED TUTOR'S ACADEMY</h1><p>Learning Materials Management · 300+ IN JAMB IS OUR CALLING</p></div></header>
+<main class="wrap">
 <section class="card" id="loginCard"><h2>Administrator access</h2><p class="muted">Use the same administrator secret as your JTA admin dashboard. It is kept only in this page's session storage.</p><label for="secret">Administrator secret</label><input id="secret" type="password" autocomplete="current-password"><div class="actions"><button class="btn" id="connect">Connect</button><a class="btn soft" href="admin.html">Back to admin dashboard</a></div><div id="loginStatus" class="status" hidden></div></section>
-<section id="manager" hidden><section class="card"><h2 id="formTitle">Upload a learning material</h2><form id="uploadForm"><div class="grid"><div><label for="title">Material title *</label><input id="title" maxlength="160" required placeholder="e.g. Chemistry — Water"></div><div><label for="department">Department *</label><select id="department" required><option value="Science">Science</option><option value="Arts">Arts</option><option value="Commercial">Commercial</option><option value="All">All departments</option></select></div><div><label for="subject">Subject</label><input id="subject" maxlength="80" placeholder="e.g. Chemistry"></div><div><label for="category">Material type</label><select id="category"><option>Lesson note</option><option>PDF notes</option><option>Past questions</option><option>Video lesson</option><option>Image</option><option>Other</option></select></div><div class="field full"><label for="description">Description</label><textarea id="description" maxlength="1200" placeholder="Briefly describe this material"></textarea></div><div class="field full" id="fileField"><label for="file">Choose file * (PDF, MP4/WebM, JPG/PNG/WebP, DOC/DOCX, PPT/PPTX; maximum 25 MB)</label><input id="file" type="file" accept=".pdf,.mp4,.webm,.jpg,.jpeg,.png,.webp,.doc,.docx,.ppt,.pptx"></div></div><div class="actions"><button class="btn" id="saveButton" type="submit">Upload as draft</button><button class="btn soft" id="cancelEdit" type="button" hidden>Cancel edit</button></div></form><div id="formStatus" class="status" hidden></div></section>
-<section class="card"><h2>Uploaded materials</h2><p class="muted">New uploads remain unpublished until you select Publish. Students can only access published materials for their department.</p><div class="actions"><button class="btn soft" id="refresh">Refresh list</button></div><div id="listStatus" class="status">Connect to load materials.</div><div id="materials" class="list"></div></section></section></main>
+<section id="manager" hidden>
+  <section class="card"><h2 id="formTitle">Publish a learning resource</h2>
+    <p class="muted">Leave the folder empty to publish generally to eligible students. Choose a folder to add this resource to an individually assigned learning package.</p>
+    <form id="uploadForm"><div class="grid">
+      <div><label for="title">Material title *</label><input id="title" maxlength="160" required placeholder="e.g. Chemistry — Water"></div>
+      <div><label for="department">Department *</label><select id="department" required><option value="Science">Science</option><option value="Arts">Arts</option><option value="Commercial">Commercial</option><option value="All">All departments</option></select></div>
+      <div><label for="subject">Subject</label><input id="subject" maxlength="80" placeholder="e.g. Chemistry"></div>
+      <div><label for="category">Material type</label><select id="category"><option>Lesson note</option><option>PDF notes</option><option>Past questions</option><option>Video lesson</option><option>CBT corrections</option><option>Image</option><option>Other</option></select></div>
+      <div class="full"><label for="description">Description</label><textarea id="description" maxlength="1200" placeholder="Briefly describe this material"></textarea></div>
+      <div class="full"><label for="folderId">Assign to a package folder (optional)</label><select id="folderId"><option value="">General materials — all eligible students</option></select></div>
+      <div class="full"><label for="youtubeUrl">YouTube lesson URL (leave blank to upload a file)</label><input id="youtubeUrl" type="url" placeholder="https://www.youtube.com/watch?v=..."></div>
+      <div class="full" id="fileField"><label for="file">Choose file (PDF, MP4/WebM, JPG/PNG/WebP, DOC/DOCX, PPT/PPTX; maximum 25 MB)</label><input id="file" type="file" accept=".pdf,.mp4,.webm,.jpg,.jpeg,.png,.webp,.doc,.docx,.ppt,.pptx"></div>
+    </div><div class="actions"><button class="btn gold" id="saveButton" type="submit">Save as draft</button><button class="btn soft" id="cancelEdit" type="button" hidden>Cancel edit</button></div></form>
+    <div id="formStatus" class="status" hidden></div>
+  </section>
+
+  <section class="card"><h2>General publishing</h2><p>Use this for resources that should reach all eligible students in a department, including weekly CBT corrections. Choose <strong>All departments</strong> and leave the package folder empty when everyone should receive it.</p></section>
+
+  <section class="card"><h2>Assigned learning folders</h2><p class="muted">Create a learning package, then assign it to each student individually using their JTA registration code. Every published material inside an assigned folder is automatically available to its assigned students, including materials added later.</p>
+    <div class="grid"><div><label for="newFolderName">Package folder name</label><input id="newFolderName" maxlength="120" placeholder="e.g. Intensive Chemistry Package"></div><div><label for="newFolderDescription">Description</label><input id="newFolderDescription" maxlength="800" placeholder="What this package contains"></div></div>
+    <div class="actions"><button class="btn" id="createFolder" type="button">Create folder</button></div><div id="folderStatus" class="status" hidden></div><div id="foldersList" class="list"></div>
+    <hr><h3>Assign a folder to a student</h3><div class="grid"><div><label for="assignFolder">Select package folder</label><select id="assignFolder"><option value="">Choose a folder</option></select></div><div><label for="studentCode">Student JTA registration code</label><input id="studentCode" placeholder="JTA2027-0001"></div></div>
+    <div class="actions"><button class="btn gold" id="assignFolderButton" type="button">Assign to student</button></div><div id="assignStatus" class="status" hidden></div>
+  </section>
+
+  <section class="card"><h2>Published and draft materials</h2><p class="muted">General materials remain available to all eligible students in the selected department. Folder materials remain restricted to students assigned to that folder.</p><div class="actions"><button class="btn soft" id="refresh" type="button">Refresh list</button></div><div id="listStatus" class="status">Connect to load materials.</div><div id="materials" class="list"></div></section>
+</section></main>
 <script>
-(()=>{'use strict';const API='https://jta-student-backend.justifiedtutorsacademy.workers.dev';const KEY='jta_materials_admin_key';let secret='',editing=null;const $=id=>document.getElementById(id);function status(id,msg,error=false){const e=$(id);e.hidden=false;e.textContent=msg;e.className='status'+(error?' error':'')}async function api(path,options={}){const headers={'X-Admin-Key':secret,...(options.headers||{})};if(options.body&&!(options.body instanceof FormData))headers['Content-Type']='application/json';const r=await fetch(API+path,{...options,headers});const d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.error||d.message||'Request failed');return d}async function connect(){secret=$('secret').value.trim();if(!secret){status('loginStatus','Enter your administrator secret.',true);return}try{await api('/api/admin/materials');sessionStorage.setItem(KEY,secret);$('loginCard').hidden=true;$('manager').hidden=false;await load()}catch(e){secret='';status('loginStatus',e.message,true)}}async function load(){ $('materials').replaceChildren();status('listStatus','Loading materials...');try{const d=await api('/api/admin/materials');const rows=d.materials||[];if(!rows.length){status('listStatus','No materials uploaded yet.');return} $('listStatus').hidden=true;rows.forEach(m=>{const box=document.createElement('article');box.className='item';const h=document.createElement('h3');h.textContent=m.title;const tag=document.createElement('span');tag.className='tag';tag.textContent=m.is_published?'PUBLISHED':'DRAFT';const p=document.createElement('p');p.textContent=[m.department,m.subject,m.category,m.file_name].filter(Boolean).join(' · ');const desc=document.createElement('p');desc.textContent=m.description||'No description';const size=document.createElement('p');size.className='muted';size.textContent=(Number(m.file_size||0)/1048576).toFixed(2)+' MB';const actions=document.createElement('div');actions.className='actions';const pub=document.createElement('button');pub.className='btn '+(m.is_published?'soft':'gold');pub.textContent=m.is_published?'Unpublish':'Publish';pub.onclick=async()=>{try{await api('/api/admin/materials/'+m.id+'/'+(m.is_published?'unpublish':'publish'),{method:'POST'});await load()}catch(e){status('listStatus',e.message,true)}};const edit=document.createElement('button');edit.className='btn soft';edit.textContent='Edit details';edit.onclick=()=>editMaterial(m);const del=document.createElement('button');del.className='btn danger';del.textContent='Delete';del.onclick=async()=>{if(!confirm('Permanently delete this material and its stored file?'))return;try{await api('/api/admin/materials/'+m.id,{method:'DELETE'});await load()}catch(e){status('listStatus',e.message,true)}};actions.append(pub,edit,del);box.append(h,tag,p,desc,size,actions);$('materials').append(box)})}catch(e){status('listStatus',e.message,true)}}function editMaterial(m){editing=m.id;$('formTitle').textContent='Edit material details';$('title').value=m.title||'';$('department').value=m.department||'Science';$('subject').value=m.subject||'';$('category').value=m.category||'Lesson note';$('description').value=m.description||'';$('fileField').hidden=true;$('file').required=false;$('saveButton').textContent='Save changes';$('cancelEdit').hidden=false;window.scrollTo({top:0,behavior:'smooth'})}function reset(){editing=null;$('uploadForm').reset();$('fileField').hidden=false;$('file').required=false;$('formTitle').textContent='Upload a learning material';$('saveButton').textContent='Upload as draft';$('cancelEdit').hidden=true} $('connect').onclick=connect;$('refresh').onclick=load;$('cancelEdit').onclick=reset;$('uploadForm').onsubmit=async e=>{e.preventDefault();$('saveButton').disabled=true;try{if(editing){await api('/api/admin/materials/'+editing,{method:'PUT',body:JSON.stringify({title:$('title').value,department:$('department').value,subject:$('subject').value,category:$('category').value,description:$('description').value})});status('formStatus','Material details updated.');reset()}else{const f=new FormData();f.append('title',$('title').value);f.append('department',$('department').value);f.append('subject',$('subject').value);f.append('category',$('category').value);f.append('description',$('description').value);if(!$('file').files[0])throw Error('Choose a file to upload.');f.append('file',$('file').files[0]);await api('/api/admin/materials',{method:'POST',body:f});status('formStatus','Upload complete. The material is saved as a draft; publish it when ready.');reset()}await load()}catch(err){status('formStatus',err.message,true)}finally{$('saveButton').disabled=false}};const saved=sessionStorage.getItem(KEY);if(saved){secret=saved;$('secret').value=saved;connect()}})();
+(()=>{'use strict';
+const API='https://jta-student-backend.justifiedtutorsacademy.workers.dev',KEY='jta_materials_admin_key';
+let secret='',editing=null,folders=[];
+const $=id=>document.getElementById(id);
+function status(id,msg,error=false){const el=$(id);el.hidden=false;el.textContent=msg;el.className='status'+(error?' error':'');}
+async function api(path,options={}){const headers={'X-Admin-Key':secret,...(options.headers||{})};if(options.body&&!(options.body instanceof FormData))headers['Content-Type']='application/json';const response=await fetch(API+path,{...options,headers});const data=await response.json().catch(()=>({}));if(!response.ok)throw Error(data.error||data.message||'Request failed');return data;}
+async function connect(){secret=$('secret').value.trim();if(!secret){status('loginStatus','Enter your administrator secret.',true);return;}try{await api('/api/admin/materials');sessionStorage.setItem(KEY,secret);$('loginCard').hidden=true;$('manager').hidden=false;await loadAll();}catch(error){secret='';status('loginStatus',error.message,true);}}
+async function loadAll(){await loadFolders();await loadMaterials();}
+async function loadFolders(){
+  try{
+    const data=await api('/api/admin/material-folders');folders=data.folders||[];
+    ['folderId','assignFolder'].forEach(id=>{const select=$(id),current=select.value;select.replaceChildren();const empty=document.createElement('option');empty.value='';empty.textContent=id==='folderId'?'General materials — all eligible students':'Choose a folder';select.append(empty);folders.forEach(folder=>{const option=document.createElement('option');option.value=folder.id;option.textContent=folder.name;select.append(option);});if(folders.some(folder=>folder.id===current))select.value=current;});
+    $('foldersList').replaceChildren();
+    if(!folders.length){const note=document.createElement('p');note.className='muted';note.textContent='No package folders created yet.';$('foldersList').append(note);}
+    folders.forEach(folder=>{
+      const box=document.createElement('article');box.className='item';
+      const title=document.createElement('h3');title.textContent=folder.name;
+      const details=document.createElement('p');details.textContent=(folder.description||'No description')+' · '+folder.material_count+' materials · '+folder.assigned_students+' assigned students';
+      const view=document.createElement('button');view.className='btn soft';view.type='button';view.textContent='View assigned students';
+      view.onclick=async()=>{try{const data=await api('/api/admin/material-folders/students?folderId='+encodeURIComponent(folder.id));const list=document.createElement('div');(data.students||[]).forEach(student=>{const row=document.createElement('div');row.className='actions';const label=document.createElement('span');label.textContent=student.student_code+' — '+student.full_name;const revoke=document.createElement('button');revoke.type='button';revoke.className='btn danger';revoke.textContent='Revoke access';revoke.onclick=async()=>{if(!confirm('Remove this student from this package folder?'))return;try{await api('/api/admin/material-folders/revoke',{method:'POST',body:JSON.stringify({folderId:folder.id,studentCode:student.student_code})});row.remove();status('folderStatus','Folder access revoked.');}catch(error){status('folderStatus',error.message,true);}};row.append(label,revoke);list.append(row);});if(!(data.students||[]).length){const empty=document.createElement('p');empty.textContent='No students assigned yet.';list.append(empty);}const old=box.querySelector('.assigned-list');if(old)old.remove();list.className='assigned-list';box.append(list);}catch(error){status('folderStatus',error.message,true);}};
+      box.append(title,details,view);$('foldersList').append(box);
+    });
+  }catch(error){status('folderStatus',error.message,true);}
+}
+async function loadMaterials(){
+  $('materials').replaceChildren();status('listStatus','Loading materials...');
+  try{
+    const data=await api('/api/admin/materials'),rows=data.materials||[];
+    if(!rows.length){status('listStatus','No materials uploaded yet.');return;}
+    $('listStatus').hidden=true;
+    rows.forEach(material=>{
+      const box=document.createElement('article');box.className='item';
+      const title=document.createElement('h3');title.textContent=material.title;
+      const tag=document.createElement('span');tag.className='tag';tag.textContent=material.is_published?'PUBLISHED':'DRAFT';
+      const info=document.createElement('p');const folder=folders.find(item=>item.id===material.folder_id);
+      info.textContent=[material.department,material.subject,material.category,folder?('Folder: '+folder.name):'General publishing',material.youtube_url?'YouTube lesson':material.file_name].filter(Boolean).join(' · ');
+      const description=document.createElement('p');description.textContent=material.description||'No description';
+      const actions=document.createElement('div');actions.className='actions';
+      const publish=document.createElement('button');publish.className='btn '+(material.is_published?'soft':'gold');publish.textContent=material.is_published?'Unpublish':'Publish';
+      publish.onclick=async()=>{try{await api('/api/admin/materials/'+material.id+'/'+(material.is_published?'unpublish':'publish'),{method:'POST'});await loadMaterials();}catch(error){status('listStatus',error.message,true);}};
+      const edit=document.createElement('button');edit.className='btn soft';edit.textContent='Edit details';edit.onclick=()=>editMaterial(material);
+      const remove=document.createElement('button');remove.className='btn danger';remove.textContent='Delete';
+      remove.onclick=async()=>{if(!confirm('Permanently delete this material?'))return;try{await api('/api/admin/materials/'+material.id,{method:'DELETE'});await loadMaterials();}catch(error){status('listStatus',error.message,true);}};
+      actions.append(publish,edit,remove);box.append(title,tag,info,description,actions);$('materials').append(box);
+    });
+  }catch(error){status('listStatus',error.message,true);}
+}
+function editMaterial(material){
+  editing=material.id;$('formTitle').textContent='Edit material details';
+  $('title').value=material.title||'';$('department').value=material.department||'Science';
+  $('subject').value=material.subject||'';$('category').value=material.category||'Lesson note';
+  $('description').value=material.description||'';$('folderId').value=material.folder_id||'';
+  $('youtubeUrl').value=material.youtube_url||'';$('fileField').hidden=true;$('file').required=false;
+  $('saveButton').textContent='Save changes';$('cancelEdit').hidden=false;window.scrollTo({top:0,behavior:'smooth'});
+}
+function resetForm(){editing=null;$('uploadForm').reset();$('fileField').hidden=false;$('file').required=false;$('formTitle').textContent='Publish a learning resource';$('saveButton').textContent='Save as draft';$('cancelEdit').hidden=true;}
+$('connect').onclick=connect;$('refresh').onclick=loadAll;$('cancelEdit').onclick=resetForm;
+$('createFolder').onclick=async()=>{try{const name=$('newFolderName').value.trim();if(!name)throw Error('Enter a package folder name.');await api('/api/admin/material-folders',{method:'POST',body:JSON.stringify({name,description:$('newFolderDescription').value})});$('newFolderName').value='';$('newFolderDescription').value='';status('folderStatus','Package folder created.');await loadFolders();}catch(error){status('folderStatus',error.message,true);}};
+$('assignFolderButton').onclick=async()=>{try{const data=await api('/api/admin/material-folders/assign',{method:'POST',body:JSON.stringify({folderId:$('assignFolder').value,studentCode:$('studentCode').value.trim()})});status('assignStatus','Assigned to '+data.student.fullName+' ('+data.student.studentCode+').');$('studentCode').value='';await loadFolders();}catch(error){status('assignStatus',error.message,true);}};
+$('uploadForm').onsubmit=async event=>{
+  event.preventDefault();$('saveButton').disabled=true;
+  try{
+    if(editing){
+      await api('/api/admin/materials/'+editing,{method:'PUT',body:JSON.stringify({title:$('title').value,department:$('department').value,subject:$('subject').value,category:$('category').value,description:$('description').value,folderId:$('folderId').value})});
+      status('formStatus','Material details updated.');resetForm();
+    }else{
+      const form=new FormData();['title','department','subject','category','description','folderId','youtubeUrl'].forEach(id=>form.append(id,$(id).value.trim()));
+      if(!$('youtubeUrl').value.trim()){if(!$('file').files[0])throw Error('Choose a file or enter a YouTube URL.');form.append('file',$('file').files[0]);}
+      await api('/api/admin/materials',{method:'POST',body:form});status('formStatus','Saved as a draft. Publish it when ready.');resetForm();
+    }
+    await loadAll();
+  }catch(error){status('formStatus',error.message,true);}
+  finally{$('saveButton').disabled=false;}
+};
+const saved=sessionStorage.getItem(KEY);if(saved){secret=saved;$('secret').value=saved;connect();}
+})();
 </script></body></html>
