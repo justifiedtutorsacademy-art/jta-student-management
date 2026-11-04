@@ -133,6 +133,7 @@ footer{background:#17245B;color:#DDE2FF;font-size:11px;line-height:2}footer stro
       <div class="page-heading"><span class="eyebrow">ASSESSMENT CENTRE</span><h2>Tests & Results</h2><p>Take your JTA CBT examinations and monitor your recorded scores.</p></div>
       <div class="grid">
         <section class="card"><div class="card-heading"><span class="card-symbol">▣</span><div><h3>JTA CBT Examination</h3><p>Weekly computer-based tests</p></div></div><p class="empty">Choose an available examination, answer the questions and submit before the timer expires.</p><a class="button-link full-button" href="cbt.html">Start / Continue CBT Examination</a></section>
+        <section class="card"><div class="card-heading"><span class="card-symbol">🏆</span><div><h3>Weekly JTA Leaderboard</h3><p>Your position based on recorded CBT scores this week</p></div></div><p id="weeklyRankSummary" class="empty">Loading weekly ranking...</p><div id="weeklyLeaderboard" class="empty">Loading leaderboard...</div></section>
         <section class="card"><div class="card-heading"><span class="card-symbol">★</span><div><h3>My Test Scores</h3><p>Your examination performance</p></div></div><div id="scoresList" class="empty">Loading test scores...</div></section>
       </div>
     </section>
@@ -188,6 +189,21 @@ function renderTable(container,columns,rows,emptyMessage){
   rows.forEach(row=>{const tr=document.createElement("tr");columns.forEach(column=>{const td=document.createElement("td");const value=column.format?column.format(row[column.key],row):row[column.key];td.textContent=safeText(value);tr.appendChild(td)});tbody.appendChild(tr)});
   table.appendChild(tbody);wrapper.appendChild(table);container.className="";container.replaceChildren(wrapper);
 }
+async function loadWeeklyLeaderboard(){
+  const summary=document.getElementById("weeklyRankSummary"), root=document.getElementById("weeklyLeaderboard");
+  if(!summary||!root)return;
+  try{
+    const d=await apiRequest("/api/student/weekly-leaderboard");
+    summary.textContent=d.myRank?`Your current weekly position: #${d.myRank} · ${Number(d.myScore).toFixed(1)} / 400`:`No recorded CBT score for you this week yet.`;
+    const rows=Array.isArray(d.leaderboard)?d.leaderboard:[];
+    if(!rows.length){root.textContent="No weekly scores have been recorded yet.";return;}
+    const wrap=document.createElement("div");wrap.className="table-wrap";
+    const table=document.createElement("table");const thead=document.createElement("thead");const trh=document.createElement("tr");
+    ["S/N","JTA REG NO","JAMB SCORE"].forEach(t=>{const th=document.createElement("th");th.textContent=t;trh.appendChild(th)});thead.appendChild(trh);table.appendChild(thead);
+    const body=document.createElement("tbody");rows.forEach((r,i)=>{const tr=document.createElement("tr");[r.rank||i+1,r.studentCode,Number(r.jambScore).toFixed(1)].forEach(v=>{const td=document.createElement("td");td.textContent=String(v??"—");tr.appendChild(td)});body.appendChild(tr)});table.appendChild(body);wrap.appendChild(table);root.replaceChildren(wrap);root.className="";
+  }catch(e){summary.textContent="Weekly ranking unavailable: "+e.message;root.textContent="Please refresh after the analytics update is deployed.";}
+}
+
 async function loadPortal(){
   if(!sessionStorage.getItem("jta_student_token")){
     if(currentStudentCode()&&!navigator.onLine){startOfflineOnlyPortal();return;}
@@ -215,6 +231,7 @@ async function loadPortal(){
       {key:"test_name",label:"Test"},{key:"score",label:"Score"},{key:"max_score",label:"Maximum"},{key:"taken_at",label:"Date"}
     ],data.scores||[],"No test scores have been added yet.");
     showStatus("Your student information has been loaded.",true);
+    loadWeeklyLeaderboard();
   }catch(error){if(!sessionStorage.getItem("jta_student_token"))return;showStatus(error.message+" If your session has expired, log in again.")}
   finally{refreshButton.disabled=false;refreshButton.textContent="Refresh My Information"}
 }
