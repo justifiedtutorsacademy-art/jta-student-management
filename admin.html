@@ -1,3 +1,5 @@
+JTA Admin Portal — Subscription Assignment
+Complete source code. Keep this document as the readable backup of the corresponding deployable file.
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -163,7 +165,10 @@
     addText(card, "p", "Network: " + (application.network || "Not provided"));
     addText(card, "p", "Department: " + (application.department || "Not provided"));
     addText(card, "p", "Status: " + (application.status || "Unknown"));
-    if (application.subscription_plan) addText(card,"p", "Plan: " + application.subscription_plan + " · Expires: " + (application.subscription_expiry || "—"));
+    addText(card,"p","Account access: "+(application.access_status||"legacy"));
+    addText(card,"p","Subscription: "+(application.subscription_plan||"Legacy / not assigned"));
+    if(application.subscription_expiry)addText(card,"p","Expires: "+application.subscription_expiry);
+    if(application.amount_paid!=null)addText(card,"p","Amount paid: ₦"+application.amount_paid);
     addText(card, "p", "Application ID: " + (application.id || "Not provided"));
     const actions=document.createElement("div"); actions.className="item-actions";
     if ($("statusFilter").value === "pending") {
@@ -184,6 +189,9 @@
       card.append(plan.wrap,amount.wrap,paydate.wrap,start.wrap);
       const renew=document.createElement("button"); renew.type="button"; renew.className="btn btn-primary"; renew.textContent="Save renewal / plan change";
       renew.addEventListener("click",async()=>{renew.disabled=true;try{await apiRequest("/api/admin/subscription",{method:"POST",body:JSON.stringify({studentCode:application.student_code,plan:plan.el.value,amountPaid:amount.el.value,paymentDate:paydate.el.value,startDate:start.el.value})});showMessage($("listMessage"),"Subscription updated successfully.","success");await loadApplications();}catch(e){alert(e.message);renew.disabled=false;}}); actions.append(renew);
+      const suspended=application.access_status==="suspended";
+      const accessBtn=document.createElement("button"); accessBtn.type="button"; accessBtn.className="btn "+(suspended?"btn-success":"btn-danger"); accessBtn.textContent=suspended?"Reactivate student":"Suspend student";
+      accessBtn.addEventListener("click",async()=>{const action=suspended?"reactivate":"suspend";if(!confirm("Continue with "+action+"?"))return;accessBtn.disabled=true;try{await apiRequest("/api/admin/student-access",{method:"POST",body:JSON.stringify({studentCode:application.student_code,action})});showMessage($("listMessage"),"Student access updated.","success");await loadApplications()}catch(e){alert(e.message);accessBtn.disabled=false}});actions.append(accessBtn);
     }
     if(actions.childNodes.length) card.appendChild(actions);
     return card;
