@@ -33,6 +33,16 @@
 .empty-cell{text-align:center!important;color:#6b7280;padding:20px!important}
 @media(max-width:720px){.records-grid{grid-template-columns:1fr}.records-panel{padding:12px}.records-table{font-size:12px}}
 
+
+.student-list-wrap{margin-top:14px;width:100%;overflow-x:auto;border:1px solid var(--border,#e5e7eb);border-radius:13px;background:#fff}
+.student-list-table{width:100%;border-collapse:collapse;min-width:390px;font-size:13px}
+.student-list-table th,.student-list-table td{padding:13px 12px;text-align:left;border-bottom:1px solid #eee6f5;vertical-align:middle}
+.student-list-table th{background:#f5f7fc;color:#52627a;font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+.student-list-table tr:last-child td{border-bottom:0}
+.regno-button{border:0;background:#eaf0fb;color:var(--navy,#17345b);font-weight:850;border-radius:9px;padding:9px 11px;text-align:left;white-space:nowrap;cursor:pointer}
+.regno-button:focus-visible{outline:3px solid var(--gold,#d7ae55);outline-offset:2px}
+.student-secondary{display:block;color:var(--muted,#6b7280);font-size:11px;margin-top:3px}
+
 </style>
 </head>
 <body>
@@ -95,7 +105,37 @@ document.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",(
 document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>openView(b.dataset.go)));
 async function request(path,options={}){const headers={"Content-Type":"application/json",...(options.headers||{})};if(token)headers.Authorization="Bearer "+token;const res=await fetch(API+path,{...options,headers});let data={};try{data=await res.json()}catch(_){}if(!res.ok)throw Error(data.error||"Request failed ("+res.status+").");return data}
 function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function renderStudents(){const root=$("students");root.replaceChildren();const q=$("studentSearch").value.trim().toLowerCase();const matches=students.filter(s=>[s.full_name,s.student_code,s.email,s.department].some(v=>String(v||"").toLowerCase().includes(q)));if(!matches.length){const e=document.createElement("div");e.className="empty";e.textContent=students.length?"No students match your search.":"No students are assigned to this coach account yet.";root.append(e);return}matches.forEach(s=>{const card=document.createElement("article");card.className="student";card.innerHTML=`<h3>${esc(s.full_name||"Unnamed student")}</h3><p><strong>JTA code:</strong> ${esc(s.student_code||"Not available")}</p><p><strong>Email:</strong> ${esc(s.email||"Not available")}</p><p><strong>Department:</strong> ${esc(s.department||"Not available")}</p><div class="actions"><button class="btn primary" type="button">View records</button></div>`;card.querySelector("button").addEventListener("click",()=>selectStudent(s));root.append(card)})}
+function renderStudents(){
+const root=$("students");root.replaceChildren();
+const q=$("studentSearch").value.trim().toLowerCase();
+const matches=students
+.filter(s=>[s.full_name,s.student_code,s.email,s.department].some(v=>String(v||"").toLowerCase().includes(q)))
+.sort((a,b)=>String(a.student_code||"").localeCompare(String(b.student_code||""),undefined,{numeric:true,sensitivity:"base"}));
+if(!matches.length){
+const e=document.createElement("div");e.className="empty";
+e.textContent=students.length?"No students match your search.":"No students are assigned to this coach account yet.";
+root.append(e);return;
+}
+const wrap=document.createElement("div");wrap.className="student-list-wrap";
+const table=document.createElement("table");table.className="student-list-table";
+const thead=document.createElement("thead"),tbody=document.createElement("tbody");
+thead.innerHTML="<tr><th>S/N</th><th>JTA registration number</th><th>Student</th><th>Department</th></tr>";
+matches.forEach((s,index)=>{
+const tr=document.createElement("tr");
+const serial=document.createElement("td");serial.textContent=String(index+1);
+const regCell=document.createElement("td");
+const regButton=document.createElement("button");regButton.type="button";regButton.className="regno-button";
+regButton.textContent=s.student_code||"REG NO. UNAVAILABLE";
+regButton.setAttribute("aria-label","View records for "+(s.student_code||s.full_name||"student"));
+regButton.addEventListener("click",()=>selectStudent(s));
+regCell.append(regButton);
+const name=document.createElement("td");name.textContent=s.full_name||"Unnamed student";
+const email=document.createElement("span");email.className="student-secondary";email.textContent=s.email||"";name.append(email);
+const dept=document.createElement("td");dept.textContent=s.department||"—";
+tr.append(serial,regCell,name,dept);tbody.append(tr);
+});
+table.append(thead,tbody);wrap.append(table);root.append(wrap);
+}
 async function loadStudents(){$("refreshButton").disabled=true;try{const d=await request("/api/coach/students");students=Array.isArray(d.students)?d.students:[];$("studentCount").textContent=students.length;$("attendanceCount").textContent=d.attendanceCount??"—";$("scoreCount").textContent=d.scoreCount??"—";message($("studentsMessage"),students.length+" assigned student(s) loaded.","success");renderStudents();if(selected&&!students.some(s=>s.id===selected.id))clearSelected()}catch(e){students=[];renderStudents();$("studentCount").textContent=$("attendanceCount").textContent=$("scoreCount").textContent="—";message($("studentsMessage"),e.message,"error")}finally{$("refreshButton").disabled=false}}
 function clearSelected(){selected=null;$("studentProfile").classList.add("hidden");$("recordPrompt").classList.remove("hidden");$("recordPrompt").textContent="Select a student from your assigned-students list.";$("noteStudent").value="";$("attendanceHistory").innerHTML='<p class="sub">No student selected.</p>';$("scoreHistory").innerHTML='<p class="sub">No student selected.</p>'}
 function history(node,items,type){
