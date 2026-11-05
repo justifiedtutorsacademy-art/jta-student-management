@@ -1,5 +1,3 @@
-JTA Admin Portal — Subscription Assignment
-Complete source code. Keep this document as the readable backup of the corresponding deployable file.
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,6 +13,8 @@ Complete source code. Keep this document as the readable backup of the correspon
     main{padding:28px 0 48px}.intro{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:22px}.eyebrow{color:var(--blue);font-weight:800;text-transform:uppercase;letter-spacing:.12em;font-size:11px;margin:0 0 6px}.intro h2{font-size:clamp(24px,4vw,32px);letter-spacing:-.035em;line-height:1.15;margin:0}.intro p{color:var(--muted);margin:8px 0 0}.card{background:var(--white);border:1px solid var(--border);border-radius:18px;padding:22px;margin-bottom:20px;box-shadow:var(--shadow)}.card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:17px}.card h2{font-size:19px;letter-spacing:-.02em;margin:0}.subtext{font-size:13px;color:var(--muted);margin:5px 0 0}.pill{display:inline-flex;align-items:center;gap:7px;border-radius:999px;padding:6px 10px;background:#eef4ff;color:var(--blue);font-size:12px;font-weight:800;white-space:nowrap}.pill:before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
     .login-card{max-width:540px;margin:30px auto;padding:clamp(22px,5vw,34px)}.login-icon{width:54px;height:54px;border-radius:16px;background:#fff4d5;color:#805c00;display:grid;place-items:center;font-size:25px;margin-bottom:16px}.field-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 14px}.field{min-width:0}.field.full{grid-column:1/-1}label{display:block;font-size:13px;font-weight:750;margin:13px 0 7px}input,select{width:100%;min-height:46px;border:1px solid #cbd5e1;border-radius:10px;padding:10px 12px;background:#fff;color:var(--text);outline:none}input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px #2459a91b}.btn{border:0;border-radius:10px;min-height:44px;padding:10px 15px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;gap:8px}.btn-primary{background:var(--blue);color:#fff}.btn-gold{background:var(--gold);color:var(--navy)}.btn-soft{background:#eaf0f8;color:var(--navy)}.btn-danger{background:#fff0f0;color:var(--red)}.btn-success{background:var(--green);color:#fff}.btn-block{width:100%;margin-top:17px}.status{padding:12px 14px;border-radius:11px;background:#edf3fc;color:var(--navy);overflow-wrap:anywhere;margin-top:14px;font-size:14px}.status.error{background:#fff0f0;color:#9b1c1c}.status.success{background:#e9f8ef;color:#17623b}.hidden{display:none!important}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:20px}.stat{background:#fff;border:1px solid var(--border);border-radius:16px;padding:17px;box-shadow:0 5px 20px #142b4a08;min-width:0}.stat-top{display:flex;align-items:center;justify-content:space-between;gap:8px}.stat-label{color:var(--muted);font-size:12px;font-weight:750}.stat-icon{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:#edf3fc;color:var(--blue);font-weight:900}.stat-value{font-size:29px;font-weight:850;letter-spacing:-.04em;margin-top:10px;line-height:1.1}.stat-note{font-size:12px;color:var(--muted);margin-top:6px}
     .toolbar{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:end}.toolbar .btn{min-width:150px}.list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.item{border:1px solid var(--border);border-radius:14px;padding:16px;min-width:0;background:linear-gradient(180deg,#fff,#fcfdff)}.item h3{font-size:16px;margin:0 0 8px;overflow-wrap:anywhere}.item p{margin:7px 0;font-size:13px;color:#42526a;overflow-wrap:anywhere}.code{color:var(--blue)!important;font-weight:850}.item-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}.item-actions .btn{flex:1;min-width:100px}.empty{border:1px dashed #cbd5e1;border-radius:14px;padding:26px 16px;text-align:center;color:var(--muted);grid-column:1/-1}.empty strong{display:block;color:var(--text);margin-bottom:4px}.section-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start}.section-grid .card{height:100%}.toolbar-label{margin-top:0}.note{font-size:12px;color:var(--muted);margin-top:12px}.admin-session{display:flex;align-items:center;justify-content:space-between;gap:16px}.admin-session p{margin:5px 0 0;color:var(--muted);font-size:13px}.admin-session .btn{flex-shrink:0}footer{text-align:center;padding:20px;color:var(--muted);font-size:12px}
+    .options-panel{padding:20px}.option-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.option-link{display:flex;align-items:center;gap:12px;min-width:0;padding:14px;border:1px solid var(--border);border-radius:13px;background:#fff;color:var(--text);text-decoration:none;transition:border-color .15s,transform .15s,box-shadow .15s}.option-link:hover{border-color:#9bb4d8;transform:translateY(-1px);box-shadow:0 6px 18px #142b4a0c}.option-icon{width:42px;height:42px;flex:0 0 42px;display:grid;place-items:center;border-radius:12px;background:#edf3fc;font-size:20px}.option-link strong,.option-link small{display:block}.option-link strong{font-size:13px;line-height:1.3}.option-link small{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.35}.option-arrow{margin-left:auto;color:var(--blue);font-size:25px;font-weight:700}.intro .btn-gold{display:none}
+    @media(max-width:600px){.option-grid{grid-template-columns:1fr}.option-link{padding:12px}.options-panel{padding:16px}}
     @media(max-width:800px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.section-grid{grid-template-columns:1fr}.list{grid-template-columns:1fr}.intro{align-items:flex-start;flex-direction:column}.secure-label{display:none}}
     @media(max-width:520px){.wrap{width:min(100% - 22px,1120px)}.topbar{padding:18px 0}.brand-mark{width:42px;height:42px;border-radius:13px}.card{padding:17px;border-radius:15px}.stats{gap:9px}.stat{padding:13px}.stat-value{font-size:25px}.stat-icon{width:29px;height:29px}.field-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.toolbar{grid-template-columns:1fr}.toolbar .btn{width:100%}.admin-session{align-items:stretch;flex-direction:column}.admin-session .btn{width:100%}.item-actions .btn{flex-basis:100%}}
   </style>
@@ -40,7 +40,7 @@ Complete source code. Keep this document as the readable backup of the correspon
     </section>
  
     <section id="dashboard" class="hidden">
-      <div class="intro"><div><p class="eyebrow">JTA management</p><h2>Dashboard overview</h2><p>Manage applications and your student-support team from one place.</p></div><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><a class="btn btn-gold" href="analytics.html" target="_blank" rel="noopener" style="text-decoration:none">📊 Analytics Dashboard</a><span class="pill">Administrator connected</span></div></div>
+      <div class="intro"><div><p class="eyebrow">JTA management</p><h2>Dashboard overview</h2><p>Manage applications and your student-support team from one place.</p></div><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="pill">Administrator connected</span></div></div>
       <div class="stats" aria-label="Dashboard summary">
         <div class="stat"><div class="stat-top"><span class="stat-label">Pending applications</span><span class="stat-icon">…</span></div><div class="stat-value" id="pendingCount">—</div><div class="stat-note">Awaiting review</div></div>
         <div class="stat"><div class="stat-top"><span class="stat-label">Approved students</span><span class="stat-icon">✓</span></div><div class="stat-value" id="approvedCount">—</div><div class="stat-note">Approved applications</div></div>
@@ -48,8 +48,20 @@ Complete source code. Keep this document as the readable backup of the correspon
         <div class="stat"><div class="stat-top"><span class="stat-label">Registered coaches</span><span class="stat-icon">★</span></div><div class="stat-value" id="coachCount">—</div><div class="stat-note">Coach accounts in the system</div></div>
       </div>
  
+      <section class="card options-panel" aria-labelledby="optionsHeading">
+        <div class="card-head"><div><p class="eyebrow">Quick navigation</p><h2 id="optionsHeading">Admin options</h2><p class="subtext">Choose a section to manage your academy.</p></div><span class="pill">Workspace</span></div>
+        <div class="option-grid">
+          <a class="option-link" href="#studentApplications"><span class="option-icon">👩‍🎓</span><span><strong>Student applications</strong><small>Review, approve and assign plans</small></span><span class="option-arrow">›</span></a>
+          <a class="option-link" href="#coachManagement"><span class="option-icon">👨‍🏫</span><span><strong>Coach management</strong><small>Create and manage coach accounts</small></span><span class="option-arrow">›</span></a>
+          <a class="option-link" href="#assignmentManagement"><span class="option-icon">📋</span><span><strong>Student assignments</strong><small>Assign and transfer students</small></span><span class="option-arrow">›</span></a>
+          <a class="option-link" href="material-access.html"><span class="option-icon">📚</span><span><strong>Learning materials</strong><small>Manage premium material access</small></span><span class="option-arrow">›</span></a>
+          <a class="option-link" href="exam-management.html"><span class="option-icon">📝</span><span><strong>Examination management</strong><small>Questions, tests and results</small></span><span class="option-arrow">›</span></a>
+          <a class="option-link" href="analytics.html"><span class="option-icon">📊</span><span><strong>Analytics dashboard</strong><small>Performance and academy reports</small></span><span class="option-arrow">›</span></a>
+        </div>
+      </section>
+
       <div class="section-grid">
-        <section class="card">
+        <section class="card" id="studentApplications">
           <div class="card-head"><div><h2>Student applications</h2><p class="subtext">Review applications and approve eligible students.</p></div><span class="pill">Students</span></div>
           <div class="toolbar">
             <div><label class="toolbar-label" for="statusFilter">Application status</label><select id="statusFilter"><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option></select></div>
@@ -93,18 +105,6 @@ Complete source code. Keep this document as the readable backup of the correspon
       </section>
  
       
-      <section class="card"><div class="card-head"><div><h2>Premium material access</h2><p class="subtext">Choose which learning materials are reserved for eligible Pro plans.</p></div><span class="pill">Premium</span></div><a class="btn btn-primary btn-block" href="premium-material-access.html" style="display:block;text-align:center;text-decoration:none">Manage premium material access →</a></section>
-      <section class="card" id="learningMaterialsLink"><div class="card-head"><div><h2>Learning materials</h2><p class="subtext">Upload, organise, edit and publish notes, documents, images and lesson videos.</p></div><span class="pill">Study</span></div><a class="btn btn-primary btn-block" href="materials-management.html" style="display:block;text-align:center;text-decoration:none">Open learning materials manager →</a></section>
- 
-      <section class="card" id="examManagementLink">
-       <div class="card-head">
-        <div><h2>Examination management</h2>
-        <p class="subtext">Create exams, add multiple-choice questions, save drafts, publish exams, and review student results.</p></div>
-        <span class="pill">CBT</span>
-       </div>
-       <a class="btn btn-primary btn-block" href="exam-management.html" style="display:block;text-align:center;text-decoration:none">Open examination manager →</a>
-      </section>
- 
 <section class="card admin-session">
         <div><h2>Administrator session</h2><p>Your secret stays in this page's temporary memory and is not saved to local storage.</p></div>
         <button class="btn btn-soft" id="logoutButton" type="button">Disconnect and clear secret</button>
@@ -166,10 +166,7 @@ Complete source code. Keep this document as the readable backup of the correspon
     addText(card, "p", "Network: " + (application.network || "Not provided"));
     addText(card, "p", "Department: " + (application.department || "Not provided"));
     addText(card, "p", "Status: " + (application.status || "Unknown"));
-    addText(card,"p","Account access: "+(application.access_status||"legacy"));
-    addText(card,"p","Subscription: "+(application.subscription_plan||"Legacy / not assigned"));
-    if(application.subscription_expiry)addText(card,"p","Expires: "+application.subscription_expiry);
-    if(application.amount_paid!=null)addText(card,"p","Amount paid: ₦"+application.amount_paid);
+    if (application.subscription_plan) addText(card,"p", "Plan: " + application.subscription_plan + " · Expires: " + (application.subscription_expiry || "—"));
     addText(card, "p", "Application ID: " + (application.id || "Not provided"));
     const actions=document.createElement("div"); actions.className="item-actions";
     if ($("statusFilter").value === "pending") {
@@ -190,9 +187,6 @@ Complete source code. Keep this document as the readable backup of the correspon
       card.append(plan.wrap,amount.wrap,paydate.wrap,start.wrap);
       const renew=document.createElement("button"); renew.type="button"; renew.className="btn btn-primary"; renew.textContent="Save renewal / plan change";
       renew.addEventListener("click",async()=>{renew.disabled=true;try{await apiRequest("/api/admin/subscription",{method:"POST",body:JSON.stringify({studentCode:application.student_code,plan:plan.el.value,amountPaid:amount.el.value,paymentDate:paydate.el.value,startDate:start.el.value})});showMessage($("listMessage"),"Subscription updated successfully.","success");await loadApplications();}catch(e){alert(e.message);renew.disabled=false;}}); actions.append(renew);
-      const suspended=application.access_status==="suspended";
-      const accessBtn=document.createElement("button"); accessBtn.type="button"; accessBtn.className="btn "+(suspended?"btn-success":"btn-danger"); accessBtn.textContent=suspended?"Reactivate student":"Suspend student";
-      accessBtn.addEventListener("click",async()=>{const action=suspended?"reactivate":"suspend";if(!confirm("Continue with "+action+"?"))return;accessBtn.disabled=true;try{await apiRequest("/api/admin/student-access",{method:"POST",body:JSON.stringify({studentCode:application.student_code,action})});showMessage($("listMessage"),"Student access updated.","success");await loadApplications()}catch(e){alert(e.message);accessBtn.disabled=false}});actions.append(accessBtn);
     }
     if(actions.childNodes.length) card.appendChild(actions);
     return card;
