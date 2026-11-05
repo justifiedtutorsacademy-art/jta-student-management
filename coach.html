@@ -16,6 +16,23 @@
 .quick-card>span{display:grid;place-items:center;width:39px;height:39px;border-radius:12px;background:#f3ead0;color:var(--navy);font-size:20px}
 .quick-card strong{font-size:15px}.quick-card small{font-size:12px;color:var(--muted)}
 @keyframes fadeIn{from{opacity:.65;transform:translateY(3px)}to{opacity:1;transform:none}}
+
+.records-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px}
+.records-panel{min-width:0;border:1px solid var(--line,#e5e7eb);border-radius:14px;padding:14px;background:#fff}
+.records-panel h3{margin:0 0 12px;font-size:16px}
+.records-table-wrap{width:100%;overflow-x:auto}
+.records-table{width:100%;border-collapse:collapse;font-size:13px}
+.records-table th,.records-table td{padding:11px 9px;text-align:left;border-bottom:1px solid var(--line,#e5e7eb);vertical-align:middle}
+.records-table th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#52627a;background:#f5f7fb}
+.records-table tr:last-child td{border-bottom:0}
+.attendance-badge{display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border-radius:999px;background:#e8f7ee;color:#176b3a;font-weight:700;white-space:nowrap}
+.attendance-badge.absent{background:#fff0f0;color:#a52a2a}
+.grade-badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#eaf0fb;color:#244d88;font-weight:700;white-space:nowrap}
+.score-main{font-weight:800;color:#1c2b43;white-space:nowrap}
+.score-sub{display:block;color:#6b7280;font-size:11px;margin-top:3px}
+.empty-cell{text-align:center!important;color:#6b7280;padding:20px!important}
+@media(max-width:720px){.records-grid{grid-template-columns:1fr}.records-panel{padding:12px}.records-table{font-size:12px}}
+
 </style>
 </head>
 <body>
@@ -50,8 +67,10 @@
 <section id="records-view" class="coach-view hidden">
 <section class="card"><div class="head"><div><p class="eyebrow">ACADEMIC MONITORING</p><h2>Student records</h2><p class="sub">Choose a student from My Students to review attendance and scores.</p></div><button type="button" class="btn soft" data-go="students-view">Choose student</button></div>
 <div id="recordPrompt" class="status">Select a student from your assigned-students list.</div><div id="studentProfile" class="hidden"></div>
-<h3 style="font-size:15px;margin:20px 0 4px">Attendance history</h3><div id="attendanceHistory"><p class="sub">No student selected.</p></div>
-<h3 style="font-size:15px;margin:20px 0 4px">Academic scores</h3><div id="scoreHistory"><p class="sub">No student selected.</p></div></section>
+<div class="records-grid">
+<div class="records-panel"><h3>Attendance</h3><div id="attendanceHistory"><p class="sub">No student selected.</p></div></div>
+<div class="records-panel"><h3>CBT scores</h3><div id="scoreHistory"><p class="sub">No student selected.</p></div></div>
+</div></section>
 </section>
 <section id="followup-view" class="coach-view hidden">
 <section class="card"><div class="head"><div><p class="eyebrow">STUDENT SUPPORT</p><h2>Follow-up notes</h2><p class="sub">Record concerns and action taken for a selected student.</p></div><button type="button" class="btn soft" data-go="students-view">Choose student</button></div>
@@ -79,7 +98,50 @@ function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&l
 function renderStudents(){const root=$("students");root.replaceChildren();const q=$("studentSearch").value.trim().toLowerCase();const matches=students.filter(s=>[s.full_name,s.student_code,s.email,s.department].some(v=>String(v||"").toLowerCase().includes(q)));if(!matches.length){const e=document.createElement("div");e.className="empty";e.textContent=students.length?"No students match your search.":"No students are assigned to this coach account yet.";root.append(e);return}matches.forEach(s=>{const card=document.createElement("article");card.className="student";card.innerHTML=`<h3>${esc(s.full_name||"Unnamed student")}</h3><p><strong>JTA code:</strong> ${esc(s.student_code||"Not available")}</p><p><strong>Email:</strong> ${esc(s.email||"Not available")}</p><p><strong>Department:</strong> ${esc(s.department||"Not available")}</p><div class="actions"><button class="btn primary" type="button">View records</button></div>`;card.querySelector("button").addEventListener("click",()=>selectStudent(s));root.append(card)})}
 async function loadStudents(){$("refreshButton").disabled=true;try{const d=await request("/api/coach/students");students=Array.isArray(d.students)?d.students:[];$("studentCount").textContent=students.length;$("attendanceCount").textContent=d.attendanceCount??"—";$("scoreCount").textContent=d.scoreCount??"—";message($("studentsMessage"),students.length+" assigned student(s) loaded.","success");renderStudents();if(selected&&!students.some(s=>s.id===selected.id))clearSelected()}catch(e){students=[];renderStudents();$("studentCount").textContent=$("attendanceCount").textContent=$("scoreCount").textContent="—";message($("studentsMessage"),e.message,"error")}finally{$("refreshButton").disabled=false}}
 function clearSelected(){selected=null;$("studentProfile").classList.add("hidden");$("recordPrompt").classList.remove("hidden");$("recordPrompt").textContent="Select a student from your assigned-students list.";$("noteStudent").value="";$("attendanceHistory").innerHTML='<p class="sub">No student selected.</p>';$("scoreHistory").innerHTML='<p class="sub">No student selected.</p>'}
-function history(node,items,type){node.replaceChildren();if(!items.length){const p=document.createElement("p");p.className="sub";p.textContent="No "+type+" records found.";node.append(p);return}items.forEach(i=>{const row=document.createElement("div");row.className="row";const a=document.createElement("strong"),b=document.createElement("span");if(type==="attendance"){a.textContent=(i.class_date||"Class date")+" · "+(i.status||"");b.textContent="Marked: "+(i.marked_at||"Not available")}else{a.textContent=(i.test_name||"Test")+" · "+(i.score??"—")+" / "+(i.max_score??"—");b.textContent="Taken: "+(i.taken_at||"Not available")}row.append(a,b);node.append(row)})}
+function history(node,items,type){
+node.replaceChildren();
+const wrap=document.createElement("div");wrap.className="records-table-wrap";
+const table=document.createElement("table");table.className="records-table";
+const thead=document.createElement("thead"),tbody=document.createElement("tbody");
+if(type==="attendance"){
+thead.innerHTML="<tr><th>Class / day</th><th>Date</th><th>Status</th></tr>";
+}else{
+thead.innerHTML="<tr><th>Examination</th><th>JAMB score</th><th>Grade</th></tr>";
+}
+if(!items.length){
+const tr=document.createElement("tr"),td=document.createElement("td");
+td.colSpan=3;td.className="empty-cell";td.textContent="No "+(type==="attendance"?"attendance":"CBT score")+" records yet.";
+tr.append(td);tbody.append(tr);
+}else{
+items.forEach((i,index)=>{
+const tr=document.createElement("tr");
+if(type==="attendance"){
+const label=i.week_number||i.week||i.day_label||i.class_label||("Class "+(index+1));
+const day=i.day_number?("Day "+i.day_number):(i.day?String(i.day):"");
+const date=i.class_date||"—";
+const status=String(i.status||"").toLowerCase();
+const present=status==="present"||status==="attended";
+const first=document.createElement("td");first.textContent=(i.week_number||i.week?("Week "+(i.week_number||i.week)):(i.day_label||i.class_label||label))+(day?" · "+day:"");
+const second=document.createElement("td");second.textContent=date;
+const third=document.createElement("td");const badge=document.createElement("span");badge.className="attendance-badge"+(present?"":" absent");badge.textContent=present?"✓ Present":(i.status||"Not marked");third.append(badge);
+tr.append(first,second,third);
+}else{
+const raw=Number(i.score),max=Number(i.max_score);
+const valid=Number.isFinite(raw)&&Number.isFinite(max)&&max>0;
+const jamb=valid?Math.round((raw/max)*400):null;
+const pct=valid?(raw/max)*100:null;
+const grade=!valid?"—":pct>=80?"Excellent":pct>=70?"Very Good":pct>=60?"Good":pct>=50?"Credit":pct>=40?"Pass":"Needs Improvement";
+const exam=document.createElement("td");exam.textContent=i.test_name||"CBT Examination";
+const score=document.createElement("td");const main=document.createElement("span");main.className="score-main";main.textContent=jamb===null?"—":jamb+"/400";score.append(main);
+if(valid){const sub=document.createElement("span");sub.className="score-sub";sub.textContent="Raw score: "+i.score+" / "+i.max_score;score.append(sub)}
+const gradeCell=document.createElement("td");const badge=document.createElement("span");badge.className="grade-badge";badge.textContent=grade;gradeCell.append(badge);
+tr.append(exam,score,gradeCell);
+}
+tbody.append(tr);
+});
+}
+table.append(thead,tbody);wrap.append(table);node.append(wrap);
+}
 async function selectStudent(s){selected=s;openView("records-view");$("recordPrompt").classList.add("hidden");$("studentProfile").classList.remove("hidden");$("studentProfile").textContent="Loading student records…";$("noteStudent").value=(s.student_code||"")+" — "+(s.full_name||"");$("attendanceHistory").replaceChildren();$("scoreHistory").replaceChildren();try{const d=await request("/api/coach/students/"+encodeURIComponent(s.id));if(!selected||selected.id!==s.id)return;$("studentProfile").textContent=(s.full_name||"Student")+" · "+(s.student_code||"");history($("attendanceHistory"),d.attendance||[],"attendance");history($("scoreHistory"),d.scores||[],"score")}catch(e){$("studentProfile").textContent="Could not load records: "+e.message}}
 $("loginForm").addEventListener("submit",async e=>{e.preventDefault();const btn=$("loginButton");btn.disabled=true;btn.textContent="Signing in…";$("loginMessage").classList.add("hidden");try{const d=await request("/api/coach/login",{method:"POST",body:JSON.stringify({email:$("email").value.trim().toLowerCase(),password:$("password").value})});if(!d.token||!d.coach)throw Error("Login response was incomplete.");token=d.token;coach=d.coach;$("loginPanel").classList.add("hidden");$("dashboard").classList.remove("hidden");openView("overview");$("coachIdentity").textContent=coach.full_name+" · "+coach.email;await loadStudents()}catch(err){token="";coach=null;message($("loginMessage"),err.message,"error")}finally{btn.disabled=false;btn.textContent="Sign in securely →"}});
 $("studentSearch").addEventListener("input",renderStudents);$("refreshButton").addEventListener("click",loadStudents);
