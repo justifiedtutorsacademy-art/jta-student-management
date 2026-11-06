@@ -19,7 +19,25 @@
 /* Student-portal-style admin navigation */
 .admin-shell{display:grid;grid-template-columns:290px minmax(0,1fr);min-height:75vh}.admin-sidebar{background:#fff;border-right:1px solid var(--border);padding:26px 17px;position:sticky;top:0;height:100vh;overflow:auto}.sidebar-heading{display:flex;justify-content:space-between;align-items:center;padding:8px 10px 22px;color:#98a1b4;font-size:12px;font-weight:900;letter-spacing:2px}.sidebar-heading button{border:0;background:#f3f4fa;border-radius:10px;padding:7px 12px;font-size:21px;color:#536176}.admin-nav{display:grid;gap:10px}.admin-nav button,.admin-nav>a{border:0;background:#fff;color:#596579;text-align:left;padding:16px;border-radius:18px;font-weight:750;font-size:15px;display:flex;align-items:center;gap:13px;min-height:62px;box-shadow:0 8px 22px rgba(45,53,110,.08);text-decoration:none}.admin-nav button.active{background:#f1efff;color:#5547aa;border-left:5px solid #6D35C8;padding-left:11px}.nav-ico{font-size:20px;width:24px;text-align:center;color:#8993aa}.admin-nav a strong,.admin-nav a small{display:block}.admin-nav a strong{font-size:13px}.admin-nav a small{font-size:11px;color:var(--muted);margin-top:3px}.sidebar-footer{margin:34px 8px 8px;padding:19px 15px;border:1px solid #e6e1f5;border-radius:18px;background:#f7f4ff;color:#8b91a3;font-size:12px}.sidebar-footer strong{display:block;color:#6D35C8;margin-bottom:5px}.admin-content{min-width:0;padding:25px 22px 40px}.mobile-menu{display:none;border:0;border-radius:10px;background:#fff;color:var(--navy);padding:9px 13px;font-size:22px}.drawer-shade{display:none}.admin-view{display:none}.admin-view.active{display:block}.section-grid{display:block}.section-grid>.card{display:none}.section-grid>.card.active{display:block}.admin-view .card{max-width:1100px}
 @media(max-width:850px){.admin-shell{display:block}.admin-sidebar{position:fixed;z-index:50;left:0;top:0;bottom:0;width:min(84vw,330px);height:100dvh;transform:translateX(-105%);transition:transform .22s;box-shadow:12px 0 35px #142b4a22}.admin-sidebar.open{transform:translateX(0)}.drawer-shade.show{display:block;position:fixed;inset:0;background:#17243877;z-index:40}.mobile-menu{display:inline-grid;place-items:center}.admin-content{padding:18px 12px 34px}}
-  </style>
+  
+    .application-filters{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:14px 0}
+    .application-filter{border:1px solid var(--border);background:#fff;color:var(--text);border-radius:999px;padding:10px 14px;font-weight:750}
+    .application-filter span{display:inline-grid;place-items:center;min-width:23px;height:23px;padding:0 6px;margin-left:5px;border-radius:99px;background:#eef0ff;color:var(--purple);font-size:12px}
+    .application-filter.active{background:#eeeaff;border-color:var(--purple);color:var(--purple)}
+    .application-row{background:#fff;border:1px solid var(--border);border-radius:13px;padding:0;margin:10px 0;overflow:hidden}
+    .application-row summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px;cursor:pointer}
+    .application-row summary::-webkit-details-marker{display:none}
+    .application-row .student-primary{min-width:0}
+    .application-row .student-primary strong{display:block;font-size:15px}
+    .application-row .student-primary small{display:block;color:var(--muted);overflow-wrap:anywhere}
+    .application-row .student-status{white-space:nowrap;border-radius:99px;padding:5px 9px;background:#eeeaff;color:var(--purple);font-size:11px;font-weight:800}
+    .application-row .application-details{padding:4px 14px 15px;border-top:1px solid var(--border)}
+    .application-row .application-details p{margin:7px 0;font-size:13px;overflow-wrap:anywhere}
+    .application-row .item-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .application-row .item-actions button{flex:1;min-width:150px}
+    .application-row label{min-width:170px;flex:1}
+    @media(max-width:520px){.application-filter{flex:1;padding:9px 10px}.application-filters #refreshButton{width:100%}.application-row summary{padding:12px}.application-row .item-actions button{min-width:100%}}
+</style>
 </head>
 <body>
   <header class="topbar">
@@ -59,9 +77,12 @@
       <div class="admin-view" id="view-applications"><div class="section-grid">
         <section class="card" id="studentApplications">
           <div class="card-head"><div><h2>Student applications</h2><p class="subtext">Review applications and approve eligible students.</p></div><span class="pill">Students</span></div>
-          <div class="toolbar">
-            <div><label class="toolbar-label" for="statusFilter">Application status</label><select id="statusFilter"><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option></select></div>
-            <button class="btn btn-soft" id="refreshButton" type="button">↻ Refresh list</button>
+          <div class="application-filters" role="group" aria-label="Choose student application list">
+            <button type="button" class="application-filter active" data-status="pending">Pending <span id="pendingListCount">—</span></button>
+            <button type="button" class="application-filter" data-status="approved">Approved <span id="approvedListCount">—</span></button>
+            <button type="button" class="application-filter" data-status="rejected">Rejected <span id="rejectedListCount">—</span></button>
+            <button class="btn btn-soft" id="refreshButton" type="button">↻ Refresh</button>
+            <select id="statusFilter" aria-hidden="true" tabindex="-1" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none"><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option></select>
           </div>
           <div id="listMessage" class="status" role="status" aria-live="polite">Connect to load applications.</div>
           <div id="applications" class="list"></div>
@@ -155,25 +176,30 @@
   const JTA_PLAN_OPTIONS = ["Standard","Premium","Premium Pro","Ultimate","Ultimate Pro Max","Diamond Pro Max"];
   function field(label, type, value) { const wrap=document.createElement("label"); wrap.style.cssText="display:block;margin:8px 0;font-size:12px;font-weight:700"; wrap.textContent=label; const el=document.createElement(type==="select"?"select":"input"); el.style.cssText="display:block;width:100%;padding:10px;border:1px solid #d8deeb;border-radius:8px;margin-top:4px"; if(type!=="select") el.type=type; wrap.appendChild(el); return {wrap,el}; }
   function makeApplicationCard(application) {
-    const card = document.createElement("article"); card.className = "item";
-    addText(card, "h3", application.full_name || "Unnamed student");
-    addText(card, "p", "JTA Code: " + (application.student_code || "Not assigned"), "code");
-    addText(card, "p", "Email: " + (application.email || "Not provided"));
-    addText(card, "p", "Phone: " + (application.phone || "Not provided"));
-    addText(card, "p", "Parent/Guardian: " + (application.parent_phone || "Not provided"));
-    addText(card, "p", "Data phone: " + (application.data_phone || "Not provided"));
-    addText(card, "p", "Network: " + (application.network || "Not provided"));
-    addText(card, "p", "Department: " + (application.department || "Not provided"));
-    addText(card, "p", "Status: " + (application.status || "Unknown"));
-    if (application.subscription_plan) addText(card,"p", "Plan: " + application.subscription_plan + " · Expires: " + (application.subscription_expiry || "—"));
-    addText(card, "p", "Application ID: " + (application.id || "Not provided"));
+    const card = document.createElement("details"); card.className = "application-row";
+    const summary = document.createElement("summary");
+    const primary = document.createElement("span"); primary.className = "student-primary";
+    addText(primary, "strong", application.full_name || "Unnamed student");
+    addText(primary, "small", (application.student_code || "No JTA code") + " · " + (application.department || "Department not set"));
+    const statusPill = document.createElement("span"); statusPill.className = "student-status";
+    statusPill.textContent = String(application.status || $("statusFilter").value).toUpperCase();
+    summary.append(primary, statusPill); card.appendChild(summary);
+    const body = document.createElement("div"); body.className = "application-details";
+    addText(body, "p", "Email: " + (application.email || "Not provided"));
+    addText(body, "p", "Phone: " + (application.phone || "Not provided"));
+    addText(body, "p", "Parent/Guardian: " + (application.parent_phone || "Not provided"));
+    addText(body, "p", "Data phone: " + (application.data_phone || "Not provided"));
+    addText(body, "p", "Network: " + (application.network || "Not provided"));
+    addText(body, "p", "Department: " + (application.department || "Not provided"));
+    addText(body, "p", "Application ID: " + (application.id || "Not provided"));
+    if (application.subscription_plan) addText(body, "p", "Plan: " + application.subscription_plan + " · Expires: " + (application.subscription_expiry || "—"));
     const actions=document.createElement("div"); actions.className="item-actions";
     if ($("statusFilter").value === "pending") {
       const plan=field("Assign subscription plan","select"); plan.el.required=true; plan.el.add(new Option("Choose plan…","")); JTA_PLAN_OPTIONS.forEach(x=>plan.el.add(new Option(x,x)));
       const amount=field("Amount paid (₦)","number",0); amount.el.min="0"; amount.el.step="0.01"; amount.el.value="0";
       const paydate=field("Payment date","date"); paydate.el.value=new Date().toISOString().slice(0,10);
       const start=field("Access start date","date"); start.el.value=new Date().toISOString().slice(0,10);
-      card.append(plan.wrap,amount.wrap,paydate.wrap,start.wrap);
+      body.append(plan.wrap,amount.wrap,paydate.wrap,start.wrap);
       const approve=document.createElement("button"); approve.type="button"; approve.className="btn btn-success"; approve.textContent="Approve with selected plan";
       const reject=document.createElement("button"); reject.type="button"; reject.className="btn btn-danger"; reject.textContent="Reject";
       approve.addEventListener("click",()=>reviewApplication(application.id,"approved",approve,reject,{plan:plan.el.value,amountPaid:amount.el.value,paymentDate:paydate.el.value,startDate:start.el.value}));
@@ -183,11 +209,12 @@
       const amount=field("Amount paid (₦)","number"); amount.el.min="0"; amount.el.step="0.01"; amount.el.value="0";
       const paydate=field("Payment date","date"); paydate.el.value=new Date().toISOString().slice(0,10);
       const start=field("New access start date","date"); start.el.value=new Date().toISOString().slice(0,10);
-      card.append(plan.wrap,amount.wrap,paydate.wrap,start.wrap);
+      body.append(plan.wrap,amount.wrap,paydate.wrap,start.wrap);
       const renew=document.createElement("button"); renew.type="button"; renew.className="btn btn-primary"; renew.textContent="Save renewal / plan change";
       renew.addEventListener("click",async()=>{renew.disabled=true;try{await apiRequest("/api/admin/subscription",{method:"POST",body:JSON.stringify({studentCode:application.student_code,plan:plan.el.value,amountPaid:amount.el.value,paymentDate:paydate.el.value,startDate:start.el.value})});showMessage($("listMessage"),"Subscription updated successfully.","success");await loadApplications();}catch(e){alert(e.message);renew.disabled=false;}}); actions.append(renew);
     }
-    if(actions.childNodes.length) card.appendChild(actions);
+    if(actions.childNodes.length) body.appendChild(actions);
+    card.appendChild(body);
     return card;
   }
   async function loadApplications() {
@@ -201,7 +228,7 @@
       if (!applications.length) {
         showMessage($("listMessage"), "No " + status + " applications found.");
       } else {
-        showMessage($("listMessage"), applications.length + " " + status + " application(s) found.", "success");
+        showMessage($("listMessage"), applications.length + " " + status + " application(s). Tap a student to view details and actions.", "success");
         applications.forEach(application => $("applications").appendChild(makeApplicationCard(application)));
       }
     } catch (error) {
@@ -380,8 +407,11 @@
       const target = status === "pending" ? "pendingCount" : status === "approved" ? "approvedCount" : "rejectedCount";
       try {
         const result = await apiRequest("/api/admin/applications?status=" + status);
-        $(target).textContent = String(Array.isArray(result.applications) ? result.applications.length : 0);
-      } catch (_) { $(target).textContent = "—"; }
+        const count = Array.isArray(result.applications) ? result.applications.length : 0;
+        $(target).textContent = String(count);
+        const listTarget = status + "ListCount";
+        if ($(listTarget)) $(listTarget).textContent = String(count);
+      } catch (_) { $(target).textContent = "—"; const listTarget = status + "ListCount"; if ($(listTarget)) $(listTarget).textContent = "—"; }
     }));
   }
   function disconnect(message = "You have disconnected.") {
@@ -429,7 +459,15 @@
     } finally { button.disabled = false; button.textContent = "＋ Create coach account"; }
   });
   $("refreshButton").addEventListener("click", loadApplications);
-  $("statusFilter").addEventListener("change", loadApplications);
+  $("statusFilter").addEventListener("change", () => {
+    document.querySelectorAll(".application-filter").forEach(button => button.classList.toggle("active", button.dataset.status === $("statusFilter").value));
+    loadApplications();
+  });
+  document.querySelectorAll(".application-filter").forEach(button => button.addEventListener("click", () => {
+    $("statusFilter").value = button.dataset.status;
+    document.querySelectorAll(".application-filter").forEach(item => item.classList.toggle("active", item === button));
+    loadApplications();
+  }));
   $("refreshCoachesButton").addEventListener("click", async () => { await loadCoaches(); await loadAssignments(); });
   $("assignmentForm").addEventListener("submit", async event => {
     event.preventDefault();
