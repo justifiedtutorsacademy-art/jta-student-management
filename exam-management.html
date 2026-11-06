@@ -17,6 +17,31 @@ input,select,textarea{width:100%;border:1px solid #d5deed;border-radius:10px;pad
 body[data-page="dashboard"] #uploadSection,body[data-page="dashboard"] #copySection,body[data-page="dashboard"] #resultsSection{display:none}body[data-page="upload"] #createSection,body[data-page="upload"] #copySection,body[data-page="upload"] #publishSection,body[data-page="upload"] #resultsSection{display:none}body[data-page="copy"] #createSection,body[data-page="copy"] #uploadSection,body[data-page="copy"] #publishSection,body[data-page="copy"] #resultsSection{display:none}body[data-page="publish"] #createSection,body[data-page="publish"] #uploadSection,body[data-page="publish"] #copySection,body[data-page="publish"] #resultsSection{display:none}body[data-page="results"] #createSection,body[data-page="results"] #uploadSection,body[data-page="results"] #copySection{display:none}
 @media(max-width:760px){.admin-layout{grid-template-columns:1fr}.sidebar{position:static;padding:9px}.brand{padding:4px 8px 8px}.navitems{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px}.navlink{padding:10px 8px;font-size:12px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.card{padding:15px}.btn{padding:10px 12px}}
 @media(max-width:480px){.grid{grid-template-columns:1fr}.field.full{grid-column:auto}.page-heading{align-items:flex-start;flex-direction:column}.stats{gap:8px}}
+
+/* Test list cards and test-management drawer */
+.exam-toolbar{display:grid;grid-template-columns:minmax(0,1fr) 190px;gap:12px;margin:15px 0 18px;align-items:end}
+.exam-toolbar label{font-size:12px}.exam-search input,.exam-filter select{min-height:43px}
+.exam{position:relative;border:1px solid #e5eaf3;border-radius:15px;padding:18px;margin:13px 0;background:#fff;box-shadow:0 5px 18px #1b31500a}
+.exam:before{content:"";position:absolute;left:0;top:18px;bottom:18px;width:4px;border-radius:0 5px 5px 0;background:#8b70c5}
+.exam[data-status="published"]:before{background:#20a477}.exam[data-status="ended"]:before{background:#8290a0}
+.exam-topline{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.exam-status{display:inline-flex;border:1px solid #ded9ed;border-radius:8px;padding:7px 10px;font-size:11px;font-weight:850;letter-spacing:.4px;color:#7964a8;text-transform:uppercase}
+.exam-status.published{color:#16845c;border-color:#c8e9da;background:#f3fbf7}.exam-status.ended{color:#778392;border-color:#dce2e8;background:#fafbfc}
+.exam-created{font-size:11px;color:#7b8797;font-weight:750;letter-spacing:.5px}
+.exam-menu{font-size:22px;background:transparent;color:#7b8797;padding:2px 8px;min-width:36px}
+.exam h3{font-size:20px;line-height:1.25;margin:16px 0 8px;color:#172d35}
+.exam-description{color:#84909d;font-size:14px;margin:0 0 12px}
+.exam-result-line{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:14px 0 8px;color:#6c7887}
+.exam-result-line strong{font-size:16px;color:#20343b}.exam-result-line .result-link{border:0;background:none;color:#65748a;padding:0;font-weight:650;text-decoration:underline}
+.exam-bottom{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.exam-group{border:1px solid #e0e6ee;border-radius:8px;padding:7px 10px;color:#445467;font-size:11px;font-weight:750}
+.drawer-backdrop{position:fixed;inset:0;background:#10182877;z-index:99}.exam-drawer{position:fixed;z-index:100;right:0;top:0;height:100dvh;width:min(560px,88vw);background:#f1f5f9;box-shadow:-15px 0 40px #10182830;transform:translateX(105%);transition:transform .22s;display:flex;flex-direction:column;overflow:hidden}
+.exam-drawer.open{transform:translateX(0)}.drawer-head{padding:22px 24px 14px;display:flex;justify-content:space-between;align-items:center;gap:12px;background:#f1f5f9;border-bottom:1px solid #dce3eb}.drawer-head h2{font-size:20px;margin:2px 0}.drawer-head .small{letter-spacing:1px;font-weight:800}
+.drawer-tabs{display:flex;gap:0;padding:0 20px;border-bottom:1px solid #dce3eb;background:#f1f5f9;overflow:auto}.drawer-tab{white-space:nowrap;border-radius:0;background:transparent;color:#586677;padding:13px 12px;border-bottom:3px solid transparent}.drawer-tab.active{color:#275ab0;border-color:#6d55c5}
+.drawer-body{padding:20px 24px;overflow:auto}.drawer-pane{display:none}.drawer-pane.active{display:block}.drawer-status{display:inline-block;padding:6px 10px;border-radius:7px;background:#e5eaf1;color:#667486;font-weight:800;font-size:11px;text-transform:uppercase;margin-bottom:18px}
+.drawer-info-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.drawer-info-item{background:white;border:1px solid #e0e6ee;border-radius:10px;padding:12px}.drawer-info-item small{display:block;color:#7d8997;font-size:10px;text-transform:uppercase;font-weight:800}.drawer-info-item b{display:block;margin-top:4px;overflow-wrap:anywhere}
+.drawer-group{background:white;border:1px solid #dfe5ed;border-radius:13px;padding:16px;margin:0 0 16px}.drawer-group h3{margin:0 0 4px;font-size:17px}.drawer-action{display:flex;align-items:center;gap:13px;width:100%;text-align:left;background:transparent;color:#566575;border-top:1px solid #e6ebf1;border-radius:0;padding:15px 4px;font-size:18px}.drawer-action span{display:grid;gap:2px;flex:1}.drawer-action b{font-size:14px;color:#273746}.drawer-action small{font-size:11px;color:#84909d;font-weight:400}.drawer-action.danger-action b{color:#b4233d}
+@media(max-width:600px){.exam-toolbar{grid-template-columns:1fr}.exam{padding:15px 13px 15px 17px}.exam h3{font-size:18px}.exam-drawer{width:100vw}.drawer-head{padding:17px}.drawer-body{padding:15px}.drawer-info-grid{gap:7px}.drawer-info-item{padding:10px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 </head>
 <body data-page="dashboard">
@@ -65,7 +90,19 @@ body[data-page="dashboard"] #uploadSection,body[data-page="dashboard"] #copySect
 </section>
 <section class="card" id="copySection"><h2>Reuse questions from another examination</h2><p class="muted">Upload English or another subject once, then copy those saved questions into a different draft exam. The original questions remain unchanged; the destination gets its own copies.</p><div class="grid"><div class="field"><label for="copySource">Copy questions from</label><select id="copySource"><option value="">Load examinations first</option></select></div><div class="field"><label for="copySubject">Subject to copy</label><select id="copySubject"><option value="">All subjects in source exam</option><option>English Language</option><option>English</option><option>Mathematics</option><option>Physics</option><option>Chemistry</option><option>Biology</option><option>Literature in English</option><option>CRS</option><option>Government</option><option>IRS</option><option>Economics</option><option>Commerce</option><option>Accounting</option></select></div><div class="field"><label for="copyTarget">Copy into draft exam</label><select id="copyTarget"><option value="">Load examinations first</option></select></div></div><button class="btn primary" id="copyQuestionsBtn" type="button">Copy questions</button><div id="copyMsg" class="status hidden"></div></section>
 <section class="card hidden" id="editExamSection"><div class="row" style="justify-content:space-between"><div><h2>Edit examination</h2><p class="muted">Edit the exam settings and individual questions. Save each question separately.</p></div><button class="btn" id="closeEditorBtn" type="button">Close editor</button></div><div id="editExamBody"></div><div id="editExamMsg" class="status hidden"></div></section>
-<section class="card" id="publishSection"><h2>Examinations</h2><p class="muted">Publish a draft only after adding and checking its questions. Published exams appear in the student CBT portal.</p><div id="examList"><p class="muted">Connect to load examinations.</p></div><div id="listMsg" class="status hidden"></div></section>
+<section class="card" id="publishSection"><h2>Examinations</h2><p class="muted">Browse tests, check participation and open a test to manage its settings, questions, publishing and results.</p>
+<div class="exam-toolbar"><div class="exam-search"><label for="examSearch">Find an examination</label><input id="examSearch" type="search" placeholder="Search exam title, department, subject or week"></div>
+<div class="exam-filter"><label for="examStatusFilter">Status</label><select id="examStatusFilter"><option value="all">All examinations</option><option value="draft">Setup in progress</option><option value="published">Published</option><option value="ended">Ended</option></select></div></div>
+<div id="examList"><p class="muted">Connect to load examinations.</p></div><div id="listMsg" class="status hidden"></div></section>
+<div class="drawer-backdrop hidden" id="examDrawerBackdrop"></div><aside class="exam-drawer" id="examDrawer" aria-hidden="true">
+<div class="drawer-head"><div><p class="small">JTA EXAMINATION MANAGER</p><h2 id="drawerExamTitle">Test management</h2></div><button class="btn" id="drawerClose" type="button" aria-label="Close">✕</button></div>
+<div class="drawer-tabs"><button type="button" class="drawer-tab active" data-drawer-tab="info">ⓘ Test info</button><button type="button" class="drawer-tab" data-drawer-tab="manage">⚙ Manage test</button><button type="button" class="drawer-tab" data-drawer-tab="results">▤ Results</button></div>
+<div class="drawer-body">
+<section class="drawer-pane active" id="drawer-info"><div id="drawerStatus" class="drawer-status"></div><h3>Test information</h3><div id="drawerInfo"></div></section>
+<section class="drawer-pane" id="drawer-manage"><div class="drawer-group"><h3>Test configuration</h3><p class="muted">Edit the test setup and manage its questions.</p><button class="drawer-action" id="drawerEdit">⚙ <span><b>Basic settings</b><small>Edit title, group, week and duration</small></span>›</button><button class="drawer-action" id="drawerQuestions">☷ <span><b>Questions manager</b><small>Add, edit or review test questions</small></span>›</button><button class="drawer-action" id="drawerPublish">▣ <span><b>Publish / return to draft</b><small>Control student access to this test</small></span>›</button></div>
+<div class="drawer-group"><h3>Test progress & results</h3><button class="drawer-action" id="drawerResults">▤ <span><b>Student results</b><small>View attempts and scores</small></span>›</button><button class="drawer-action danger-action" id="drawerDelete">⌫ <span><b>Delete examination</b><small>Remove this test and its records permanently</small></span>›</button></div></section>
+<section class="drawer-pane" id="drawer-results"><h3>Test progress & results</h3><p class="muted">Open the full results table for this examination.</p><button class="btn primary" id="drawerOpenResults">View student results</button></section>
+</div></aside>
 <section class="card" id="resultsSection"><h2>Student results</h2><div id="resultsArea"><p class="muted">Choose “View results” on an examination to see attempts and scores.</p></div></section>
 <div class="row"><a class="btn" href="admin.html" style="text-decoration:none;text-align:center">← Back to admin dashboard</a></div>
 </div></div></div>
@@ -91,20 +128,30 @@ async function loadExams(){
  if(sourceSelect && targetSelect){ sourceSelect.replaceChildren(safe("option","Choose source exam")); targetSelect.replaceChildren(safe("option","Choose destination draft")); exams.forEach(e=>{const a=safe("option",e.title+" — "+e.department+" — "+e.status);a.value=e.id;sourceSelect.append(a); if(e.status!=="published"){const b=safe("option",e.title+" — "+e.department);b.value=e.id;targetSelect.append(b)}}); }
 
  const list=$("examList");list.replaceChildren();
+ const query=($("examSearch")?.value||"").trim().toLowerCase(),filter=$("examStatusFilter")?.value||"all";
+ const filtered=exams.filter(e=>{
+  const status=String(e.status||"draft").toLowerCase();
+  const matchStatus=filter==="all"||(filter==="draft"&&status!=="published"&&status!=="ended")||(filter==="published"&&status==="published")||(filter==="ended"&&status==="ended");
+  const hay=[e.title,e.description,e.department,e.department_group,e.subject,e.topics,e.week_number,e.exam_type].filter(Boolean).join(" ").toLowerCase();
+  return matchStatus&&(!query||hay.includes(query));
+ });
  if(!exams.length){list.append(safe("p","No examinations yet. Create your first draft above.","muted"));return}
- exams.forEach(e=>{
-  const card=safe("article","");card.className="exam";card.append(safe("h3",e.title));
-  card.append(safe("p",(e.description||"No description") ,"muted"));
-  const tags=safe("div","");tags.append(safe("span","Group: "+(e.department_group||e.department),"tag"),safe("span","Week: "+(e.week_number||1),"tag"),safe("span","Subject: "+(e.subject||"Not set"),"tag"),safe("span","Topics: "+(e.topics||"Not set"),"tag"),safe("span","Type: "+(e.exam_type||"individual"),"tag"),safe("span","Duration: "+e.duration_minutes+" min","tag"),safe("span","Questions: "+e.question_count,"tag"),safe("span","Attempts: "+e.attempt_count,"tag"),safe("span","Status: "+e.status,"tag"));card.append(tags);
-  const actions=safe("div","");actions.className="row";
-  if(e.status!=="published"){const edit=safe("button","Edit exam");edit.className="btn primary";edit.type="button";edit.onclick=()=>openExamEditor(e.id);actions.append(edit)}
-  if(e.status!=="published"){const pub=safe("button","Publish");pub.className="btn success";pub.type="button";pub.onclick=async()=>{if(!confirm("Publish “"+e.title+"” for students in "+e.department+"?"))return;pub.disabled=true;try{await api("/api/admin/exams/"+encodeURIComponent(e.id)+"/publish",{method:"POST"});msg("listMsg","Examination published.","ok");await loadExams()}catch(err){msg("listMsg",err.message,"err");pub.disabled=false}};actions.append(pub)}
-  else{const un=safe("button","Return to draft");un.className="btn";un.type="button";un.onclick=async()=>{if(!confirm("Return this exam to draft? Students will no longer see it in the published exam list."))return;try{await api("/api/admin/exams/"+encodeURIComponent(e.id)+"/unpublish",{method:"POST"});msg("listMsg","Examination returned to draft.","ok");await loadExams()}catch(err){msg("listMsg",err.message,"err")}};actions.append(un)}
-  const del=safe("button","Delete exam");del.className="btn danger";del.type="button";del.onclick=async()=>{const warning="Delete “"+e.title+"”? This permanently removes the exam, its questions, all student attempts, answers, and results. This cannot be undone.";if(!confirm(warning))return;del.disabled=true;try{const result=await api("/api/admin/exams/"+encodeURIComponent(e.id),{method:"DELETE"});msg("listMsg",result.message||"Examination deleted.","ok");await loadExams()}catch(err){msg("listMsg","Could not delete examination: "+err.message,"err");del.disabled=false}};actions.append(del);
-  const res=safe("button","View results");res.className="btn primary";res.type="button";res.onclick=()=>loadResults(e.id);actions.append(res);
-  if(e.status!=="published"){const add=safe("button","Add questions");add.className="btn";add.type="button";add.onclick=()=>{$("questionExam").value=e.id;$("questionText").focus();window.scrollTo({top:$("questionForm").getBoundingClientRect().top+window.scrollY-20,behavior:"smooth"})};actions.append(add)}
-  card.append(actions);list.append(card)
- })
+ if(!filtered.length){list.append(safe("p","No examinations match your search or status filter.","muted"));return}
+ filtered.forEach(e=>{
+  const status=String(e.status||"draft").toLowerCase(),attempts=Number(e.attempt_count||0);
+  const card=safe("article","");card.className="exam";card.dataset.status=status;
+  const top=safe("div","");top.className="exam-topline";
+  const badge=safe("span",status==="published"?"PUBLISHED":status==="ended"?"ENDED":"SETUP IN PROGRESS","exam-status "+(status==="published"?"published":status==="ended"?"ended":""));
+  top.append(badge,safe("span","CREATED: "+(e.created_at?String(e.created_at).slice(0,10):"—"),"exam-created"));
+  const menu=safe("button","⋯");menu.className="exam-menu";menu.type="button";menu.setAttribute("aria-label","Manage "+e.title);menu.onclick=()=>openExamDrawer(e.id);top.append(menu);card.append(top);
+  card.append(safe("h3",e.title),safe("p",e.description||"(no description)","exam-description"));
+  const resultLine=safe("div","");resultLine.className="exam-result-line";
+  const resultBtn=safe("button","Results ("+attempts+")");resultBtn.className="result-link";resultBtn.type="button";resultBtn.onclick=()=>{closeExamDrawer();loadResults(e.id);$("resultsSection").scrollIntoView({behavior:"smooth",block:"start"})};
+  resultLine.append(safe("strong",attempts+" attempt"+(attempts===1?"":"s")),resultBtn);card.append(resultLine);
+  const bottom=safe("div","");bottom.className="exam-bottom";bottom.append(safe("span",(e.department_group||e.department||"All students").toUpperCase(),"exam-group"));
+  const manage=safe("button","Manage test  ›");manage.className="btn primary";manage.type="button";manage.onclick=()=>openExamDrawer(e.id);bottom.append(manage);card.append(bottom);
+  list.append(card);
+ });
 }
 async function openExamEditor(id){
  const section=$("editExamSection"), body=$("editExamBody"); section.classList.remove("hidden"); body.replaceChildren(safe("p","Loading examination details…","muted"));
@@ -132,6 +179,36 @@ async function openExamEditor(id){
 }
 $("closeEditorBtn").addEventListener("click",()=>$("editExamSection").classList.add("hidden"));
 
+
+let activeDrawerExamId="";
+function closeExamDrawer(){const d=$("examDrawer");d.classList.remove("open");d.setAttribute("aria-hidden","true");$("examDrawerBackdrop").classList.add("hidden")}
+function setDrawerTab(name){document.querySelectorAll(".drawer-tab").forEach(b=>b.classList.toggle("active",b.dataset.drawerTab===name));document.querySelectorAll(".drawer-pane").forEach(p=>p.classList.toggle("active",p.id==="drawer-"+name))}
+function openExamDrawer(id){
+ const e=exams.find(x=>String(x.id)===String(id));if(!e)return;activeDrawerExamId=id;
+ $("drawerExamTitle").textContent=e.title||"Test management";
+ const status=String(e.status||"draft").toLowerCase();$("drawerStatus").textContent=status==="published"?"PUBLISHED":status==="ended"?"ENDED":"SETUP IN PROGRESS";
+ const info=$("drawerInfo");info.replaceChildren();const fields=[
+ ["Student group",e.department_group||e.department||"—"],["Academic week","Week "+(e.week_number||1)],["Subject",e.subject||"Not set"],["Exam type",e.exam_type||"Individual"],["Duration",(e.duration_minutes||"—")+" minutes"],["Questions",e.question_count??0],["People who attempted",e.attempt_count??0],["Created",e.created_at?String(e.created_at).slice(0,10):"—"],["Published",e.published_at?String(e.published_at).slice(0,10):"Not published"]
+ ];
+ fields.forEach(([label,value])=>{const box=safe("div","");box.className="drawer-info-item";box.append(safe("small",label),safe("b",String(value)));info.append(box)});
+ $("drawerPublish").querySelector("b").textContent=status==="published"?"Return to draft":"Publish examination";
+ $("drawerPublish").querySelector("small").textContent=status==="published"?"Remove it from the student exam list":"Make this examination available to its student group";
+ setDrawerTab("info");$("examDrawerBackdrop").classList.remove("hidden");$("examDrawer").classList.add("open");$("examDrawer").setAttribute("aria-hidden","false");
+}
+async function drawerPublishAction(){
+ const e=exams.find(x=>String(x.id)===String(activeDrawerExamId));if(!e)return;
+ const published=String(e.status).toLowerCase()==="published";
+ const questionCount=Number(e.question_count||0);
+ if(!published&&questionCount===0){alert("Add questions and review the examination before publishing.");return}
+ const prompt=published?"Return this examination to draft? Students will no longer see it in the published exam list.":"Publish “"+e.title+"” for students in "+e.department+"?";
+ if(!confirm(prompt))return;
+ try{await api("/api/admin/exams/"+encodeURIComponent(e.id)+(published?"/unpublish":"/publish"),{method:"POST"});closeExamDrawer();msg("listMsg",published?"Examination returned to draft.":"Examination published.","ok");await loadExams()}catch(err){msg("listMsg",err.message,"err")}
+}
+async function drawerDeleteAction(){
+ const e=exams.find(x=>String(x.id)===String(activeDrawerExamId));if(!e)return;
+ if(!confirm("Delete “"+e.title+"”? This permanently removes its questions, attempts, answers and results. This cannot be undone."))return;
+ try{const d=await api("/api/admin/exams/"+encodeURIComponent(e.id),{method:"DELETE"});closeExamDrawer();msg("listMsg",d.message||"Examination deleted.","ok");await loadExams()}catch(err){msg("listMsg","Could not delete examination: "+err.message,"err")}
+}
 async function loadResults(id){
  const area=$("resultsArea");area.replaceChildren(safe("p","Loading results…","muted"));
  try{const data=await api("/api/admin/exams/"+encodeURIComponent(id)+"/results");area.replaceChildren(safe("h3",data.exam.title));
@@ -144,6 +221,19 @@ async function loadResults(id){
 $("connectBtn").addEventListener("click",()=>{const form=$("loginForm");if(form.reportValidity && !form.reportValidity())return;});
 $("loginForm").addEventListener("submit",async e=>{e.preventDefault();secret=$("adminKey").value.trim();$("connectBtn").disabled=true;try{await api("/api/admin/exams");saveSecret(secret);$("loginCard").classList.add("hidden");$("app").classList.remove("hidden");await loadExams()}catch(err){secret="";msg("loginMsg","Could not connect: "+err.message,"err")}finally{$("connectBtn").disabled=false}});
 
+
+$("examSearch")?.addEventListener("input",()=>loadExams().catch(err=>msg("listMsg",err.message,"err")));
+$("examStatusFilter")?.addEventListener("change",()=>loadExams().catch(err=>msg("listMsg",err.message,"err")));
+$("drawerClose").addEventListener("click",closeExamDrawer);
+$("examDrawerBackdrop").addEventListener("click",closeExamDrawer);
+document.querySelectorAll(".drawer-tab").forEach(b=>b.addEventListener("click",()=>setDrawerTab(b.dataset.drawerTab)));
+$("drawerEdit").addEventListener("click",()=>{const id=activeDrawerExamId;closeExamDrawer();openExamEditor(id)});
+$("drawerQuestions").addEventListener("click",()=>{const e=exams.find(x=>String(x.id)===String(activeDrawerExamId));if(!e)return;closeExamDrawer();$("questionExam").value=e.id;$("questionText").focus();$("questionForm").scrollIntoView({behavior:"smooth",block:"start"})});
+$("drawerPublish").addEventListener("click",drawerPublishAction);
+$("drawerDelete").addEventListener("click",drawerDeleteAction);
+$("drawerResults").addEventListener("click",()=>{const id=activeDrawerExamId;closeExamDrawer();loadResults(id);$("resultsSection").scrollIntoView({behavior:"smooth",block:"start"})});
+$("drawerOpenResults").addEventListener("click",()=>{const id=activeDrawerExamId;closeExamDrawer();loadResults(id);$("resultsSection").scrollIntoView({behavior:"smooth",block:"start"})});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeExamDrawer()});
 const page=document.body.dataset.page||"dashboard";
 const titles={dashboard:["Dashboard","Overview of your JTA examination activity."],upload:["Upload Questions","Add and organise questions in examination drafts."],publish:["Publish Examinations","Review drafts and control what students can access."],copy:["Question Library","Copy questions from one examination into another draft."],results:["Results & Examination Records","Review attempts, scores and manage examination records."]};
 const heading=titles[page]||titles.dashboard;$("pageTitle").textContent=heading[0];$("pageDescription").textContent=heading[1];
