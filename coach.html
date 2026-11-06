@@ -43,6 +43,11 @@
 .regno-button:focus-visible{outline:3px solid var(--gold,#d7ae55);outline-offset:2px}
 .student-secondary{display:block;color:var(--muted,#6b7280);font-size:11px;margin-top:3px}
 
+
+.coach-week-controls{display:flex;align-items:end;gap:9px;flex-wrap:wrap;margin:12px 0}.coach-week-controls label{font-weight:700;font-size:12px;display:block}.coach-week-controls input{padding:10px;border:1px solid #d8ddec;border-radius:9px;min-width:160px}
+.coach-podium{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;align-items:end;margin:18px 0}.coach-podium-card{border:1px solid #dedcf4;border-radius:13px;background:linear-gradient(160deg,#f3efff,#fff);padding:12px 7px;text-align:center;min-width:0}.coach-podium-card.first{border-color:#a995ed;transform:translateY(-6px);background:linear-gradient(160deg,#e7e0ff,#fff)}.coach-podium-card .rank{font-weight:900;color:#7254c7}.coach-podium-card .code{font-weight:850;font-size:12px;overflow-wrap:anywhere;margin:5px 0}.coach-podium-card .score{font-weight:900;font-size:19px;color:#315ec8}.coach-podium-card .dept{font-size:10px;color:#78829a}.coach-podium-card .step{height:6px;border-radius:6px;background:linear-gradient(90deg,#8660e8,#3c75db);margin-top:9px}
+.coach-weekly-list{display:grid;gap:8px}.coach-weekly-row{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:9px;align-items:center;border:1px solid #e6e9f1;border-radius:11px;padding:11px;background:white}.coach-weekly-row .r{font-weight:900;color:#7254c7;text-align:center}.coach-weekly-row .c{font-weight:800;overflow-wrap:anywhere}.coach-weekly-row .d{font-size:11px;color:#78829a}.coach-weekly-row .s{font-weight:900;color:#315ec8;white-space:nowrap}.coach-score-note{font-size:11px;margin-top:14px}
+@media(max-width:560px){.coach-week-controls{display:grid;grid-template-columns:1fr}.coach-week-controls input,.coach-week-controls button{width:100%}.coach-podium{gap:5px}.coach-podium-card{padding:9px 4px}.coach-podium-card .score{font-size:16px}.coach-weekly-row{grid-template-columns:25px minmax(0,1fr) auto;padding:9px}}
 </style>
 </head>
 <body>
@@ -60,6 +65,7 @@
 <button type="button" class="nav-item" data-view="students-view">♙ My Students</button>
 <button type="button" class="nav-item" data-view="records-view">▤ Student Records</button>
 <button type="button" class="nav-item" data-view="followup-view">✎ Follow-up Notes</button>
+<button type="button" class="nav-item" data-view="weekly-view">♛ Weekly Leaderboard</button>
 </nav>
 <section id="overview" class="coach-view">
 <div class="stats"><div class="stat"><small>Assigned students</small><div class="num" id="studentCount">—</div></div><div class="stat"><small>Attendance records</small><div class="num" id="attendanceCount">—</div></div><div class="stat"><small>Score records</small><div class="num" id="scoreCount">—</div></div></div>
@@ -69,6 +75,12 @@
 <button type="button" class="quick-card" data-go="followup-view"><span>✎</span><strong>Follow-up Notes</strong><small>Record student support actions</small></button>
 </div>
 </section>
+<section id="weekly-view" class="coach-view hidden"><section class="card">
+<div class="head"><div><p class="eyebrow">WEEKLY PERFORMANCE</p><h2>My Students' Weekly Leaderboard</h2><p class="sub">Only students currently assigned to your coach account are included.</p></div><button class="btn soft" id="coachWeeklyRefresh" type="button">↻ Refresh</button></div>
+<div class="coach-week-controls"><div><label for="coachWeekStart">Week starting (Monday)</label><input id="coachWeekStart" type="date"></div><button class="btn primary" id="coachLoadWeek" type="button">Load week</button></div>
+<div id="coachWeeklyStatus" class="status" role="status" aria-live="polite">Sign in to view weekly results.</div><div id="coachPodium" class="coach-podium"></div><div id="coachWeeklyList" class="coach-weekly-list"></div>
+<p class="sub coach-score-note">Scores are the average of recorded tests for the selected Monday–Sunday week, normalised to 400. Only assigned students with recorded scores are ranked.</p>
+</section></section>
 <section id="students-view" class="coach-view hidden">
 <section class="card"><div class="head"><div><p class="eyebrow">STUDENT MANAGEMENT</p><h2>Your assigned students</h2><p class="sub">Only students assigned to your coach account should appear here.</p></div><button class="btn soft" id="refreshButton" type="button">↻ Refresh</button></div>
 <div class="toolbar"><div><label for="studentSearch">Search students</label><input id="studentSearch" type="search" placeholder="Search by name, JTA code or email"></div></div>
@@ -100,7 +112,7 @@
 const API="https://jta-student-backend.justifiedtutorsacademy.workers.dev", $=id=>document.getElementById(id);
 let token="",coach=null,students=[],selected=null;
 function message(el,text,kind=""){el.textContent=text;el.className="status"+(kind?" "+kind:"")}
-function openView(id){document.querySelectorAll(".coach-view").forEach(v=>v.classList.toggle("hidden",v.id!==id));document.querySelectorAll(".nav-item").forEach(b=>b.classList.toggle("active",b.dataset.view===id));if(id==="students-view")renderStudents();window.scrollTo({top:0,behavior:"smooth"})}
+function openView(id){document.querySelectorAll(".coach-view").forEach(v=>v.classList.toggle("hidden",v.id!==id));document.querySelectorAll(".nav-item").forEach(b=>b.classList.toggle("active",b.dataset.view===id));if(id==="students-view")renderStudents();if(id==="weekly-view")loadCoachWeeklyBoard();window.scrollTo({top:0,behavior:"smooth"})}
 document.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",()=>openView(b.dataset.view)));
 document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>openView(b.dataset.go)));
 async function request(path,options={}){const headers={"Content-Type":"application/json",...(options.headers||{})};if(token)headers.Authorization="Bearer "+token;const res=await fetch(API+path,{...options,headers});let data={};try{data=await res.json()}catch(_){}if(!res.ok)throw Error(data.error||"Request failed ("+res.status+").");return data}
@@ -183,6 +195,23 @@ tbody.append(tr);
 table.append(thead,tbody);wrap.append(table);node.append(wrap);
 }
 async function selectStudent(s){selected=s;openView("records-view");$("recordPrompt").classList.add("hidden");$("studentProfile").classList.remove("hidden");$("studentProfile").textContent="Loading student records…";$("noteStudent").value=(s.student_code||"")+" — "+(s.full_name||"");$("attendanceHistory").replaceChildren();$("scoreHistory").replaceChildren();try{const d=await request("/api/coach/students/"+encodeURIComponent(s.id));if(!selected||selected.id!==s.id)return;$("studentProfile").textContent=(s.full_name||"Student")+" · "+(s.student_code||"");history($("attendanceHistory"),d.attendance||[],"attendance");history($("scoreHistory"),d.scores||[],"score")}catch(e){$("studentProfile").textContent="Could not load records: "+e.message}}
+
+function setDefaultCoachWeek(){const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7));$('coachWeekStart').value=d.toISOString().slice(0,10)}
+async function loadCoachWeeklyBoard(){
+ const status=$('coachWeeklyStatus'),podium=$('coachPodium'),list=$('coachWeeklyList');
+ if(!token){message(status,"Sign in to view your assigned students' weekly results.","error");return}
+ const week=$('coachWeekStart').value;message(status,"Loading weekly results…");podium.replaceChildren();list.replaceChildren();
+ try{
+  const d=await request("/api/coach/weekly-leaderboard"+(week?"?weekStart="+encodeURIComponent(week):""));
+  const rows=Array.isArray(d.leaderboard)?d.leaderboard:[];
+  if(!rows.length){message(status,"No assigned students have recorded CBT scores for this week.");podium.innerHTML='<div class="empty">The weekly leaderboard will appear when assigned students complete tests.</div>';return}
+  message(status,rows.length+" assigned student(s) ranked · "+(d.totalRanked||rows.length)+" with recorded scores.","success");
+  const top=rows.slice(0,3),ordered=top.length===3?[top[1],top[0],top[2]]:top;
+  podium.innerHTML=ordered.map(r=>'<div class="coach-podium-card '+(r.rank===1?'first':'')+'"><div class="rank">#'+esc(r.rank)+'</div><div class="code">'+esc(r.studentCode||"JTA student")+'</div><div class="score">'+Number(r.jambScore).toFixed(1)+'</div><div class="dept">'+esc(r.department||"JTA")+'</div><div class="step"></div></div>').join("");
+  list.innerHTML=rows.map(r=>'<div class="coach-weekly-row"><div class="r">'+esc(r.rank)+'</div><div><div class="c">'+esc(r.studentCode||"JTA student")+'</div><div class="d">'+esc(r.department||"Department not set")+' · '+esc(r.testsTaken||0)+' test(s)</div></div><div class="s">'+Number(r.jambScore).toFixed(1)+'/400</div></div>').join("");
+ }catch(e){message(status,"Could not load weekly leaderboard: "+e.message,"error")}
+}
+setDefaultCoachWeek();$('coachLoadWeek').addEventListener('click',loadCoachWeeklyBoard);$('coachWeeklyRefresh').addEventListener('click',loadCoachWeeklyBoard);
 $("loginForm").addEventListener("submit",async e=>{e.preventDefault();const btn=$("loginButton");btn.disabled=true;btn.textContent="Signing in…";$("loginMessage").classList.add("hidden");try{const d=await request("/api/coach/login",{method:"POST",body:JSON.stringify({email:$("email").value.trim().toLowerCase(),password:$("password").value})});if(!d.token||!d.coach)throw Error("Login response was incomplete.");token=d.token;coach=d.coach;$("loginPanel").classList.add("hidden");$("dashboard").classList.remove("hidden");openView("overview");$("coachIdentity").textContent=coach.full_name+" · "+coach.email;await loadStudents()}catch(err){token="";coach=null;message($("loginMessage"),err.message,"error")}finally{btn.disabled=false;btn.textContent="Sign in securely →"}});
 $("studentSearch").addEventListener("input",renderStudents);$("refreshButton").addEventListener("click",loadStudents);
 $("noteForm").addEventListener("submit",async e=>{e.preventDefault();if(!selected){message($("noteMessage"),"Choose a student from My Students before saving a follow-up note.","error");openView("students-view");return}const action=$("actionTaken").value.trim();if(!action){message($("noteMessage"),"Please enter the action taken.","error");return}const btn=$("saveNoteButton");btn.disabled=true;try{await request("/api/coach/follow-up-notes",{method:"POST",body:JSON.stringify({studentId:selected.id,attendanceConcern:$("attendanceConcern").value.trim(),academicConcern:$("academicConcern").value.trim(),actionTaken:action,nextFollowUpDate:$("nextDate").value||null})});$("noteForm").reset();$("noteStudent").value=(selected.student_code||"")+" — "+(selected.full_name||"");message($("noteMessage"),"Follow-up note saved successfully.","success")}catch(err){message($("noteMessage"),err.message,"error")}finally{btn.disabled=false}});
