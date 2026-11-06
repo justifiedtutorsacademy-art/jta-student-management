@@ -17,13 +17,17 @@
     @media(max-width:600px){.option-grid{grid-template-columns:1fr}.option-link{padding:12px}.options-panel{padding:16px}}
     @media(max-width:800px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.section-grid{grid-template-columns:1fr}.list{grid-template-columns:1fr}.intro{align-items:flex-start;flex-direction:column}.secure-label{display:none}}
     @media(max-width:520px){.wrap{width:min(100% - 22px,1120px)}.topbar{padding:18px 0}.brand-mark{width:42px;height:42px;border-radius:13px}.card{padding:17px;border-radius:15px}.stats{gap:9px}.stat{padding:13px}.stat-value{font-size:25px}.stat-icon{width:29px;height:29px}.field-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.toolbar{grid-template-columns:1fr}.toolbar .btn{width:100%}.admin-session{align-items:stretch;flex-direction:column}.admin-session .btn{width:100%}.item-actions .btn{flex-basis:100%}}
+
+/* Student-portal-style admin navigation */
+.admin-shell{display:grid;grid-template-columns:290px minmax(0,1fr);min-height:75vh}.admin-sidebar{background:#fff;border-right:1px solid var(--border);padding:26px 17px;position:sticky;top:0;height:100vh;overflow:auto}.sidebar-heading{display:flex;justify-content:space-between;align-items:center;padding:8px 10px 22px;color:#98a1b4;font-size:12px;font-weight:900;letter-spacing:2px}.sidebar-heading button{border:0;background:#f3f4fa;border-radius:10px;padding:7px 12px;font-size:21px;color:#536176}.admin-nav{display:grid;gap:10px}.admin-nav button,.admin-nav>a{border:0;background:#fff;color:#596579;text-align:left;padding:16px;border-radius:18px;font-weight:750;font-size:15px;display:flex;align-items:center;gap:13px;min-height:62px;box-shadow:0 8px 22px rgba(45,53,110,.08);text-decoration:none}.admin-nav button.active{background:#f1efff;color:#5547aa;border-left:5px solid #6d5bd0;padding-left:11px}.nav-ico{font-size:20px;width:24px;text-align:center;color:#8993aa}.admin-nav a strong,.admin-nav a small{display:block}.admin-nav a strong{font-size:13px}.admin-nav a small{font-size:11px;color:var(--muted);margin-top:3px}.sidebar-footer{margin:34px 8px 8px;padding:19px 15px;border:1px solid #e6e1f5;border-radius:18px;background:#f7f4ff;color:#8b91a3;font-size:12px}.sidebar-footer strong{display:block;color:#5c50ae;margin-bottom:5px}.admin-content{min-width:0;padding:25px 22px 40px}.mobile-menu{display:none;border:0;border-radius:10px;background:#fff;color:var(--navy);padding:9px 13px;font-size:22px}.drawer-shade{display:none}.admin-view{display:none}.admin-view.active{display:block}.section-grid{display:block}.section-grid>.card{display:none}.section-grid>.card.active{display:block}.admin-view .card{max-width:1100px}
+@media(max-width:850px){.admin-shell{display:block}.admin-sidebar{position:fixed;z-index:50;left:0;top:0;bottom:0;width:min(84vw,330px);height:100dvh;transform:translateX(-105%);transition:transform .22s;box-shadow:12px 0 35px #142b4a22}.admin-sidebar.open{transform:translateX(0)}.drawer-shade.show{display:block;position:fixed;inset:0;background:#17243877;z-index:40}.mobile-menu{display:inline-grid;place-items:center}.admin-content{padding:18px 12px 34px}}
   </style>
 </head>
 <body>
   <header class="topbar">
     <div class="wrap topbar-inner">
       <div class="brand"><div class="brand-mark" aria-hidden="true">JTA</div><div><h1>Justified Tutor's Academy</h1><p>Administrator workspace · Student success starts here</p></div></div>
-      <div class="secure-label">● Secure administrator access</div>
+      <div style="display:flex;align-items:center;gap:12px"><button class="mobile-menu" id="adminMenuOpen" type="button" aria-label="Open menu">☰</button><div class="secure-label">● Secure administrator access</div></div>
     </div>
   </header>
   <main class="wrap">
@@ -39,7 +43,10 @@
       <div id="loginMessage" class="status hidden" role="status" aria-live="polite"></div>
     </section>
  
-    <section id="dashboard" class="hidden">
+    <section id="dashboard" class="hidden"><div class="admin-shell"><div class="drawer-shade" id="adminDrawerShade"></div><aside class="admin-sidebar" id="adminSidebar"><div class="sidebar-heading"><strong>JTA ADMIN MENU</strong><button id="adminMenuClose" type="button">×</button></div><nav class="admin-nav">
+<button class="active" data-admin-view="home"><span class="nav-ico">⌂</span>Dashboard</button><button data-admin-view="applications"><span class="nav-ico">♙</span>Student Applications</button><button data-admin-view="coaches"><span class="nav-ico">♧</span>Coach Management</button><button data-admin-view="assignments"><span class="nav-ico">▤</span>Student Assignments</button>
+<a href="material-access.html"><span class="nav-ico">▣</span><span><strong>Learning Materials</strong><small>Manage material access</small></span><span class="option-arrow">›</span></a><a href="community-groups-management.html"><span class="nav-ico">☷</span><span><strong>Community & Class Groups</strong><small>Telegram and WhatsApp groups</small></span><span class="option-arrow">›</span></a><a href="exam-management.html"><span class="nav-ico">▣</span><span><strong>Examination Management</strong><small>Questions, tests and results</small></span><span class="option-arrow">›</span></a><a href="analytics.html"><span class="nav-ico">▥</span><span><strong>Analytics Dashboard</strong><small>Performance reports</small></span><span class="option-arrow">›</span></a><button data-admin-view="session"><span class="nav-ico">⋯</span>Admin Session</button></nav><div class="sidebar-footer"><strong>300+ IN JAMB IS OUR CALLING</strong>Empowering Students for Academic Excellence</div></aside><div class="admin-content">
+      <div id="adminHome" class="admin-view active">
       <div class="intro"><div><p class="eyebrow">JTA management</p><h2>Dashboard overview</h2><p>Manage applications and your student-support team from one place.</p></div><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="pill">Administrator connected</span></div></div>
       <div class="stats" aria-label="Dashboard summary">
         <div class="stat"><div class="stat-top"><span class="stat-label">Pending applications</span><span class="stat-icon">…</span></div><div class="stat-value" id="pendingCount">—</div><div class="stat-note">Awaiting review</div></div>
@@ -61,7 +68,8 @@
         </div>
       </section>
 
-      <div class="section-grid">
+      </div>
+      <div class="admin-view" id="view-applications"><div class="section-grid">
         <section class="card" id="studentApplications">
           <div class="card-head"><div><h2>Student applications</h2><p class="subtext">Review applications and approve eligible students.</p></div><span class="pill">Students</span></div>
           <div class="toolbar">
@@ -70,8 +78,8 @@
           </div>
           <div id="listMessage" class="status" role="status" aria-live="polite">Connect to load applications.</div>
           <div id="applications" class="list"></div>
-        </section>
- 
+        </section></div></div>
+      <div class="admin-view" id="view-coaches"><div class="section-grid">
         <section class="card" id="coachManagement">
           <div class="card-head"><div><h2>Coach management</h2><p class="subtext">Create coach accounts and review the coaches registered in JTA.</p></div><span class="pill">Team</span></div>
           <form id="coachForm">
@@ -89,9 +97,8 @@
           <div id="coaches" class="list"></div>
           <p class="note">Student assignment and follow-up notes need their own backend endpoints; this page will not claim those actions are available until they are implemented.</p>
         </section>
-      </div>
- 
-      <section class="card" id="assignmentManagement">
+      </div></div>
+      <div class="admin-view" id="view-assignments"><section class="card" id="assignmentManagement">
         <div class="card-head"><div><h2>Student–coach assignments</h2><p class="subtext">Assign an approved student, transfer them to another active coach, or end an assignment without deleting student history.</p></div><span class="pill">Assignments</span></div>
         <form id="assignmentForm">
           <div class="field-grid">
@@ -103,13 +110,12 @@
         <div id="assignmentMessage" class="status" role="status" aria-live="polite">Connect to load approved students and assignments.</div>
         <div class="card-head" style="margin-top:25px;margin-bottom:10px"><div><h2 style="font-size:16px">Approved students and current assignments</h2><p class="subtext">Ending an assignment does not delete attendance, scores or follow-up notes.</p></div><button class="btn btn-soft" type="button" id="refreshAssignmentsButton">↻ Refresh</button></div>
         <div id="assignments" class="list"></div>
-      </section>
- 
-      
-<section class="card admin-session">
+      </section></div>
+      <div class="admin-view" id="view-session"><section class="card admin-session">
         <div><h2>Administrator session</h2><p>Your secret stays in this page's temporary memory and is not saved to local storage.</p></div>
         <button class="btn btn-soft" id="logoutButton" type="button">Disconnect and clear secret</button>
-      </section>
+      </section></div>
+      </div></div>
     </section>
   </main>
   <footer>Justified Tutor's Academy · Student Management System</footer>
@@ -134,6 +140,11 @@
   let cachedStudents = [];
   let assignmentBusy = false;
   const $ = id => document.getElementById(id);
+
+  function setAdminView(name){document.querySelectorAll('.admin-view').forEach(v=>v.classList.toggle('active',v.id===(name==='home'?'adminHome':'view-'+name)));document.querySelectorAll('.admin-nav [data-admin-view]').forEach(b=>b.classList.toggle('active',b.dataset.adminView===name));$('studentApplications').classList.toggle('active',name==='applications');$('coachManagement').classList.toggle('active',name==='coaches');$('adminSidebar').classList.remove('open');$('adminDrawerShade').classList.remove('show');window.scrollTo({top:0,behavior:'smooth'});}
+  document.querySelectorAll('.admin-nav [data-admin-view]').forEach(b=>b.addEventListener('click',()=>setAdminView(b.dataset.adminView)));
+  $('adminMenuOpen').addEventListener('click',()=>{$('adminSidebar').classList.add('open');$('adminDrawerShade').classList.add('show')});$('adminMenuClose').addEventListener('click',()=>{$('adminSidebar').classList.remove('open');$('adminDrawerShade').classList.remove('show')});$('adminDrawerShade').addEventListener('click',()=>{$('adminSidebar').classList.remove('open');$('adminDrawerShade').classList.remove('show')});
+
  
   function showMessage(element, message, type = "") {
     element.textContent = message;
@@ -453,6 +464,7 @@
   $("refreshAssignmentsButton").addEventListener("click", loadAssignments);
   $("logoutButton").addEventListener("click", () => disconnect());
  
+  setAdminView("home");
   // Reuse the same-tab session shared with the exam-management pages.
   const savedAdminSecret = readAdminSession();
   if (savedAdminSecret) {
