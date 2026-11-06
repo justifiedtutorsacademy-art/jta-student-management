@@ -196,7 +196,7 @@ table.append(thead,tbody);wrap.append(table);node.append(wrap);
 }
 async function selectStudent(s){selected=s;openView("records-view");$("recordPrompt").classList.add("hidden");$("studentProfile").classList.remove("hidden");$("studentProfile").textContent="Loading student records…";$("noteStudent").value=(s.student_code||"")+" — "+(s.full_name||"");$("attendanceHistory").replaceChildren();$("scoreHistory").replaceChildren();try{const d=await request("/api/coach/students/"+encodeURIComponent(s.id));if(!selected||selected.id!==s.id)return;$("studentProfile").textContent=(s.full_name||"Student")+" · "+(s.student_code||"");history($("attendanceHistory"),d.attendance||[],"attendance");history($("scoreHistory"),d.scores||[],"score")}catch(e){$("studentProfile").textContent="Could not load records: "+e.message}}
 
-function setDefaultCoachWeek(){const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7));$('coachWeekStart').value=d.toISOString().slice(0,10)}
+function localCoachDateKey(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')} function setDefaultCoachWeek(){const d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7));$('coachWeekStart').value=localCoachDateKey(d)}
 async function loadCoachWeeklyBoard(){
  const status=$('coachWeeklyStatus'),podium=$('coachPodium'),list=$('coachWeeklyList');
  if(!token){message(status,"Sign in to view your assigned students' weekly results.","error");return}

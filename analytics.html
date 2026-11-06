@@ -74,7 +74,7 @@ async function loadAdminWeeklyBoard(){
  const status=$('adminWeeklyStatus'),podium=$('adminPodium'),list=$('adminWeeklyList');
  if(!status||!podium||!list)return;
  const key=$('key').value.trim();if(!key){status.textContent='Administrator session unavailable. Sign in through the Admin Portal again.';return;}
- const week=$('adminWeekStart').value;status.textContent='Loading recorded weekly results…';podium.innerHTML='';list.innerHTML='';
+ const week=$('adminWeekStart').value;if(week&&new Date(week+'T12:00:00').getDay()!==1){status.textContent='Please choose a Monday as the week starting date.';status.className='status error';return;}status.textContent='Loading recorded weekly results…';podium.innerHTML='';list.innerHTML='';
  try{
   const url=API.replace('/analytics','/weekly-leaderboard')+(week?'?weekStart='+encodeURIComponent(week):'');
   const res=await fetch(url,{headers:{'X-Admin-Key':key,'Accept':'application/json'}});const payload=await res.json();
@@ -88,7 +88,7 @@ async function loadAdminWeeklyBoard(){
   list.innerHTML=rows.map(r=>'<div class="weekly-rank"><div class="rank-no">'+esc(r.rank)+'</div><div><div class="rank-code">'+esc(r.studentCode||'JTA student')+'</div><div class="rank-meta">'+esc(r.department||'Department not set')+' · '+esc(r.testsTaken||0)+' test(s)</div></div><div class="rank-score">'+Number(r.jambScore).toFixed(1)+'<small>/400</small></div><span style="color:#8b5cf6">›</span></div>').join('');
  }catch(e){status.textContent='Could not load weekly leaderboard: '+e.message;status.className='status error';}
 }
-function setAdminWeek(){const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7));$('adminWeekStart').value=d.toISOString().slice(0,10)}
+function localDateKey(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')} function setAdminWeek(){const d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7));$('adminWeekStart').value=localDateKey(d)}
 setAdminWeek();$('adminWeekLoad').addEventListener('click',loadAdminWeeklyBoard);
 document.querySelectorAll('[data-view="leaderboard-view"]').forEach(b=>b.addEventListener('click',loadAdminWeeklyBoard));
 })();
