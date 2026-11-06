@@ -37,6 +37,10 @@
     .application-row .item-actions button{flex:1;min-width:150px}
     .application-row label{min-width:170px;flex:1}
     @media(max-width:520px){.application-filter{flex:1;padding:9px 10px}.application-filters #refreshButton{width:100%}.application-row summary{padding:12px}.application-row .item-actions button{min-width:100%}}
+
+    .student-search-wrap{margin:12px 0}
+    .student-search-wrap input{display:block;width:100%;padding:13px 15px;border:1px solid var(--border);border-radius:12px;background:#fff;color:var(--text);outline:none}
+    .student-search-wrap input:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(109,53,200,.12)}
 </style>
 </head>
 <body>
@@ -83,6 +87,10 @@
             <button type="button" class="application-filter" data-status="rejected">Rejected <span id="rejectedListCount">—</span></button>
             <button class="btn btn-soft" id="refreshButton" type="button">↻ Refresh</button>
             <select id="statusFilter" aria-hidden="true" tabindex="-1" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none"><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option></select>
+          </div>
+          <div class="student-search-wrap">
+            <label class="toolbar-label" for="studentSearch">Find a student</label>
+            <input id="studentSearch" type="search" placeholder="Search name, JTA code, phone, email or department…" autocomplete="off">
           </div>
           <div id="listMessage" class="status" role="status" aria-live="polite">Connect to load applications.</div>
           <div id="applications" class="list"></div>
@@ -143,6 +151,7 @@
     try { sessionStorage.removeItem(ADMIN_SESSION_KEY); } catch (_) {}
   }
   let applicationBusy = false;
+  let currentApplications = [];
   let coachBusy = false;
   let cachedCoaches = [];
   let cachedStudents = [];
@@ -217,6 +226,26 @@
     card.appendChild(body);
     return card;
   }
+  function renderApplicationList() {
+    const query = ($("studentSearch")?.value || "").trim().toLowerCase();
+    const filtered = currentApplications.filter(application => {
+      const haystack = [
+        application.full_name, application.student_code, application.email,
+        application.phone, application.parent_phone, application.data_phone,
+        application.department, application.network, application.id
+      ].filter(Boolean).join(" ").toLowerCase();
+      return !query || haystack.includes(query);
+    });
+    $("applications").replaceChildren();
+    filtered.forEach(application => $("applications").appendChild(makeApplicationCard(application)));
+    if (!currentApplications.length) {
+      showMessage($("listMessage"), "No " + $("statusFilter").value + " applications found.");
+    } else if (!filtered.length) {
+      showMessage($("listMessage"), "No students match “" + query + "”. Try another name, JTA code or phone number.");
+    } else {
+      showMessage($("listMessage"), filtered.length + " of " + currentApplications.length + " " + $("statusFilter").value + " student(s) shown.", "success");
+    }
+  }
   async function loadApplications() {
     if (!adminSecret || applicationBusy) return;
     applicationBusy = true; $("refreshButton").disabled = true; $("applications").replaceChildren();
@@ -224,14 +253,10 @@
     try {
       const status = $("statusFilter").value;
       const result = await apiRequest("/api/admin/applications?status=" + encodeURIComponent(status));
-      const applications = Array.isArray(result.applications) ? result.applications : [];
-      if (!applications.length) {
-        showMessage($("listMessage"), "No " + status + " applications found.");
-      } else {
-        showMessage($("listMessage"), applications.length + " " + status + " application(s). Tap a student to view details and actions.", "success");
-        applications.forEach(application => $("applications").appendChild(makeApplicationCard(application)));
-      }
+      currentApplications = Array.isArray(result.applications) ? result.applications : [];
+      renderApplicationList();
     } catch (error) {
+      currentApplications = [];
       showMessage($("listMessage"), error.message, "error");
       if (/unauthorized|admin access denied/i.test(error.message)) disconnect("Your administrator session was rejected. Please sign in again.");
     } finally { applicationBusy = false; $("refreshButton").disabled = false; }
@@ -459,12 +484,15 @@
     } finally { button.disabled = false; button.textContent = "＋ Create coach account"; }
   });
   $("refreshButton").addEventListener("click", loadApplications);
+  $("studentSearch").addEventListener("input", renderApplicationList);
   $("statusFilter").addEventListener("change", () => {
+    $("studentSearch").value = "";
     document.querySelectorAll(".application-filter").forEach(button => button.classList.toggle("active", button.dataset.status === $("statusFilter").value));
     loadApplications();
   });
   document.querySelectorAll(".application-filter").forEach(button => button.addEventListener("click", () => {
     $("statusFilter").value = button.dataset.status;
+    $("studentSearch").value = "";
     document.querySelectorAll(".application-filter").forEach(item => item.classList.toggle("active", item === button));
     loadApplications();
   }));
