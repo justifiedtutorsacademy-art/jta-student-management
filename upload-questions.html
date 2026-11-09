@@ -69,7 +69,7 @@ body[data-page="dashboard"] #uploadSection,body[data-page="dashboard"] #copySect
 #bulkQuestionFile{background:#fff}
 </style>
 </head>
-<body data-page="dashboard">
+<body data-page="upload">
 <header><div class="wrap"><div><h1>Justified Tutor's Academy</h1><p>Examination Management Portal</p></div><span style="font-size:12px;color:#e7eaff;font-weight:700">JTA • ADMIN</span></div></header>
 <main class="wrap">
 <section class="card" id="loginCard">
@@ -340,7 +340,7 @@ $("importBulkBtn").addEventListener("click",async()=>{
  const btn=$("importBulkBtn");btn.disabled=true;$("previewBulkBtn").disabled=true;
  try{const result=await api("/api/admin/exams/"+encodeURIComponent(examId)+"/questions",{method:"POST",body:JSON.stringify({questions:bulkQuestions})});msg("bulkPreview",result.message||`${result.added||bulkQuestions.length} questions imported successfully.`,"ok");bulkQuestions=[];$("bulkQuestionFile").value="";await loadExams();$("questionExam").value=examId}
  catch(err){msg("bulkPreview","Import failed: "+err.message,"err")}
- finally{btn.disabled=true;$("previewBulkBtn").disabled=false}
+ finally{btn.disabled=!bulkQuestions.length;$("previewBulkBtn").disabled=false}
 });
 
 $("questionForm").addEventListener("submit",async e=>{e.preventDefault();const examId=$("questionExam").value;if(!examId){msg("questionMsg","Choose a draft examination first.","err");return}const options=[$("optA").value,$("optB").value,$("optC").value,$("optD").value,$("optE").value].map(x=>x.trim()).filter(Boolean);const correct=$("correct").value;if("ABCDE".indexOf(correct)>=options.length){msg("questionMsg","Fill in the selected correct option before saving.","err");return}const body={subject:$("questionSubject").value,question_text:$("questionText").value.trim(),options,correct_answer:correct,marks:Number($("marks").value)};$("addQuestionBtn").disabled=true;try{const d=await api("/api/admin/exams/"+encodeURIComponent(examId)+"/questions",{method:"POST",body:JSON.stringify(body)});msg("questionMsg",d.message,"ok");$("questionForm").reset();$("marks").value=1;await loadExams();$("questionExam").value=examId;await loadQuestionCards()}catch(err){msg("questionMsg",err.message,"err")}finally{$("addQuestionBtn").disabled=false}});
