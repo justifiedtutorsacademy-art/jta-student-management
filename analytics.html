@@ -20,7 +20,48 @@
 @media(max-width:560px){.overview-filter{align-items:stretch}.overview-periods{width:100%;justify-content:space-between}.filter-caption{display:none}.overview-period{flex:1;padding:8px 5px;font-size:12px}.overview-filter select{max-width:none;width:100%}.sync-note{justify-content:flex-end}}
 .weekly-table-heading{display:flex;align-items:end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:14px 0}.weekly-table-heading h3{margin:0}.weekly-table-heading input{max-width:310px}.overview-period.active{box-shadow:0 4px 10px #075b4826}</style><style>
 @media print{body{background:#fff}.sidebar,.topbar,#adminConnection,.mobile-scrim,.overview-export button,.week-controls button,.standings-tools,.selection-bar,.danger-btn{display:none!important}.app-shell{display:block}.content{max-width:none;padding:0}.view{display:none!important}.view.active{display:block!important}.panel,.dark-overview{break-inside:avoid;box-shadow:none}.dark-overview,#view-leaderboard-view .panel:first-of-type{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
-</style></head><body>
+</style>
+<style>
+/* JTA compact mobile-first overview */
+@media(max-width:850px){
+  .app-shell{display:block!important;min-width:0!important}
+  .main-area{width:100%;min-width:0}
+  .topbar{padding:11px 12px!important}
+  .topbar-inner{gap:9px!important}
+  .top-title h1{font-size:17px!important}
+  .top-title p{font-size:10px!important}
+  .content{width:100%;max-width:100%;padding:10px!important}
+  .sidebar{width:min(78vw,270px)!important;max-width:270px!important}
+  .dark-overview{width:100%;margin:0!important;padding:16px 13px!important;border-radius:16px!important}
+  .dark-overview .page-heading{margin:0 0 12px!important}
+  .dark-overview .page-heading h2{font-size:21px!important;line-height:1.2}
+  .dark-overview .page-heading p{font-size:11px!important;margin-top:5px}
+  #metrics{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}
+  #metrics .metric{min-width:0!important;padding:12px 10px!important;border-radius:12px!important}
+  #metrics .metric .label{font-size:9px!important;line-height:1.3;letter-spacing:.7px}
+  #metrics .metric .value{font-size:clamp(20px,6vw,27px)!important;line-height:1.1;overflow-wrap:anywhere}
+  #view-overview>.page-heading,
+  #view-overview>.overview-export,
+  #view-overview>.overview-filter,
+  #view-overview>#jtaStandingsPanel,
+  #view-overview>.grid{display:none!important}
+  #view-overview{padding:0!important}
+}
+@media(min-width:851px){
+  #view-overview>.page-heading,
+  #view-overview>.overview-export,
+  #view-overview>.overview-filter,
+  #view-overview>#jtaStandingsPanel,
+  #view-overview>.grid{display:none!important}
+  .content{max-width:760px!important;margin:0 auto!important}
+  .dark-overview{margin:0!important}
+}
+#view-results-deletion .placeholder-panel{border:1px dashed #9aaee3;background:linear-gradient(135deg,#f5f7ff,#f7f1ff);border-radius:16px;padding:22px}
+#view-results-deletion .placeholder-icon{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,#1557d5,#8a4de8);color:white;font-size:23px;margin-bottom:12px}
+#view-results-deletion h3{margin:0 0 7px;color:#17213b}
+#view-results-deletion p{color:#718096;margin:0;line-height:1.6}
+</style>
+</head><body>
 <section class="panel" id="adminConnection"><h2 class="title">Secure dashboard access</h2><p class="muted small">Enter your existing JTA Admin Key. It stays in this page's memory and is sent to your protected Cloudflare Worker. Never share the key.</p><div class="row"><div class="field"><label for="key">Admin Key</label><input autocomplete="current-password" id="key" placeholder="Enter Admin Key" type="password"/></div><button id="load">Load / Refresh Analytics</button><button class="secondary" id="clear">Clear key</button></div><div aria-live="polite" class="status" id="status" role="status">Enter your Admin Key and load the dashboard.</div></section>
 <div class="hidden" id="dash"><div class="app-shell">
 <aside class="sidebar" id="sidebar"><div class="brand"><span class="brand-mark">▰</span><span><strong>JTA ANALYTICS</strong><small>ACADEMY INSIGHTS</small></span></div><div class="nav-label">WORKSPACE</div><nav class="nav-list">
@@ -31,7 +72,8 @@
 <button class="nav-link" data-view="departments-view"><span class="ico">▥</span><span class="nav-text">Department Reports</span></button>
 <button class="nav-link" data-view="coaches-view"><span class="ico">♧</span><span class="nav-text">Coach Statistics</span></button>
 <button class="nav-link" data-view="alerts-view"><span class="ico">♧</span><span class="nav-text">Follow-up Alerts</span></button>
-<button class="nav-link" data-view="reports-view"><span class="ico">⇩</span><span class="nav-text">Download Reports</span></button></nav><div class="sidebar-bottom">300+ IN JAMB IS OUR CALLING<br/>JTA Analytics Workspace</div></aside>
+<button class="nav-link" data-view="reports-view"><span class="ico">⇩</span><span class="nav-text">Download Reports</span></button>
+<button class="nav-link" data-view="results-deletion"><span class="ico">⌫</span><span class="nav-text">Results Deletion</span></button></nav><div class="sidebar-bottom">300+ IN JAMB IS OUR CALLING<br/>JTA Analytics Workspace</div></aside>
 <div class="mobile-scrim" id="scrim"></div><div class="main-area"><header class="topbar"><div class="topbar-inner"><button class="menu-toggle" id="menuToggle">☰</button><div class="top-title"><h1>Justified Tutor's Academy</h1><p>Student Analytics, Weekly Reports &amp; Follow-up Alerts</p></div></div></header><main class="content">
 <section class="view active" id="view-overview">
 <div class="page-heading"><div class="eyebrow">JUSTIFIED TUTORS ACADEMY</div><h2>Students analytics &amp; performance</h2><p>Real-time student standings, weekly scores and academy performance insights.</p></div>
@@ -57,6 +99,16 @@
 <section class="view" id="view-departments-view"><div class="page-heading"><div class="eyebrow">DEPARTMENT INSIGHTS</div><h2>Department Reports</h2></div><section class="panel"><h3>Department summary</h3><div class="table-wrap" id="departments"></div></section></section>
 <section class="view" id="view-coaches-view"><div class="page-heading"><div class="eyebrow">ACADEMY TEAM</div><h2>Coach Statistics</h2></div><section class="panel"><h3>Coach statistics</h3><div class="table-wrap" id="coaches"></div></section></section>
 <section class="view" id="view-alerts-view"><div class="page-heading"><div class="eyebrow">STUDENT SUPPORT</div><h2>Follow-up Alerts</h2></div><section class="panel"><h3>Students needing attention</h3><div id="alertsFull"></div></section></section>
+<section class="view" id="view-results-deletion">
+<div class="page-heading"><div class="eyebrow">ADMIN TOOLS</div><h2>Results Deletion</h2><p>Manage individual student examination results.</p></div>
+<section class="panel placeholder-panel">
+ <div class="placeholder-icon">⌫</div>
+ <h3>Results deletion workspace</h3>
+ <p>This section is reserved for the JTA result-deletion workflow. It will later connect to the Cloudflare Worker and the student portal so that deleted results are removed from the student's visible examination history as well.</p>
+ <p style="margin-top:12px"><strong>Backend connection:</strong> Not connected yet.</p>
+ <p style="margin-top:5px">No student records or examination results can be deleted from this placeholder page.</p>
+</section>
+</section>
 <section class="view" id="view-reports-view"><div class="page-heading"><div class="eyebrow">EXPORT CENTRE</div><h2>Download Reports</h2></div><section class="panel"><h3>Available reports</h3><div class="actions"><button data-export="students">Student report</button><button data-export="leaderboard">Leaderboard</button><button data-export="attendance">Attendance report</button><button data-export="scores">Score report</button><button data-export="alerts">Follow-up alerts</button><button data-export="weekly">Weekly report</button></div></section></section>
 <p class="footer">JTA Analytics • Keep student reports private • 300+ IN JAMB IS OUR CALLING</p></main></div></div></div>
 <script>
