@@ -41,6 +41,14 @@
     .student-search-wrap{margin:12px 0}
     .student-search-wrap input{display:block;width:100%;padding:13px 15px;border:1px solid var(--border);border-radius:12px;background:#fff;color:var(--text);outline:none}
     .student-search-wrap input:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(109,53,200,.12)}
+
+    .directory-profile{display:grid;grid-template-columns:112px minmax(0,1fr);gap:16px;align-items:start;background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px;min-width:0}
+    .directory-photo{width:112px;height:132px;object-fit:cover;border-radius:12px;background:#eef0ff;border:1px solid var(--border)}
+    .directory-photo-placeholder{width:112px;height:132px;border-radius:12px;background:#eef0ff;color:var(--purple);display:grid;place-items:center;font-weight:900;font-size:24px}
+    .directory-profile h3{margin:0 0 4px;font-size:16px;overflow-wrap:anywhere}.directory-profile .directory-code{font-weight:850;color:var(--blue);font-size:13px}
+    .directory-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 14px;margin-top:12px}.directory-field{min-width:0;font-size:12px;overflow-wrap:anywhere}.directory-field small{display:block;color:var(--muted);font-weight:700;margin-bottom:2px}.directory-field strong{font-weight:650;color:var(--text)}
+    @media(max-width:520px){.directory-profile{grid-template-columns:76px minmax(0,1fr);gap:11px;padding:12px}.directory-photo,.directory-photo-placeholder{width:76px;height:96px}.directory-fields{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -64,7 +72,7 @@
     </section>
  
     <section id="dashboard" class="hidden"><div class="admin-shell"><div class="drawer-shade" id="adminDrawerShade"></div><aside class="admin-sidebar" id="adminSidebar"><div class="sidebar-heading"><strong>JTA ADMIN MENU</strong><button id="adminMenuClose" type="button">×</button></div><nav class="admin-nav">
-<button class="active" data-admin-view="home"><span class="nav-ico">⌂</span>Dashboard</button><button data-admin-view="applications"><span class="nav-ico">♙</span>Student Applications</button><button data-admin-view="coaches"><span class="nav-ico">♧</span>Coach Management</button><button data-admin-view="assignments"><span class="nav-ico">▤</span>Student Assignments</button>
+<button class="active" data-admin-view="home"><span class="nav-ico">⌂</span>Dashboard</button><button data-admin-view="applications"><span class="nav-ico">♙</span>Student Applications</button><button data-admin-view="student-directory"><span class="nav-ico">▣</span>Student Records</button><button data-admin-view="coaches"><span class="nav-ico">♧</span>Coach Management</button><button data-admin-view="assignments"><span class="nav-ico">▤</span>Student Assignments</button>
 <a href="material-access.html"><span class="nav-ico">▣</span><span><strong>Learning Materials</strong><small>Manage material access</small></span><span class="option-arrow">›</span></a><a href="community-groups-management.html"><span class="nav-ico">☷</span><span><strong>Community & Class Groups</strong><small>Telegram and WhatsApp groups</small></span><span class="option-arrow">›</span></a><a href="exam-management.html"><span class="nav-ico">▣</span><span><strong>Examination Management</strong><small>Questions, tests and results</small></span><span class="option-arrow">›</span></a><a href="analytics.html"><span class="nav-ico">▥</span><span><strong>Analytics Dashboard</strong><small>Performance reports</small></span><span class="option-arrow">›</span></a><button data-admin-view="session"><span class="nav-ico">⋯</span>Admin Session</button></nav><div class="sidebar-footer"><strong>300+ IN JAMB IS OUR CALLING</strong>Empowering Students for Academic Excellence</div></aside><div class="admin-content">
       <div id="adminHome" class="admin-view active">
       <div class="intro"><div><p class="eyebrow">JTA management</p><h2>Dashboard overview</h2><p>Manage applications and your student-support team from one place.</p></div><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="pill">Administrator connected</span></div></div>
@@ -95,6 +103,16 @@
           <div id="listMessage" class="status" role="status" aria-live="polite">Connect to load applications.</div>
           <div id="applications" class="list"></div>
         </section></div></div>
+      <div class="admin-view" id="view-student-directory"><section class="card" id="studentDirectoryCard">
+        <div class="card-head"><div><h2>Student Records</h2><p class="subtext">Search the complete registration record, including contact numbers and the uploaded profile photograph.</p></div><span class="pill">Private admin records</span></div>
+        <form id="studentDirectoryForm" class="toolbar" autocomplete="off">
+          <div><label class="toolbar-label" for="studentDirectoryQuery">Search students</label><input id="studentDirectoryQuery" type="search" minlength="2" maxlength="120" placeholder="Name, JTA code, phone, parent phone, data phone or email…" required></div>
+          <button class="btn btn-primary" id="studentDirectorySearchButton" type="submit">⌕ Search students</button>
+        </form>
+        <p class="note">Search across pending, approved and rejected registrations. Passwords and password hashes are never displayed.</p>
+        <div id="studentDirectoryMessage" class="status" role="status" aria-live="polite">Enter a student's name, JTA code, phone number or email address to search.</div>
+        <div id="studentDirectoryResults" class="list" aria-live="polite"></div>
+      </section></div>
       <div class="admin-view" id="view-coaches"><div class="section-grid">
         <section class="card" id="coachManagement">
           <div class="card-head"><div><h2>Coach management</h2><p class="subtext">Create coach accounts and review the coaches registered in JTA.</p></div><span class="pill">Team</span></div>
@@ -151,6 +169,7 @@
     try { sessionStorage.removeItem(ADMIN_SESSION_KEY); } catch (_) {}
   }
   let applicationBusy = false;
+  let directoryBusy = false;
   let currentApplications = [];
   let coachBusy = false;
   let cachedCoaches = [];
@@ -158,7 +177,7 @@
   let assignmentBusy = false;
   const $ = id => document.getElementById(id);
 
-  function setAdminView(name){document.querySelectorAll('.admin-view').forEach(v=>v.classList.toggle('active',v.id===(name==='home'?'adminHome':'view-'+name)));document.querySelectorAll('.admin-nav [data-admin-view]').forEach(b=>b.classList.toggle('active',b.dataset.adminView===name));$('studentApplications').classList.toggle('active',name==='applications');$('coachManagement').classList.toggle('active',name==='coaches');$('adminSidebar').classList.remove('open');$('adminDrawerShade').classList.remove('show');window.scrollTo({top:0,behavior:'smooth'});}
+  function setAdminView(name){document.querySelectorAll('.admin-view').forEach(v=>v.classList.toggle('active',v.id===(name==='home'?'adminHome':'view-'+name)));document.querySelectorAll('.admin-nav [data-admin-view]').forEach(b=>b.classList.toggle('active',b.dataset.adminView===name));$('studentApplications').classList.toggle('active',name==='applications');$('studentDirectoryCard').classList.toggle('active',name==='student-directory');$('coachManagement').classList.toggle('active',name==='coaches');$('adminSidebar').classList.remove('open');$('adminDrawerShade').classList.remove('show');window.scrollTo({top:0,behavior:'smooth'});}
   document.querySelectorAll('.admin-nav [data-admin-view]').forEach(b=>b.addEventListener('click',()=>setAdminView(b.dataset.adminView)));
   $('adminMenuOpen').addEventListener('click',()=>{$('adminSidebar').classList.add('open');$('adminDrawerShade').classList.add('show')});$('adminMenuClose').addEventListener('click',()=>{$('adminSidebar').classList.remove('open');$('adminDrawerShade').classList.remove('show')});$('adminDrawerShade').addEventListener('click',()=>{$('adminSidebar').classList.remove('open');$('adminDrawerShade').classList.remove('show')});
 
@@ -246,6 +265,58 @@
       showMessage($("listMessage"), filtered.length + " of " + currentApplications.length + " " + $("statusFilter").value + " student(s) shown.", "success");
     }
   }
+  function directoryField(parent, label, value) {
+    const wrap=document.createElement("div"); wrap.className="directory-field";
+    addText(wrap,"small",label); addText(wrap,"strong",value==null||value===""?"Not provided":String(value)); parent.appendChild(wrap);
+  }
+  function makeDirectoryProfile(student) {
+    const card=document.createElement("article"); card.className="directory-profile";
+    const photoData=typeof student.photo_data==="string"?student.photo_data:"";
+    if(photoData && /^data:image\/(png|jpeg|jpg|webp);base64,/i.test(photoData)) {
+      const img=document.createElement("img"); img.className="directory-photo"; img.alt="Registration photograph of "+(student.full_name||"student"); img.loading="lazy"; img.src=photoData; card.appendChild(img);
+    } else if(photoData && /^[A-Za-z0-9+/=\r\n]+$/.test(photoData)) {
+      const img=document.createElement("img"); img.className="directory-photo"; img.alt="Registration photograph of "+(student.full_name||"student"); img.loading="lazy"; img.src="data:image/jpeg;base64,"+photoData; card.appendChild(img);
+    } else {
+      const placeholder=document.createElement("div"); placeholder.className="directory-photo-placeholder"; placeholder.textContent=(student.full_name||"JTA").trim().slice(0,1).toUpperCase(); card.appendChild(placeholder);
+    }
+    const content=document.createElement("div");
+    addText(content,"h3",student.full_name||"Unnamed student");
+    addText(content,"div",(student.student_code||"No JTA code")+" · "+(student.department||"No department"),"directory-code");
+    const status=document.createElement("span"); status.className="student-status"; status.textContent=String(student.status||"unknown").toUpperCase(); status.style.display="inline-block"; status.style.marginTop="7px"; content.appendChild(status);
+    const fields=document.createElement("div"); fields.className="directory-fields";
+    directoryField(fields,"Student phone",student.phone);
+    directoryField(fields,"Parent / guardian phone",student.parent_phone);
+    directoryField(fields,"Data phone number",student.data_phone);
+    directoryField(fields,"Mobile network",student.network);
+    directoryField(fields,"Email address",student.email);
+    directoryField(fields,"Department",student.department);
+    directoryField(fields,"Registered",student.created_at);
+    directoryField(fields,"Reviewed",student.reviewed_at);
+    directoryField(fields,"Subscription plan",student.subscription_plan);
+    directoryField(fields,"Amount paid",student.amount_paid==null?"Not recorded":student.amount_paid);
+    directoryField(fields,"Subscription expiry",student.subscription_expiry);
+    directoryField(fields,"Access status",student.access_status);
+    content.appendChild(fields); card.appendChild(content); return card;
+  }
+  async function searchStudentDirectory(event) {
+    if(event) event.preventDefault();
+    if(directoryBusy)return;
+    const query=$("studentDirectoryQuery").value.trim();
+    if(query.length<2){showMessage($("studentDirectoryMessage"),"Enter at least 2 characters to search.","error");return;}
+    directoryBusy=true; $("studentDirectorySearchButton").disabled=true; $("studentDirectoryResults").replaceChildren();
+    showMessage($("studentDirectoryMessage"),"Searching student records…");
+    try {
+      const result=await apiRequest("/api/admin/student-directory?q="+encodeURIComponent(query));
+      const students=Array.isArray(result.students)?result.students:[];
+      if(!students.length){showMessage($("studentDirectoryMessage"),"No student records matched that search.");return;}
+      students.forEach(student=>$("studentDirectoryResults").appendChild(makeDirectoryProfile(student)));
+      showMessage($("studentDirectoryMessage"),students.length+" matching student record(s) found."+(result.hasMore?" Showing the first 50; refine your search for more.":""),"success");
+    } catch(error) {
+      showMessage($("studentDirectoryMessage"),"Could not search student records: "+error.message,"error");
+      if(/unauthorized|admin access denied/i.test(error.message))disconnect("Your administrator session was rejected. Please sign in again.");
+    } finally {directoryBusy=false;$("studentDirectorySearchButton").disabled=false;}
+  }
+
   async function loadApplications() {
     if (!adminSecret || applicationBusy) return;
     applicationBusy = true; $("refreshButton").disabled = true; $("applications").replaceChildren();
@@ -484,6 +555,7 @@
     } finally { button.disabled = false; button.textContent = "＋ Create coach account"; }
   });
   $("refreshButton").addEventListener("click", loadApplications);
+  $("studentDirectoryForm").addEventListener("submit", searchStudentDirectory);
   $("studentSearch").addEventListener("input", renderApplicationList);
   $("statusFilter").addEventListener("change", () => {
     $("studentSearch").value = "";
