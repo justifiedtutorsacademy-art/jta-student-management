@@ -7,7 +7,7 @@
 :root{--navy:#142b4a;--navy2:#203f68;--blue:#2459a9;--gold:#e6b84b;--bg:#f1e8fb;--text:#172438;--muted:#5f6480;--border:#e2d2f3;--red:#b42332;--green:#16794b}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,#e8f7ff 0%,#f5efff 48%,#f1e3fb 100%);color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Arial,sans-serif}button,input,textarea{font:inherit}button{cursor:pointer}button:disabled{opacity:.6;cursor:wait}.wrap{width:min(1100px,calc(100% - 24px));margin:auto}.top{background:linear-gradient(120deg,#0649b8 0%,#164fc2 48%,#8538c6 100%);color:#fff;border-bottom:5px solid #b86be1;padding:19px 0}.brand{display:flex;align-items:center;gap:12px}.logo{display:grid;place-items:center;width:44px;height:44px;border-radius:13px;background:linear-gradient(145deg,#a847d2,#6544d9);color:#fff;font-weight:900;box-shadow:0 5px 12px #122a5530}.brand h1{font-size:clamp(18px,3vw,25px);line-height:1.2;margin:0}.brand p{margin:5px 0 0;color:#dbe7f7;font-size:13px}main{padding:25px 0 45px}.card{background:rgba(255,255,255,.94);border:1px solid #e3d5f2;border-radius:17px;padding:clamp(17px,3vw,24px);margin-bottom:18px;box-shadow:0 12px 32px #6438a30d}.login{max-width:500px;margin:30px auto}.eyebrow{color:var(--blue);font-size:11px;font-weight:850;letter-spacing:.12em;text-transform:uppercase;margin:0 0 5px}.card h2,.intro h2{margin:0;font-size:clamp(21px,3vw,28px);line-height:1.25}.sub{font-size:13px;color:var(--muted);margin:7px 0 0}.field{margin-top:14px}label{display:block;font-size:13px;font-weight:750;margin-bottom:6px}input,textarea{width:100%;border:1px solid #cbd5e1;border-radius:10px;padding:11px 12px;min-height:45px;background:#fff;color:var(--text)}textarea{min-height:90px;resize:vertical}.btn{border:0;border-radius:10px;padding:11px 14px;min-height:43px;font-weight:800}.primary{background:var(--blue);color:white}.soft{background:#eaf0f8;color:var(--navy)}.danger{background:#fff0f0;color:var(--red)}.block{width:100%;margin-top:17px}.status{padding:12px 14px;border-radius:10px;background:#edf3fc;color:var(--navy);font-size:14px;overflow-wrap:anywhere;margin-top:14px}.error{background:#fff0f0;color:#9b1c1c}.success{background:#e9f8ef;color:#17623b}.hidden{display:none!important}.intro{display:flex;justify-content:space-between;align-items:end;gap:12px;margin-bottom:18px}.pill{font-size:12px;font-weight:800;color:var(--blue);background:#eef4ff;border-radius:99px;padding:6px 10px}.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:18px}.stat{background:rgba(255,255,255,.94);border:1px solid #e3d5f2;border-radius:14px;padding:15px}.stat small{color:var(--muted);font-weight:750}.num{font-size:28px;font-weight:850;margin-top:5px}.head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:15px}.head h2{font-size:18px}.toolbar{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end}.list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px}.student{border:1px solid var(--border);border-radius:13px;padding:15px;min-width:0}.student h3{margin:0 0 7px;font-size:16px;overflow-wrap:anywhere}.student p{font-size:13px;color:#42526a;margin:6px 0;overflow-wrap:anywhere}.empty{grid-column:1/-1;text-align:center;padding:22px;border:1px dashed #cbd5e1;border-radius:12px;color:var(--muted)}.actions{margin-top:12px}.two{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}.row{padding:11px 0;border-bottom:1px solid var(--border)}.row:last-child{border-bottom:0}.row strong,.row span{display:block}.row span,.note{font-size:12px;color:var(--muted)}.session{display:flex;justify-content:space-between;align-items:center;gap:12px}.session p{font-size:13px;color:var(--muted);overflow-wrap:anywhere}footer{text-align:center;color:var(--muted);font-size:12px;padding:18px}
 @media(max-width:700px){.two{grid-template-columns:1fr}.list{grid-template-columns:1fr}.intro{align-items:flex-start;flex-direction:column}.toolbar{grid-template-columns:1fr}.toolbar button{width:100%}}@media(max-width:460px){.stats{grid-template-columns:1fr 1fr}.stat:last-child{grid-column:1/-1}.session{align-items:stretch;flex-direction:column}.session button{width:100%}}
-.coach-nav{display:flex;gap:9px;overflow-x:auto;padding:5px 2px 14px;margin:0 0 14px;scrollbar-width:thin}
+.coach-nav{position:sticky;top:0;z-index:20;display:flex;gap:9px;overflow-x:auto;padding:10px 8px 12px;margin:0 -8px 14px;scrollbar-width:thin;background:rgba(241,248,255,.96);border:1px solid #dce5f3;border-radius:14px;backdrop-filter:blur(10px);box-shadow:0 6px 18px #142b4a12}
 .nav-item{flex:0 0 auto;border:1px solid var(--border);background:#fff;color:var(--navy);border-radius:12px;padding:11px 15px;font-size:13px;font-weight:800}
 .nav-item.active{background:var(--navy);border-color:var(--navy);color:#fff;box-shadow:0 5px 14px #142b4a24}
 .coach-view{animation:fadeIn .18s ease}
@@ -30,7 +30,7 @@
 .grade-badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#eaf0fb;color:#244d88;font-weight:700;white-space:nowrap}
 .score-main{font-weight:800;color:#1c2b43;white-space:nowrap}
 .score-sub{display:block;color:#6b7280;font-size:11px;margin-top:3px}
-.empty-cell{text-align:center!important;color:#6b7280;padding:20px!important}
+.empty-cell{text-align:center!important;color:#6b7280;padding:20px!important}\n.attendance-delete{border:1px solid #f0b9bf;background:#fff5f5;color:#a32332;border-radius:8px;padding:6px 9px;font-size:11px;font-weight:800;white-space:nowrap}.attendance-delete:disabled{opacity:.55}
 @media(max-width:720px){.records-grid{grid-template-columns:1fr}.records-panel{padding:12px}.records-table{font-size:12px}}
 
 
@@ -109,12 +109,16 @@
 (() => {
 "use strict";
 const API="https://jta-student-backend.justifiedtutorsacademy.workers.dev", $=id=>document.getElementById(id);
+const COACH_SESSION_KEY="jta_coach_portal_session_v1";
 let token="",coach=null,students=[],selected=null;
+function saveCoachSession(){try{localStorage.setItem(COACH_SESSION_KEY,JSON.stringify({token,coach,savedAt:Date.now()}))}catch(_){}}
+function clearCoachSession(){token="";coach=null;try{localStorage.removeItem(COACH_SESSION_KEY)}catch(_){}}
+function showCoachLogin(note){clearCoachSession();students=[];selected=null;standings=[];$("dashboard").classList.add("hidden");$("loginPanel").classList.remove("hidden");$("password").value="";$("students").replaceChildren();clearSelected();if(note)message($("loginMessage"),note,"error")}
 function message(el,text,kind=""){el.textContent=text;el.className="status"+(kind?" "+kind:"")}
 function openView(id){document.querySelectorAll(".coach-view").forEach(v=>v.classList.toggle("hidden",v.id!==id));document.querySelectorAll(".nav-item").forEach(b=>b.classList.toggle("active",b.dataset.view===id));if(id==="students-view")renderStudents();if(id==="standings-view")loadStandings();window.scrollTo({top:0,behavior:"smooth"})}
 document.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",()=>openView(b.dataset.view)));
 document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>openView(b.dataset.go)));
-async function request(path,options={}){const headers={"Content-Type":"application/json",...(options.headers||{})};if(token)headers.Authorization="Bearer "+token;const res=await fetch(API+path,{...options,headers});let data={};try{data=await res.json()}catch(_){}if(!res.ok)throw Error(data.error||"Request failed ("+res.status+").");return data}
+async function request(path,options={}){const headers={"Content-Type":"application/json",...(options.headers||{})};if(token)headers.Authorization="Bearer "+token;const res=await fetch(API+path,{...options,headers,cache:"no-store"});let data={};try{data=await res.json()}catch(_){}if(!res.ok){const error=new Error(data.error||"Request failed ("+res.status+").");error.status=res.status;throw error}return data}
 function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function renderStudents(){
 const root=$("students");root.replaceChildren();
@@ -147,7 +151,7 @@ tr.append(serial,regCell,name,dept);tbody.append(tr);
 });
 table.append(thead,tbody);wrap.append(table);root.append(wrap);
 }
-async function loadStudents(){$("refreshButton").disabled=true;try{const d=await request("/api/coach/students");students=Array.isArray(d.students)?d.students:[];$("studentCount").textContent=students.length;$("attendanceCount").textContent=d.attendanceCount??"—";$("scoreCount").textContent=d.scoreCount??"—";message($("studentsMessage"),students.length+" assigned student(s) loaded.","success");renderStudents();if(selected&&!students.some(s=>s.id===selected.id))clearSelected()}catch(e){students=[];renderStudents();$("studentCount").textContent=$("attendanceCount").textContent=$("scoreCount").textContent="—";message($("studentsMessage"),e.message,"error")}finally{$("refreshButton").disabled=false}}
+async function loadStudents(){$("refreshButton").disabled=true;try{const d=await request("/api/coach/students");students=Array.isArray(d.students)?d.students:[];$("studentCount").textContent=students.length;$("attendanceCount").textContent=d.attendanceCount??"—";$("scoreCount").textContent=d.scoreCount??"—";message($("studentsMessage"),students.length+" assigned student(s) loaded.","success");renderStudents();if(selected&&!students.some(s=>s.id===selected.id))clearSelected()}catch(e){students=[];renderStudents();$("studentCount").textContent=$("attendanceCount").textContent=$("scoreCount").textContent="—";message($("studentsMessage"),e.message,"error");if(e.status===401)throw e}finally{$("refreshButton").disabled=false}}
 function clearSelected(){selected=null;$("studentProfile").classList.add("hidden");$("recordPrompt").classList.remove("hidden");$("recordPrompt").textContent="Select a student from your assigned-students list.";$("noteStudent").value="";$("attendanceHistory").innerHTML='<p class="sub">No student selected.</p>';$("scoreHistory").innerHTML='<p class="sub">No student selected.</p>'}
 function history(node,items,type){
 node.replaceChildren();
@@ -155,13 +159,13 @@ const wrap=document.createElement("div");wrap.className="records-table-wrap";
 const table=document.createElement("table");table.className="records-table";
 const thead=document.createElement("thead"),tbody=document.createElement("tbody");
 if(type==="attendance"){
-thead.innerHTML="<tr><th>Class / day</th><th>Date</th><th>Status</th></tr>";
+thead.innerHTML="<tr><th>Class / day</th><th>Date</th><th>Status</th><th>Action</th></tr>";
 }else{
 thead.innerHTML="<tr><th>Examination</th><th>JAMB score</th><th>Grade</th></tr>";
 }
 if(!items.length){
 const tr=document.createElement("tr"),td=document.createElement("td");
-td.colSpan=3;td.className="empty-cell";td.textContent="No "+(type==="attendance"?"attendance":"CBT score")+" records yet.";
+td.colSpan=type==="attendance"?4:3;td.className="empty-cell";td.textContent="No "+(type==="attendance"?"attendance":"CBT score")+" records yet.";
 tr.append(td);tbody.append(tr);
 }else{
 items.forEach((i,index)=>{
@@ -175,7 +179,8 @@ const present=status==="present"||status==="attended";
 const first=document.createElement("td");first.textContent=(i.week_number||i.week?("Week "+(i.week_number||i.week)):(i.day_label||i.class_label||label))+(day?" · "+day:"");
 const second=document.createElement("td");second.textContent=date;
 const third=document.createElement("td");const badge=document.createElement("span");badge.className="attendance-badge"+(present?"":" absent");badge.textContent=present?"✓ Present":(i.status||"Not marked");third.append(badge);
-tr.append(first,second,third);
+const action=document.createElement("td");const remove=document.createElement("button");remove.type="button";remove.className="attendance-delete";remove.textContent="Delete";remove.addEventListener("click",async()=>{if(!selected||!i.class_date)return;if(!confirm("Delete this attendance record for "+(selected.full_name||"this student")+" on "+i.class_date+"?"))return;remove.disabled=true;try{await request("/api/coach/attendance/delete",{method:"POST",body:JSON.stringify({studentId:selected.id,classDate:i.class_date})});await selectStudent(selected)}catch(err){alert(err.message);remove.disabled=false}});action.append(remove);
+tr.append(first,second,third,action);
 }else{
 const raw=Number(i.score),max=Number(i.max_score);
 const valid=Number.isFinite(raw)&&Number.isFinite(max)&&max>0;
@@ -217,10 +222,12 @@ finally{if(btn)btn.disabled=false}
 }
 $("standingsSearch").addEventListener("input",renderStandings);
 $("refreshStandingsButton").addEventListener("click",loadStandings);
-$("loginForm").addEventListener("submit",async e=>{e.preventDefault();const btn=$("loginButton");btn.disabled=true;btn.textContent="Signing in…";$("loginMessage").classList.add("hidden");try{const d=await request("/api/coach/login",{method:"POST",body:JSON.stringify({email:$("email").value.trim().toLowerCase(),password:$("password").value})});if(!d.token||!d.coach)throw Error("Login response was incomplete.");token=d.token;coach=d.coach;$("loginPanel").classList.add("hidden");$("dashboard").classList.remove("hidden");openView("overview");$("coachIdentity").textContent=coach.full_name+" · "+coach.email;await loadStudents()}catch(err){token="";coach=null;message($("loginMessage"),err.message,"error")}finally{btn.disabled=false;btn.textContent="Sign in securely →"}});
+$("loginForm").addEventListener("submit",async e=>{e.preventDefault();const btn=$("loginButton");btn.disabled=true;btn.textContent="Signing in…";$("loginMessage").classList.add("hidden");try{const d=await request("/api/coach/login",{method:"POST",body:JSON.stringify({email:$("email").value.trim().toLowerCase(),password:$("password").value})});if(!d.token||!d.coach)throw Error("Login response was incomplete.");token=d.token;coach=d.coach;saveCoachSession();$("loginPanel").classList.add("hidden");$("dashboard").classList.remove("hidden");openView("overview");$("coachIdentity").textContent=coach.full_name+" · "+coach.email;await loadStudents()}catch(err){clearCoachSession();message($("loginMessage"),err.message,"error")}finally{btn.disabled=false;btn.textContent="Sign in securely →"}});
 $("studentSearch").addEventListener("input",renderStudents);$("refreshButton").addEventListener("click",loadStudents);
 $("noteForm").addEventListener("submit",async e=>{e.preventDefault();if(!selected){message($("noteMessage"),"Choose a student from My Students before saving a follow-up note.","error");openView("students-view");return}const action=$("actionTaken").value.trim();if(!action){message($("noteMessage"),"Please enter the action taken.","error");return}const btn=$("saveNoteButton");btn.disabled=true;try{await request("/api/coach/follow-up-notes",{method:"POST",body:JSON.stringify({studentId:selected.id,attendanceConcern:$("attendanceConcern").value.trim(),academicConcern:$("academicConcern").value.trim(),actionTaken:action,nextFollowUpDate:$("nextDate").value||null})});$("noteForm").reset();$("noteStudent").value=(selected.student_code||"")+" — "+(selected.full_name||"");message($("noteMessage"),"Follow-up note saved successfully.","success")}catch(err){message($("noteMessage"),err.message,"error")}finally{btn.disabled=false}});
-$("logoutButton").addEventListener("click",()=>{token="";coach=null;students=[];selected=null;standings=[];$("dashboard").classList.add("hidden");openView("overview");$("loginPanel").classList.remove("hidden");$("password").value="";$("students").replaceChildren();$("studentSearch").value="";clearSelected();$("studentCount").textContent=$("attendanceCount").textContent=$("scoreCount").textContent="—";message($("loginMessage"),"You have signed out.","success")});
+$("logoutButton").addEventListener("click",()=>{clearCoachSession();students=[];selected=null;standings=[];$("dashboard").classList.add("hidden");openView("overview");$("loginPanel").classList.remove("hidden");$("password").value="";$("students").replaceChildren();$("studentSearch").value="";clearSelected();$("studentCount").textContent=$("attendanceCount").textContent=$("scoreCount").textContent="—";message($("loginMessage"),"You have signed out.","success")});
+async function restoreCoachSession(){let saved=null;try{saved=JSON.parse(localStorage.getItem(COACH_SESSION_KEY)||"null")}catch(_){}if(!saved||!saved.token||!saved.coach)return;token=saved.token;coach=saved.coach;$("loginPanel").classList.add("hidden");$("dashboard").classList.remove("hidden");$("coachIdentity").textContent=coach.full_name+" · "+coach.email;openView("overview");try{await loadStudents()}catch(err){showCoachLogin("Your saved coach session has expired. Please sign in again.")}}
+restoreCoachSession();
 })();
 </script>
 </body></html>
