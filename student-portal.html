@@ -156,7 +156,7 @@ footer{background:#17245B;color:#DDE2FF;font-size:11px;line-height:2}footer stro
       <div class="page-heading"><span class="eyebrow">ASSESSMENT CENTRE</span><h2>Tests & Results</h2><p>Take your JTA CBT examinations and monitor your recorded scores.</p></div>
       <div class="grid">
         <section class="card"><div class="card-heading"><span class="card-symbol">▣</span><div><h3>JTA CBT Examination</h3><p>Weekly computer-based tests</p></div></div><p class="empty">Choose an available examination, answer the questions and submit before the timer expires.</p><a class="button-link full-button" href="cbt.html">Start / Continue CBT Examination</a></section>
-        <section class="card"><div class="card-heading"><span class="card-symbol">★</span><div><h3>My Test Scores</h3><p>Your examination performance</p></div></div><div id="scoresList" class="empty">Loading test scores...</div></section>
+        <section class="card"><div class="card-heading"><span class="card-symbol">★</span><div><h3>My Test Scores</h3><p>Your examination performance</p></div></div><div id="scoresList" class="empty">Loading test scores...</div><button id="refreshScoresButton" class="full-button" type="button">Refresh My Results</button></section>
       </div>
     </section>
     <section id="view-dashboard" class="portal-view hidden">
@@ -188,7 +188,7 @@ function redirectToLogin(){
 }
 async function apiRequest(path,options={}){
   if(!sessionStorage.getItem("jta_student_token")){redirectToLogin();throw new Error("Your session has ended. Please log in again.");}
-  const response=await fetch(API_BASE+path,{...options,headers:{"Content-Type":"application/json","Authorization":"Bearer "+sessionStorage.getItem("jta_student_token"),...(options.headers||{})}});
+  const response=await fetch(API_BASE+path,{...options,cache:"no-store",headers:{"Content-Type":"application/json","Authorization":"Bearer "+sessionStorage.getItem("jta_student_token"),"Cache-Control":"no-cache",...(options.headers||{})}});
   const data=await response.json().catch(()=>({}));
   if(response.status===401||response.status===403){redirectToLogin();throw new Error("Your session has expired. Please log in again.");}
   if(!response.ok)throw new Error(data.message||data.error||"The request could not be completed.");
@@ -456,6 +456,13 @@ document.getElementById("attendanceForm").addEventListener("submit",async functi
   finally{attendanceButton.disabled=false;attendanceButton.textContent="Mark Attendance"}
 });
 refreshButton.addEventListener("click",loadPortal);
+const refreshScoresButton=document.getElementById("refreshScoresButton");
+if(refreshScoresButton)refreshScoresButton.addEventListener("click",async()=>{
+  refreshScoresButton.disabled=true;
+  refreshScoresButton.textContent="Refreshing...";
+  try{await loadPortal();showStatus("Your examination results have been refreshed from JTA.",true);}
+  finally{refreshScoresButton.disabled=false;refreshScoresButton.textContent="Refresh My Results";}
+});
 const today=new Date();
 document.getElementById("classDate").value=[today.getFullYear(),String(today.getMonth()+1).padStart(2,"0"),String(today.getDate()).padStart(2,"0")].join("-");
 
