@@ -111,8 +111,24 @@
 const API="https://jta-student-backend.justifiedtutorsacademy.workers.dev", $=id=>document.getElementById(id);
 const COACH_SESSION_KEY="jta_coach_portal_session_v1";
 let token="",coach=null,students=[],selected=null;
-function saveCoachSession(){try{localStorage.setItem(COACH_SESSION_KEY,JSON.stringify({token,coach,savedAt:Date.now()}))}catch(_){}}
-function clearCoachSession(){token="";coach=null;try{localStorage.removeItem(COACH_SESSION_KEY)}catch(_){}}
+function saveCoachSession(){
+  const payload=JSON.stringify({token,coach,savedAt:Date.now()});
+  // localStorage survives reloads and browser restarts; sessionStorage is a fallback
+  // for browsers where persistent storage is restricted.
+  try{localStorage.setItem(COACH_SESSION_KEY,payload)}catch(_){}
+  try{sessionStorage.setItem(COACH_SESSION_KEY,payload)}catch(_){}
+}
+function readCoachSession(){
+  for(const store of [localStorage,sessionStorage]){
+    try{const value=JSON.parse(store.getItem(COACH_SESSION_KEY)||"null");if(value&&value.token&&value.coach)return value}catch(_){}
+  }
+  return null;
+}
+function clearCoachSession(){
+  token="";coach=null;
+  try{localStorage.removeItem(COACH_SESSION_KEY)}catch(_){}
+  try{sessionStorage.removeItem(COACH_SESSION_KEY)}catch(_){}
+}
 function showCoachLogin(note){clearCoachSession();students=[];selected=null;standings=[];$("dashboard").classList.add("hidden");$("loginPanel").classList.remove("hidden");$("password").value="";$("students").replaceChildren();clearSelected();if(note)message($("loginMessage"),note,"error")}
 function message(el,text,kind=""){el.textContent=text;el.className="status"+(kind?" "+kind:"")}
 function openView(id){document.querySelectorAll(".coach-view").forEach(v=>v.classList.toggle("hidden",v.id!==id));document.querySelectorAll(".nav-item").forEach(b=>b.classList.toggle("active",b.dataset.view===id));if(id==="students-view")renderStudents();if(id==="standings-view")loadStandings();window.scrollTo({top:0,behavior:"smooth"})}
@@ -226,7 +242,21 @@ $("loginForm").addEventListener("submit",async e=>{e.preventDefault();const btn=
 $("studentSearch").addEventListener("input",renderStudents);$("refreshButton").addEventListener("click",loadStudents);
 $("noteForm").addEventListener("submit",async e=>{e.preventDefault();if(!selected){message($("noteMessage"),"Choose a student from My Students before saving a follow-up note.","error");openView("students-view");return}const action=$("actionTaken").value.trim();if(!action){message($("noteMessage"),"Please enter the action taken.","error");return}const btn=$("saveNoteButton");btn.disabled=true;try{await request("/api/coach/follow-up-notes",{method:"POST",body:JSON.stringify({studentId:selected.id,attendanceConcern:$("attendanceConcern").value.trim(),academicConcern:$("academicConcern").value.trim(),actionTaken:action,nextFollowUpDate:$("nextDate").value||null})});$("noteForm").reset();$("noteStudent").value=(selected.student_code||"")+" — "+(selected.full_name||"");message($("noteMessage"),"Follow-up note saved successfully.","success")}catch(err){message($("noteMessage"),err.message,"error")}finally{btn.disabled=false}});
 $("logoutButton").addEventListener("click",()=>{clearCoachSession();students=[];selected=null;standings=[];$("dashboard").classList.add("hidden");openView("overview");$("loginPanel").classList.remove("hidden");$("password").value="";$("students").replaceChildren();$("studentSearch").value="";clearSelected();$("studentCount").textContent=$("attendanceCount").textContent=$("scoreCount").textContent="—";message($("loginMessage"),"You have signed out.","success")});
-async function restoreCoachSession(){let saved=null;try{saved=JSON.parse(localStorage.getItem(COACH_SESSION_KEY)||"null")}catch(_){}if(!saved||!saved.token||!saved.coach)return;token=saved.token;coach=saved.coach;$("loginPanel").classList.add("hidden");$("dashboard").classList.remove("hidden");$("coachIdentity").textContent=coach.full_name+" · "+coach.email;openView("overview");try{await loadStudents()}catch(err){showCoachLogin("Your saved coach session has expired. Please sign in again.")}}
+async function restoreCoachSession(){
+  const saved=readCoachSession();
+  if(!saved)return;
+  token=saved.token;coach=saved.coach;
+  $("loginPanel").classList.add("hidden");$("dashboard").classList.remove("hidden");
+  $("coachIdentity").textContent=(coach.full_name||"Coach")+" · "+(coach.email||"");
+  openView("overview");
+  try{await loadStudents()}
+  catch(err){
+    // Only an authentication rejection should sign the coach out. A temporary
+    // network/server failure must never erase a valid saved session.
+    if(err&&[401,403].includes(err.status))showCoachLogin("Your saved coach session has expired. Please sign in again.");
+    else message($("studentsMessage"),"Your session is still saved, but the portal could not verify it right now. Check your connection and tap Refresh.","error");
+  }
+}
 restoreCoachSession();
 })();
 </script>
