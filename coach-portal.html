@@ -111,23 +111,45 @@
 const API="https://jta-student-backend.justifiedtutorsacademy.workers.dev", $=id=>document.getElementById(id);
 const COACH_SESSION_KEY="jta_coach_portal_session_v1";
 let token="",coach=null,students=[],selected=null;
+function getCoachStorage(name){
+  // Accessing window.localStorage/sessionStorage can itself throw in restricted
+  // browser contexts, so the property lookup must also be inside try/catch.
+  try{return window[name]||null}catch(_){return null}
+}
 function saveCoachSession(){
+  if(!token||!coach)return false;
   const payload=JSON.stringify({token,coach,savedAt:Date.now()});
-  // localStorage survives reloads and browser restarts; sessionStorage is a fallback
-  // for browsers where persistent storage is restricted.
-  try{localStorage.setItem(COACH_SESSION_KEY,payload)}catch(_){}
-  try{sessionStorage.setItem(COACH_SESSION_KEY,payload)}catch(_){}
+  let saved=false;
+  for(const name of ["localStorage","sessionStorage"]){
+    const store=getCoachStorage(name);
+    if(!store)continue;
+    try{
+      store.setItem(COACH_SESSION_KEY,payload);
+      const check=store.getItem(COACH_SESSION_KEY);
+      if(check===payload)saved=true;
+    }catch(_){}
+  }
+  return saved;
 }
 function readCoachSession(){
-  for(const store of [localStorage,sessionStorage]){
-    try{const value=JSON.parse(store.getItem(COACH_SESSION_KEY)||"null");if(value&&value.token&&value.coach)return value}catch(_){}
+  for(const name of ["localStorage","sessionStorage"]){
+    const store=getCoachStorage(name);
+    if(!store)continue;
+    try{
+      const raw=store.getItem(COACH_SESSION_KEY);
+      if(!raw)continue;
+      const value=JSON.parse(raw);
+      if(value&&typeof value.token==="string"&&value.token&&value.coach&&typeof value.coach==="object")return value;
+    }catch(_){}
   }
   return null;
 }
 function clearCoachSession(){
   token="";coach=null;
-  try{localStorage.removeItem(COACH_SESSION_KEY)}catch(_){}
-  try{sessionStorage.removeItem(COACH_SESSION_KEY)}catch(_){}
+  for(const name of ["localStorage","sessionStorage"]){
+    const store=getCoachStorage(name);
+    if(store){try{store.removeItem(COACH_SESSION_KEY)}catch(_){}}
+  }
 }
 function showCoachLogin(note){clearCoachSession();students=[];selected=null;standings=[];$("dashboard").classList.add("hidden");$("loginPanel").classList.remove("hidden");$("password").value="";$("students").replaceChildren();clearSelected();if(note)message($("loginMessage"),note,"error")}
 function message(el,text,kind=""){el.textContent=text;el.className="status"+(kind?" "+kind:"")}
@@ -238,7 +260,7 @@ finally{if(btn)btn.disabled=false}
 }
 $("standingsSearch").addEventListener("input",renderStandings);
 $("refreshStandingsButton").addEventListener("click",loadStandings);
-$("loginForm").addEventListener("submit",async e=>{e.preventDefault();const btn=$("loginButton");btn.disabled=true;btn.textContent="Signing in…";$("loginMessage").classList.add("hidden");try{const d=await request("/api/coach/login",{method:"POST",body:JSON.stringify({email:$("email").value.trim().toLowerCase(),password:$("password").value})});if(!d.token||!d.coach)throw Error("Login response was incomplete.");token=d.token;coach=d.coach;saveCoachSession();$("loginPanel").classList.add("hidden");$("dashboard").classList.remove("hidden");openView("overview");$("coachIdentity").textContent=coach.full_name+" · "+coach.email;await loadStudents()}catch(err){clearCoachSession();message($("loginMessage"),err.message,"error")}finally{btn.disabled=false;btn.textContent="Sign in securely →"}});
+$("loginForm").addEventListener("submit",async e=>{e.preventDefault();const btn=$("loginButton");btn.disabled=true;btn.textContent="Signing in…";$("loginMessage").classList.add("hidden");try{const d=await request("/api/coach/login",{method:"POST",body:JSON.stringify({email:$("email").value.trim().toLowerCase(),password:$("password").value})});if(!d.token||!d.coach)throw Error("Login response was incomplete.");token=d.token;coach=d.coach;const sessionSaved=saveCoachSession();$("loginPanel").classList.add("hidden");$("dashboard").classList.remove("hidden");openView("overview");$("coachIdentity").textContent=coach.full_name+" · "+coach.email;await loadStudents();if(!sessionSaved)message($("studentsMessage"),"You are signed in, but this browser did not allow the session to be saved. Reload may require signing in again. Check your browser site-storage settings.","error")}catch(err){clearCoachSession();message($("loginMessage"),err.message,"error")}finally{btn.disabled=false;btn.textContent="Sign in securely →"}});
 $("studentSearch").addEventListener("input",renderStudents);$("refreshButton").addEventListener("click",loadStudents);
 $("noteForm").addEventListener("submit",async e=>{e.preventDefault();if(!selected){message($("noteMessage"),"Choose a student from My Students before saving a follow-up note.","error");openView("students-view");return}const action=$("actionTaken").value.trim();if(!action){message($("noteMessage"),"Please enter the action taken.","error");return}const btn=$("saveNoteButton");btn.disabled=true;try{await request("/api/coach/follow-up-notes",{method:"POST",body:JSON.stringify({studentId:selected.id,attendanceConcern:$("attendanceConcern").value.trim(),academicConcern:$("academicConcern").value.trim(),actionTaken:action,nextFollowUpDate:$("nextDate").value||null})});$("noteForm").reset();$("noteStudent").value=(selected.student_code||"")+" — "+(selected.full_name||"");message($("noteMessage"),"Follow-up note saved successfully.","success")}catch(err){message($("noteMessage"),err.message,"error")}finally{btn.disabled=false}});
 $("logoutButton").addEventListener("click",()=>{clearCoachSession();students=[];selected=null;standings=[];$("dashboard").classList.add("hidden");openView("overview");$("loginPanel").classList.remove("hidden");$("password").value="";$("students").replaceChildren();$("studentSearch").value="";clearSelected();$("studentCount").textContent=$("attendanceCount").textContent=$("scoreCount").textContent="—";message($("loginMessage"),"You have signed out.","success")});
