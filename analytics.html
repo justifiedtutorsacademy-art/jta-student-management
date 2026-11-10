@@ -1,4 +1,4 @@
-<html><head><style>
+<html><head><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><style>
 :root{--jta-blue:#1557d5;--jta-blue-deep:#073caa;--jta-purple:#8a4de8;--jta-violet:#b04de6;--jta-navy:#101b45;--canvas:#f2f6ff;--ink:#17213b;--muted:#718096;--line:#e1e8f5;--orange:#ff9824;--green:#075b48}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#f2f6ff 0%,#f7f4ff 55%,#edf3ff 100%);font:14px/1.55 Inter,system-ui,Arial,sans-serif;color:var(--ink)}button,input,select{font:inherit}button{cursor:pointer;border:0;border-radius:10px;padding:10px 14px;font-weight:750;background:linear-gradient(105deg,var(--jta-blue),var(--jta-purple));color:#fff}
 .app-shell{min-height:100vh;display:grid;grid-template-columns:250px minmax(0,1fr)}.sidebar{background:linear-gradient(180deg,#091c55,#111b48 60%,#25165b);color:#eef2ff;padding:22px 14px;display:flex;flex-direction:column;gap:22px;position:sticky;top:0;height:100vh;overflow:auto}
@@ -20,7 +20,61 @@
 @media(max-width:560px){.overview-filter{align-items:stretch}.overview-periods{width:100%;justify-content:space-between}.filter-caption{display:none}.overview-period{flex:1;padding:8px 5px;font-size:12px}.overview-filter select{max-width:none;width:100%}.sync-note{justify-content:flex-end}}
 .weekly-table-heading{display:flex;align-items:end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:14px 0}.weekly-table-heading h3{margin:0}.weekly-table-heading input{max-width:310px}.overview-period.active{box-shadow:0 4px 10px #075b4826}</style><style>
 @media print{body{background:#fff}.sidebar,.topbar,#adminConnection,.mobile-scrim,.overview-export button,.week-controls button,.standings-tools,.selection-bar,.danger-btn{display:none!important}.app-shell{display:block}.content{max-width:none;padding:0}.view{display:none!important}.view.active{display:block!important}.panel,.dark-overview{break-inside:avoid;box-shadow:none}.dark-overview,#view-leaderboard-view .panel:first-of-type{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
-</style></head><body>
+</style>
+<style>
+/* Phone-first layout, including browsers forced into desktop-site viewport width */
+#view-overview>.page-heading,
+#view-overview>.overview-export,
+#view-overview>.overview-filter,
+#view-overview>#jtaStandingsPanel,
+#view-overview>.grid{display:none!important}
+#view-overview{padding:0!important}
+#view-overview .dark-overview{margin:0!important;width:100%;border-radius:18px}
+@media(max-width:1100px){
+  html,body{width:100%;min-width:0;overflow-x:hidden}
+  .app-shell{display:block!important;min-height:100vh}
+  .main-area{width:100%;min-width:0}
+  .content{width:100%;max-width:100%;padding:12px!important;margin:0!important}
+  .topbar{padding:12px!important}
+  .topbar-inner{gap:10px!important}
+  .top-title h1{font-size:18px!important}
+  .top-title p{font-size:11px!important}
+  .menu-toggle{display:inline-flex!important;align-items:center;justify-content:center;min-width:42px;min-height:42px}
+  .sidebar{position:fixed!important;z-index:100;left:0;top:0;bottom:0;width:min(82vw,290px)!important;height:100dvh!important;max-height:100dvh;overflow-y:auto;transform:translateX(-110%);transition:transform .22s ease;box-shadow:15px 0 35px #0004}
+  .sidebar.mobile-open{transform:translateX(0)!important}
+  .mobile-scrim.show{display:block!important;position:fixed;inset:0;background:#080b20a8;z-index:99}
+  body.sidebar-collapsed .sidebar{transform:translateX(-110%)}
+  .dark-overview{padding:16px 13px!important;border-radius:16px!important}
+  .dark-overview .page-heading{margin:0 0 12px!important}
+  .dark-overview .page-heading h2{font-size:21px!important;line-height:1.2}
+  .dark-overview .page-heading p{font-size:11px!important}
+  #metrics{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}
+  #metrics .metric{padding:12px 10px!important;min-width:0;border-radius:12px!important}
+  #metrics .metric .label{font-size:9px!important;line-height:1.3;letter-spacing:.6px}
+  #metrics .metric .value{font-size:clamp(20px,6vw,27px)!important;line-height:1.12;overflow-wrap:anywhere}
+  .panel{padding:13px!important}
+  .standings-head{align-items:flex-start}
+  .standings-head h3{font-size:17px}
+  .standings-tools{display:flex;flex-direction:column;align-items:stretch}
+  .standings-tools input{width:100%;min-width:0}
+  .period-tools{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+  .period-btn{padding:8px 4px;font-size:11px}
+  .table-wrap{width:100%;max-width:100%;overflow-x:auto!important;-webkit-overflow-scrolling:touch}
+  table{min-width:650px}
+  .standings-table{min-width:700px}
+  .grid{grid-template-columns:1fr!important}
+}
+@media(max-width:480px){
+  .content{padding:9px!important}
+  .top-title h1{font-size:16px!important}
+  .top-title p{font-size:10px!important}
+  .dark-overview .page-heading h2{font-size:19px!important}
+  #metrics .metric .value{font-size:21px!important}
+  .selection-bar{align-items:flex-start}
+  .standings-podium{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+</style>
+</head><body>
 <section class="panel" id="adminConnection"><h2 class="title">Secure dashboard access</h2><p class="muted small">Enter your existing JTA Admin Key. It stays in this page's memory and is sent to your protected Cloudflare Worker. Never share the key.</p><div class="row"><div class="field"><label for="key">Admin Key</label><input autocomplete="current-password" id="key" placeholder="Enter Admin Key" type="password"/></div><button id="load">Load / Refresh Analytics</button><button class="secondary" id="clear">Clear key</button></div><div aria-live="polite" class="status" id="status" role="status">Enter your Admin Key and load the dashboard.</div></section>
 <div class="hidden" id="dash"><div class="app-shell">
 <aside class="sidebar" id="sidebar"><div class="brand"><span class="brand-mark">▰</span><span><strong>JTA ANALYTICS</strong><small>ACADEMY INSIGHTS</small></span></div><div class="nav-label">WORKSPACE</div><nav class="nav-list">
@@ -31,22 +85,28 @@
 <button class="nav-link" data-view="departments-view"><span class="ico">▥</span><span class="nav-text">Department Reports</span></button>
 <button class="nav-link" data-view="coaches-view"><span class="ico">♧</span><span class="nav-text">Coach Statistics</span></button>
 <button class="nav-link" data-view="alerts-view"><span class="ico">♧</span><span class="nav-text">Follow-up Alerts</span></button>
-<button class="nav-link" data-view="reports-view"><span class="ico">⇩</span><span class="nav-text">Download Reports</span></button></nav><div class="sidebar-bottom">300+ IN JAMB IS OUR CALLING<br/>JTA Analytics Workspace</div></aside>
+<button class="nav-link" data-view="reports-view"><span class="ico">⇩</span><span class="nav-text">Download Reports</span></button>
+<button class="nav-link" data-view="results-deletion"><span class="ico">⌫</span><span class="nav-text">Results Deletion</span></button></nav><div class="sidebar-bottom">300+ IN JAMB IS OUR CALLING<br/>JTA Analytics Workspace</div></aside>
 <div class="mobile-scrim" id="scrim"></div><div class="main-area"><header class="topbar"><div class="topbar-inner"><button class="menu-toggle" id="menuToggle">☰</button><div class="top-title"><h1>Justified Tutor's Academy</h1><p>Student Analytics, Weekly Reports &amp; Follow-up Alerts</p></div></div></header><main class="content">
 <section class="view active" id="view-overview">
 <div class="page-heading"><div class="eyebrow">JUSTIFIED TUTORS ACADEMY</div><h2>Students analytics &amp; performance</h2><p>Real-time student standings, weekly scores and academy performance insights.</p></div>
 <div class="overview-export"><button type="button" id="exportOverview">⇩ &nbsp; Export PDF report</button></div>
 <div class="overview-filter panel"><div class="overview-periods"><span class="filter-caption">◉ &nbsp; Last 30 days</span><button type="button" class="overview-period active" data-overview-period="30">30 days</button><button type="button" class="overview-period" data-overview-period="7">7 days</button><button type="button" class="overview-period" data-overview-period="90">90 days</button></div><select id="overviewExamFilter" aria-label="Filter by examination"><option value="all">All examinations</option></select><div class="sync-note"><span></span> LIVE DATA FROM JTA</div></div>
-<div class="dark-overview"><div class="page-heading"><div class="eyebrow">JTA PERFORMANCE OVERVIEW</div><h2>Academy at a glance</h2><p>Track submissions, completion and student achievement.</p></div><section class="metrics" id="metrics"></section></div><section class="panel" id="jtaStandingsPanel">
+<div class="dark-overview"><div class="page-heading"><div class="eyebrow">JTA PERFORMANCE OVERVIEW</div><h2>Academy at a glance</h2><p>Track submissions, completion and student achievement.</p></div><section class="metrics" id="metrics"></section></div></section><section class="panel"><h3>Students needing attention</h3><div id="alerts"></div></section></div></section>
+<section class="view" id="view-results-deletion">
+<div class="page-heading"><div class="eyebrow">ADMIN TOOLS</div><h2>Results Deletion</h2><p>Search, review and delete student-visible examination results.</p></div>
+<div class="overview-filter panel"><div class="overview-periods"><span class="filter-caption">Filter period</span><button type="button" class="overview-period active" data-overview-period="30">30 days</button><button type="button" class="overview-period" data-overview-period="7">7 days</button><button type="button" class="overview-period" data-overview-period="90">90 days</button></div><select id="overviewExamFilter" aria-label="Filter by examination"><option value="all">All examinations</option></select></div>
+<section class="panel" id="jtaStandingsPanel">
  <div class="standings-head"><div><div class="eyebrow">JTA HONOUR ROLL</div><h3>Student analytics &amp; performance</h3><p class="muted small">Uses the same saved score records displayed in students’ My Test Scores. Rankings are normalised to 400.</p></div><button id="deleteSelectedResults" class="danger-btn" type="button" disabled>Delete selected results</button></div>
  <div class="standings-tools"><input id="standingsSearch" type="search" placeholder="Search student name or JTA code…" aria-label="Search student name or JTA code"><div class="period-tools"><button type="button" class="period-btn active" data-period="30">30 days</button><button type="button" class="period-btn" data-period="7">7 days</button><button type="button" class="period-btn" data-period="90">90 days</button><button type="button" class="period-btn" data-period="all">All time</button></div></div>
  <div id="standingsStatus" class="muted small" aria-live="polite">Loading submitted examination results…</div><div id="standingsPodium" class="standings-podium"></div>
  <h3>Comprehensive standings</h3><div class="table-wrap" id="standingsRankingTable"></div>
- <h3 style="margin-top:18px">Student-visible results · select records to delete</h3>
+ <h3 style="margin-top:18px">Student results · select records to delete</h3>
  <div class="selection-bar"><label><input type="checkbox" id="selectAllResults"> Select all visible results</label><span id="selectedResultsCount">0 selected</span></div>
- <div class="table-wrap" id="standingsTable"></div><p class="muted small">Deletion removes only selected submitted attempts and their answers. Student accounts remain. Remaining scores are recalculated.</p>
-</section><div class="grid"><section class="panel"><h3>Weekly performance</h3><div class="table-wrap" id="weekly"></div></section><section class="panel"><h3>Students needing attention</h3><div id="alerts"></div></section></div></section>
-<section class="view" id="view-performance"><div class="page-heading"><div class="eyebrow">ACADEMY TRENDS</div><h2>Performance Analytics</h2><p>Weekly examination and attendance trends.</p></div><section class="panel"><h3>Weekly performance history</h3><div class="table-wrap" id="weeklyPerformance"></div></section></section>
+ <div class="table-wrap" id="standingsTable"></div><p class="muted small">Deletion removes selected student-visible score records. Matching CBT attempts and answers are removed where available. Student accounts remain.</p>
+</section>
+</section>
+<section class="view" id="view-performance"><div class="page-heading"><div class="eyebrow">ACADEMY TRENDS</div><h2>Performance Analytics</h2><p>Weekly examination and attendance trends.</p></div><section class="panel"><h3>Weekly performance history</h3><div class="table-wrap" id="weeklyPerformance"></div></section><div class="grid"><section class="panel"><h3>Weekly performance</h3><div class="table-wrap" id="weekly"></div></section>
 <section class="view" id="view-leaderboard-view"><div class="page-heading"><div class="eyebrow">TOP PERFORMANCE</div><h2>Weekly Leaderboard</h2><p>Rankings from recorded JTA examination results.</p></div><section class="panel">
 <div class="weekly-board-head"><div><div class="eyebrow" style="color:#e4caff">JTA WEEKLY HONOUR ROLL</div><h3>Current distinguished students</h3><p class="muted small" id="weeklyBoardMeta">Actual CBT results for the selected Monday–Sunday week, averaged and normalised to 400.</p></div><div class="week-controls"><label for="adminWeekStart">Week starting (Monday)</label><input id="adminWeekStart" type="date"><button id="adminWeekLoad" type="button">Load week</button></div></div>
 <div id="adminWeeklyStatus" class="status">Loading weekly leaderboard…</div><div id="adminPodium" class="podium"></div>
@@ -162,7 +222,7 @@ document.querySelectorAll("[data-view]").forEach(button=>button.addEventListener
  document.getElementById("scrim").classList.remove("show");
 }));
 document.getElementById("menuToggle").addEventListener("click",()=>{
- if(window.innerWidth<=850){document.getElementById("sidebar").classList.toggle("mobile-open");document.getElementById("scrim").classList.toggle("show");}
+ if(window.innerWidth<=1100){document.getElementById("sidebar").classList.toggle("mobile-open");document.getElementById("scrim").classList.toggle("show");}
  else document.body.classList.toggle("sidebar-collapsed");
 });
 document.getElementById("scrim").addEventListener("click",()=>{document.getElementById("sidebar").classList.remove("mobile-open");document.getElementById("scrim").classList.remove("show")});
