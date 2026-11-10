@@ -34,17 +34,16 @@
 @media(max-width:720px){.records-grid{grid-template-columns:1fr}.records-panel{padding:12px}.records-table{font-size:12px}}
 
 
-.coach-standings{width:100%;border-collapse:collapse;font-size:13px;min-width:650px}
-.coach-standings th,.coach-standings td{padding:11px 10px;text-align:left;border-bottom:1px solid #e4e9f3;vertical-align:middle}
-.coach-standings th{background:#f1f4fb;color:#52617d;font-size:10px;text-transform:uppercase;letter-spacing:.07em}
-.coach-standings tr:hover{background:#f8f9ff}
-.coach-rank{display:inline-grid;place-items:center;min-width:28px;height:28px;border-radius:9px;background:#eaf0ff;color:#2056bd;font-weight:900}
-.coach-rank.first{background:#ff9824;color:#fff}
-.coach-score{display:inline-block;min-width:88px;text-align:center;padding:7px 9px;border-radius:8px;background:linear-gradient(105deg,#1557d5,#8248d5);color:#fff;font-weight:900;white-space:nowrap}
-.coach-code{display:block;color:#75819a;font-size:11px;margin-top:3px}
-@media(max-width:700px){.coach-standings{font-size:12px;min-width:620px}.coach-standings th,.coach-standings td{padding:9px 8px}}
+.student-list-wrap{margin-top:14px;width:100%;overflow-x:auto;border:1px solid var(--border,#e5e7eb);border-radius:13px;background:#fff}
+.student-list-table{width:100%;border-collapse:collapse;min-width:390px;font-size:13px}
+.student-list-table th,.student-list-table td{padding:13px 12px;text-align:left;border-bottom:1px solid #eee6f5;vertical-align:middle}
+.student-list-table th{background:#f5f7fc;color:#52627a;font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+.student-list-table tr:last-child td{border-bottom:0}
+.regno-button{border:0;background:#eaf0fb;color:var(--navy,#17345b);font-weight:850;border-radius:9px;padding:9px 11px;text-align:left;white-space:nowrap;cursor:pointer}
+.regno-button:focus-visible{outline:3px solid var(--gold,#d7ae55);outline-offset:2px}
+.student-secondary{display:block;color:var(--muted,#6b7280);font-size:11px;margin-top:3px}
 
-</style>
+.standings-table{width:100%;border-collapse:collapse;min-width:720px;font-size:13px}.standings-table th,.standings-table td{padding:12px 13px;border-bottom:1px solid #e8e3f0;text-align:left;white-space:nowrap}.standings-table th{background:#142b4a;color:#fff;font-size:11px;text-transform:uppercase;letter-spacing:.04em}.standings-table tbody tr:nth-child(even){background:#f7f8fc}.standings-table .rank-cell{font-weight:850;color:#2459a9}.standings-table .score-cell{font-weight:850;color:#142b4a}.standings-empty{padding:18px;color:#5f6480;text-align:center}@media(max-width:640px){.standings-table{font-size:12px}.standings-table th,.standings-table td{padding:10px 9px}}</style>
 </head>
 <body>
 <header class="top"><div class="wrap brand"><div class="logo">JTA</div><div><h1>Justified Tutor's Academy</h1><p>Coach Portal · Supporting every student's progress</p></div></div></header>
@@ -68,6 +67,7 @@
 <div class="quick-grid">
 <button type="button" class="quick-card" data-go="students-view"><span>♙</span><strong>My Students</strong><small>View your assigned students</small></button>
 <button type="button" class="quick-card" data-go="records-view"><span>▤</span><strong>Student Records</strong><small>Review attendance and scores</small></button>
+<button type="button" class="quick-card" data-go="standings-view"><span>🏆</span><strong>Comprehensive Standings</strong><small>Rank your assigned students by performance</small></button>
 <button type="button" class="quick-card" data-go="followup-view"><span>✎</span><strong>Follow-up Notes</strong><small>Record student support actions</small></button>
 </div>
 </section>
@@ -86,11 +86,11 @@
 </section>
 <section id="standings-view" class="coach-view hidden">
 <section class="card">
- <div class="head"><div><p class="eyebrow">JTA HONOUR ROLL</p><h2>Comprehensive standings</h2><p class="sub">Rankings for students currently assigned to your coach account only. Scores are normalised to 400.</p></div><button class="btn soft" id="refreshStandings" type="button">↻ Refresh</button></div>
- <div class="toolbar"><div><label for="standingsSearch">Search assigned students</label><input id="standingsSearch" type="search" placeholder="Search name or JTA registration number"></div></div>
- <div id="standingsMessage" class="status" role="status" aria-live="polite">Open this section to load your assigned students' standings.</div>
- <div class="records-table-wrap" id="coachStandingsTable"></div>
- <p class="note">This is a read-only view. Coaches cannot edit or delete examination results.</p>
+<div class="head"><div><p class="eyebrow">ACADEMIC PERFORMANCE</p><h2>Comprehensive Standings</h2><p class="sub">All-time performance ranking for students assigned to your coach account only.</p></div><button class="btn soft" id="refreshStandingsButton" type="button">↻ Refresh</button></div>
+<div class="status" id="standingsMessage" role="status" aria-live="polite">Load standings after signing in.</div>
+<div class="toolbar"><div><label for="standingsSearch">Search standings</label><input id="standingsSearch" type="search" placeholder="Search name, JTA code or department"></div></div>
+<div id="standingsTable" class="records-table-wrap"></div>
+<p class="note">Average score is calculated from recorded tests converted to the JAMB /400 scale. Total points is the sum of those converted scores. Students without recorded scores remain listed.</p>
 </section>
 </section>
 <section id="followup-view" class="coach-view hidden">
@@ -111,46 +111,43 @@
 const API="https://jta-student-backend.justifiedtutorsacademy.workers.dev", $=id=>document.getElementById(id);
 let token="",coach=null,students=[],selected=null;
 function message(el,text,kind=""){el.textContent=text;el.className="status"+(kind?" "+kind:"")}
-function openView(id){document.querySelectorAll(".coach-view").forEach(v=>v.classList.toggle("hidden",v.id!==id));document.querySelectorAll(".nav-item").forEach(b=>b.classList.toggle("active",b.dataset.view===id));if(id==="students-view")renderStudents();if(id==="standings-view")loadCoachStandings();window.scrollTo({top:0,behavior:"smooth"})}
+function openView(id){document.querySelectorAll(".coach-view").forEach(v=>v.classList.toggle("hidden",v.id!==id));document.querySelectorAll(".nav-item").forEach(b=>b.classList.toggle("active",b.dataset.view===id));if(id==="students-view")renderStudents();if(id==="standings-view")loadStandings();window.scrollTo({top:0,behavior:"smooth"})}
 document.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",()=>openView(b.dataset.view)));
 document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>openView(b.dataset.go)));
 async function request(path,options={}){const headers={"Content-Type":"application/json",...(options.headers||{})};if(token)headers.Authorization="Bearer "+token;const res=await fetch(API+path,{...options,headers});let data={};try{data=await res.json()}catch(_){}if(!res.ok)throw Error(data.error||"Request failed ("+res.status+").");return data}
 function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function renderStudents(){const root=$("students");root.replaceChildren();const q=$("studentSearch").value.trim().toLowerCase();const matches=students.filter(s=>[s.full_name,s.student_code,s.email,s.department].some(v=>String(v||"").toLowerCase().includes(q)));if(!matches.length){const e=document.createElement("div");e.className="empty";e.textContent=students.length?"No students match your search.":"No students are assigned to this coach account yet.";root.append(e);return}matches.forEach(s=>{const card=document.createElement("article");card.className="student";card.innerHTML=`<h3>${esc(s.full_name||"Unnamed student")}</h3><p><strong>JTA code:</strong> ${esc(s.student_code||"Not available")}</p><p><strong>Email:</strong> ${esc(s.email||"Not available")}</p><p><strong>Department:</strong> ${esc(s.department||"Not available")}</p><div class="actions"><button class="btn primary" type="button">View records</button></div>`;card.querySelector("button").addEventListener("click",()=>selectStudent(s));root.append(card)})}
+function renderStudents(){
+const root=$("students");root.replaceChildren();
+const q=$("studentSearch").value.trim().toLowerCase();
+const matches=students
+.filter(s=>[s.full_name,s.student_code,s.email,s.department].some(v=>String(v||"").toLowerCase().includes(q)))
+.sort((a,b)=>String(a.student_code||"").localeCompare(String(b.student_code||""),undefined,{numeric:true,sensitivity:"base"}));
+if(!matches.length){
+const e=document.createElement("div");e.className="empty";
+e.textContent=students.length?"No students match your search.":"No students are assigned to this coach account yet.";
+root.append(e);return;
+}
+const wrap=document.createElement("div");wrap.className="student-list-wrap";
+const table=document.createElement("table");table.className="student-list-table";
+const thead=document.createElement("thead"),tbody=document.createElement("tbody");
+thead.innerHTML="<tr><th>S/N</th><th>JTA registration number</th><th>Student</th><th>Department</th></tr>";
+matches.forEach((s,index)=>{
+const tr=document.createElement("tr");
+const serial=document.createElement("td");serial.textContent=String(index+1);
+const regCell=document.createElement("td");
+const regButton=document.createElement("button");regButton.type="button";regButton.className="regno-button";
+regButton.textContent=s.student_code||"REG NO. UNAVAILABLE";
+regButton.setAttribute("aria-label","View records for "+(s.student_code||s.full_name||"student"));
+regButton.addEventListener("click",()=>selectStudent(s));
+regCell.append(regButton);
+const name=document.createElement("td");name.textContent=s.full_name||"Unnamed student";
+const email=document.createElement("span");email.className="student-secondary";email.textContent=s.email||"";name.append(email);
+const dept=document.createElement("td");dept.textContent=s.department||"—";
+tr.append(serial,regCell,name,dept);tbody.append(tr);
+});
+table.append(thead,tbody);wrap.append(table);root.append(wrap);
+}
 async function loadStudents(){$("refreshButton").disabled=true;try{const d=await request("/api/coach/students");students=Array.isArray(d.students)?d.students:[];$("studentCount").textContent=students.length;$("attendanceCount").textContent=d.attendanceCount??"—";$("scoreCount").textContent=d.scoreCount??"—";message($("studentsMessage"),students.length+" assigned student(s) loaded.","success");renderStudents();if(selected&&!students.some(s=>s.id===selected.id))clearSelected()}catch(e){students=[];renderStudents();$("studentCount").textContent=$("attendanceCount").textContent=$("scoreCount").textContent="—";message($("studentsMessage"),e.message,"error")}finally{$("refreshButton").disabled=false}}
-let coachStandings=[];
-function renderCoachStandings(){
- const q=$("standingsSearch").value.trim().toLowerCase();
- const rows=coachStandings.filter(r=>[r.full_name,r.student_code,r.department].some(v=>String(v||"").toLowerCase().includes(q)));
- const root=$("coachStandingsTable");root.replaceChildren();
- if(!rows.length){const empty=document.createElement("div");empty.className="empty";empty.textContent=coachStandings.length?"No assigned students match your search.":"No results are available for your currently assigned students.";root.append(empty);return}
- const wrap=document.createElement("div");wrap.className="records-table-wrap";
- const table=document.createElement("table");table.className="coach-standings";
- table.innerHTML="<thead><tr><th>Rank</th><th>Name / JTA reg no.</th><th>Department</th><th>Average score / 400</th><th>Exams taken</th><th>Total points</th></tr></thead>";
- const body=document.createElement("tbody");
- rows.forEach(r=>{
-  const tr=document.createElement("tr");
-  const rank=document.createElement("td");const badge=document.createElement("span");badge.className="coach-rank"+(Number(r.rank)===1?" first":"");badge.textContent="#"+r.rank;rank.append(badge);
-  const student=document.createElement("td");student.innerHTML=`<strong>${esc(r.full_name||"Student")}</strong><span class="coach-code">${esc(r.student_code||"—")}</span>`;
-  const department=document.createElement("td");department.textContent=r.department||"—";
-  const score=document.createElement("td");const chip=document.createElement("span");chip.className="coach-score";chip.textContent=(Number(r.average_score)||0).toFixed(1)+"/400";score.append(chip);
-  const exams=document.createElement("td");exams.textContent=String(r.exams_taken||0);
-  const points=document.createElement("td");points.textContent=(Number(r.total_points)||0).toFixed(1);
-  tr.append(rank,student,department,score,exams,points);body.append(tr);
- });
- table.append(body);wrap.append(table);root.append(wrap);
-}
-async function loadCoachStandings(){
- const btn=$("refreshStandings");if(btn)btn.disabled=true;
- message($("standingsMessage"),"Loading your assigned students' standings…");
- try{
-  const d=await request("/api/coach/standings");
-  coachStandings=Array.isArray(d.standings)?d.standings:[];
-  message($("standingsMessage"),coachStandings.length+" assigned student(s) with examination results. Other coaches' students are not included.","success");
-  renderCoachStandings();
- }catch(e){coachStandings=[];renderCoachStandings();message($("standingsMessage"),e.message,"error")}
- finally{if(btn)btn.disabled=false}
-}
 function clearSelected(){selected=null;$("studentProfile").classList.add("hidden");$("recordPrompt").classList.remove("hidden");$("recordPrompt").textContent="Select a student from your assigned-students list.";$("noteStudent").value="";$("attendanceHistory").innerHTML='<p class="sub">No student selected.</p>';$("scoreHistory").innerHTML='<p class="sub">No student selected.</p>'}
 function history(node,items,type){
 node.replaceChildren();
@@ -197,11 +194,33 @@ tbody.append(tr);
 table.append(thead,tbody);wrap.append(table);node.append(wrap);
 }
 async function selectStudent(s){selected=s;openView("records-view");$("recordPrompt").classList.add("hidden");$("studentProfile").classList.remove("hidden");$("studentProfile").textContent="Loading student records…";$("noteStudent").value=(s.student_code||"")+" — "+(s.full_name||"");$("attendanceHistory").replaceChildren();$("scoreHistory").replaceChildren();try{const d=await request("/api/coach/students/"+encodeURIComponent(s.id));if(!selected||selected.id!==s.id)return;$("studentProfile").textContent=(s.full_name||"Student")+" · "+(s.student_code||"");history($("attendanceHistory"),d.attendance||[],"attendance");history($("scoreHistory"),d.scores||[],"score")}catch(e){$("studentProfile").textContent="Could not load records: "+e.message}}
+
+let standings=[];
+function renderStandings(){
+const root=$("standingsTable");root.replaceChildren();
+const q=$("standingsSearch").value.trim().toLowerCase();
+const rows=standings.filter(s=>[s.full_name,s.student_code,s.department].some(v=>String(v||"").toLowerCase().includes(q)));
+if(!rows.length){const p=document.createElement("div");p.className="standings-empty";p.textContent=standings.length?"No standings match your search.":"No assigned students are available for standings.";root.append(p);return}
+const table=document.createElement("table");table.className="standings-table";
+const thead=document.createElement("thead"),tbody=document.createElement("tbody");
+thead.innerHTML="<tr><th>Rank</th><th>JTA Reg No.</th><th>Student Name</th><th>Department</th><th>Average Score /400</th><th>Exams Taken</th><th>Total Points</th></tr>";
+rows.forEach(s=>{const tr=document.createElement("tr");
+[s.rank,s.student_code,s.full_name,s.department,Number(s.average_score||0).toFixed(1)+"/400",s.exams_taken,Number(s.total_points||0).toFixed(1)].forEach((v,i)=>{const td=document.createElement("td");td.textContent=v??"—";if(i===0)td.className="rank-cell";if(i===4)td.className="score-cell";tr.append(td)});
+tbody.append(tr)});
+table.append(thead,tbody);root.append(table);
+}
+async function loadStandings(){
+const btn=$("refreshStandingsButton");if(btn)btn.disabled=true;
+try{const d=await request("/api/coach/standings");standings=Array.isArray(d.standings)?d.standings:[];renderStandings();message($("standingsMessage"),standings.length+" assigned student(s) included. "+(d.scoreBasis||""),"success")}
+catch(e){standings=[];renderStandings();message($("standingsMessage"),e.message,"error")}
+finally{if(btn)btn.disabled=false}
+}
+$("standingsSearch").addEventListener("input",renderStandings);
+$("refreshStandingsButton").addEventListener("click",loadStandings);
 $("loginForm").addEventListener("submit",async e=>{e.preventDefault();const btn=$("loginButton");btn.disabled=true;btn.textContent="Signing in…";$("loginMessage").classList.add("hidden");try{const d=await request("/api/coach/login",{method:"POST",body:JSON.stringify({email:$("email").value.trim().toLowerCase(),password:$("password").value})});if(!d.token||!d.coach)throw Error("Login response was incomplete.");token=d.token;coach=d.coach;$("loginPanel").classList.add("hidden");$("dashboard").classList.remove("hidden");openView("overview");$("coachIdentity").textContent=coach.full_name+" · "+coach.email;await loadStudents()}catch(err){token="";coach=null;message($("loginMessage"),err.message,"error")}finally{btn.disabled=false;btn.textContent="Sign in securely →"}});
 $("studentSearch").addEventListener("input",renderStudents);$("refreshButton").addEventListener("click",loadStudents);
-$("standingsSearch").addEventListener("input",renderCoachStandings);$("refreshStandings").addEventListener("click",loadCoachStandings);
 $("noteForm").addEventListener("submit",async e=>{e.preventDefault();if(!selected){message($("noteMessage"),"Choose a student from My Students before saving a follow-up note.","error");openView("students-view");return}const action=$("actionTaken").value.trim();if(!action){message($("noteMessage"),"Please enter the action taken.","error");return}const btn=$("saveNoteButton");btn.disabled=true;try{await request("/api/coach/follow-up-notes",{method:"POST",body:JSON.stringify({studentId:selected.id,attendanceConcern:$("attendanceConcern").value.trim(),academicConcern:$("academicConcern").value.trim(),actionTaken:action,nextFollowUpDate:$("nextDate").value||null})});$("noteForm").reset();$("noteStudent").value=(selected.student_code||"")+" — "+(selected.full_name||"");message($("noteMessage"),"Follow-up note saved successfully.","success")}catch(err){message($("noteMessage"),err.message,"error")}finally{btn.disabled=false}});
-$("logoutButton").addEventListener("click",()=>{token="";coach=null;students=[];selected=null;coachStandings=[];if($("coachStandingsTable"))$("coachStandingsTable").replaceChildren();$("dashboard").classList.add("hidden");openView("overview");$("loginPanel").classList.remove("hidden");$("password").value="";$("students").replaceChildren();$("studentSearch").value="";clearSelected();$("studentCount").textContent=$("attendanceCount").textContent=$("scoreCount").textContent="—";message($("loginMessage"),"You have signed out.","success")});
+$("logoutButton").addEventListener("click",()=>{token="";coach=null;students=[];selected=null;standings=[];$("dashboard").classList.add("hidden");openView("overview");$("loginPanel").classList.remove("hidden");$("password").value="";$("students").replaceChildren();$("studentSearch").value="";clearSelected();$("studentCount").textContent=$("attendanceCount").textContent=$("scoreCount").textContent="—";message($("loginMessage"),"You have signed out.","success")});
 })();
 </script>
 </body></html>
