@@ -480,9 +480,29 @@ async function loadCommunityGroups(){
  const link=document.createElement("a");link.className="button-link full-button";link.href=group.inviteUrl;link.target="_blank";link.rel="noopener noreferrer";link.textContent=group.platform==="telegram"?"Open Telegram group / channel":"Join WhatsApp group";card.append(link);grid.append(card);});
  }catch(error){status.textContent=error.message||"Unable to load community links."}
 }
-function showView(name){if(name==="study")loadMaterials();if(name==="chat")loadCommunityGroups();document.querySelectorAll(".portal-view").forEach(view=>view.classList.add("hidden"));const target=document.getElementById("view-"+name);if(target)target.classList.remove("hidden");document.querySelectorAll(".nav-item").forEach(button=>button.classList.toggle("active",button.dataset.view===name));closeDrawer();window.scrollTo({top:0,behavior:"smooth"})}
+const JTA_PORTAL_VIEWS=["home","study","test","chat","news","connect","shop","dashboard","download"];
+function getSavedPortalView(){
+  const requested=(window.location.hash||"").replace(/^#(?:view-)?/,"").trim().toLowerCase();
+  return JTA_PORTAL_VIEWS.includes(requested)?requested:"home";
+}
+function showView(name,updateAddress=true){
+  if(!JTA_PORTAL_VIEWS.includes(name))name="home";
+  if(name==="study")loadMaterials();
+  if(name==="chat")loadCommunityGroups();
+  document.querySelectorAll(".portal-view").forEach(view=>view.classList.add("hidden"));
+  const target=document.getElementById("view-"+name);
+  if(target)target.classList.remove("hidden");
+  document.querySelectorAll(".nav-item").forEach(button=>button.classList.toggle("active",button.dataset.view===name));
+  if(updateAddress){
+    const nextHash="#"+name;
+    if(window.location.hash!==nextHash)history.replaceState(null,"",nextHash);
+  }
+  closeDrawer();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
 document.querySelectorAll(".nav-item").forEach(button=>button.addEventListener("click",()=>showView(button.dataset.view)));
 document.querySelectorAll("[data-open-view]").forEach(button=>button.addEventListener("click",()=>showView(button.dataset.openView)));
+window.addEventListener("hashchange",()=>showView(getSavedPortalView(),false));
 document.getElementById("menuToggle").addEventListener("click",openDrawer);document.getElementById("menuClose").addEventListener("click",closeDrawer);document.getElementById("drawerShade").addEventListener("click",closeDrawer);
 function logout(){sessionStorage.removeItem("jta_student_token");localStorage.removeItem("jta_student_code");window.location.replace("login.html")}
 document.getElementById("logoutButton").addEventListener("click",logout);document.getElementById("headerLogout").addEventListener("click",logout);
@@ -494,6 +514,7 @@ if('serviceWorker' in navigator){
   window.addEventListener('load',()=>navigator.serviceWorker.register('./jta-study-sw.js').catch(()=>{}));
 }
 loadPortal();
+showView(getSavedPortalView(),false);
 </script>
 </body>
 </html>
