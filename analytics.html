@@ -93,8 +93,7 @@
 <div class="page-heading"><div class="eyebrow">JUSTIFIED TUTORS ACADEMY</div><h2>Students analytics &amp; performance</h2><p>Real-time student standings, weekly scores and academy performance insights.</p></div>
 <div class="overview-export"><button type="button" id="exportOverview">⇩ &nbsp; Export PDF report</button></div>
 <div class="overview-filter panel"><div class="overview-periods"><span class="filter-caption">◉ &nbsp; Last 30 days</span><button type="button" class="overview-period active" data-overview-period="30">30 days</button><button type="button" class="overview-period" data-overview-period="7">7 days</button><button type="button" class="overview-period" data-overview-period="90">90 days</button></div><select id="overviewExamFilter" aria-label="Filter by examination"><option value="all">All examinations</option></select><div class="sync-note"><span></span> LIVE DATA FROM JTA</div></div>
-<div class="dark-overview"><div class="page-heading"><div class="eyebrow">JTA PERFORMANCE OVERVIEW</div><h2>Academy at a glance</h2><p>Track submissions, completion and student achievement.</p></div><section class="metrics" id="metrics"></section></div>
-<section class="panel"><h3>Students needing attention</h3><div id="alerts"></div></section>
+<div class="dark-overview"><div class="page-heading"><div class="eyebrow">JTA PERFORMANCE OVERVIEW</div><h2>JTA 300+ JAMB MONITOR AI-POWERED SYSTEM</h2><p>Track submissions, completion and student achievement.</p></div><section class="metrics" id="metrics"></section></div>
 </section>
 <section class="view" id="view-results-deletion">
 <div class="page-heading"><div class="eyebrow">ADMIN TOOLS</div><h2>Results Deletion</h2><p>Search, review and delete student-visible examination results.</p></div>
@@ -157,7 +156,7 @@ const noRecordRows=noRecords.map(a=>[esc(name(a)),esc(code(a)),esc(dept(a)),esc(
 const header=['Student','JTA Code','Department','Average /400','Attendance','Assessment'];
 const section=(title,rows)=>'<h4 style="margin:20px 0 8px">'+esc(title)+' ('+rows.length+')</h4><div class="table-wrap">'+table(header,rows)+'</div>';
 const alertHTML='<p class="muted small">'+registered.length+' approved students returned by the backend · '+al.length+' flagged · '+noRecords.length+' without exam or attendance records. A missing record is not counted as a pass or failure.</p>'+section('Students requiring follow-up',alertRows)+section('Other students with recorded activity',monitorRows)+section('Students without recorded activity',noRecordRows);
-$('alerts').innerHTML=alertHTML;$('alertsFull').innerHTML=alertHTML;
+const overviewAlerts=$('alerts');if(overviewAlerts)overviewAlerts.innerHTML=alertHTML;$('alertsFull').innerHTML=alertHTML;
 
 renderWeekly();renderStudents();$('dash').classList.remove('hidden')
 }
