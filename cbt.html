@@ -360,6 +360,27 @@ footer {
 <main>
   <div id="notice" class="message hidden" role="status" aria-live="polite"></div>
  
+  <section id="publicPanel" class="panel">
+    <h2>JTA OPEN MOCK EXAMINATION</h2>
+    <p class="muted">Register to participate in the public mock. Your department determines the subjects available to you. Each candidate is allowed two attempts per enabled examination.</p>
+    <div id="publicWelcome" class="message hidden"></div>
+    <form id="publicRegistration">
+      <label>Full name<input id="publicFullName" type="text" maxlength="140" autocomplete="name" required style="display:block;width:100%;padding:12px;border:1px solid var(--border);border-radius:8px;margin:6px 0 12px"></label>
+      <label>Phone number<input id="publicPhone" type="tel" maxlength="30" autocomplete="tel" required style="display:block;width:100%;padding:12px;border:1px solid var(--border);border-radius:8px;margin:6px 0 12px"></label>
+      <label>Email address<input id="publicEmail" type="email" maxlength="180" autocomplete="email" required style="display:block;width:100%;padding:12px;border:1px solid var(--border);border-radius:8px;margin:6px 0 12px"></label>
+      <label>Department<select id="publicDepartment" required style="display:block;width:100%;padding:12px;border:1px solid var(--border);border-radius:8px;margin:6px 0 12px"><option value="">Select department</option><option>Science</option><option>Arts</option><option>Commercial</option></select></label>
+      <button type="submit" id="publicRegisterBtn">Register for Open Mock</button>
+    </form>
+    <div id="publicActions" class="hidden">
+      <p id="publicCandidateLabel" class="muted"></p>
+      <button id="publicLoadExamsBtn" type="button">Load Open Mock Examinations</button>
+      <button id="publicResultsBtn" type="button" class="secondary">My Public Mock Results</button>
+      <button id="publicSwitchBtn" type="button" class="secondary">Use JTA Student Login</button>
+      <div id="publicExamList" style="margin-top:18px"></div>
+      <div id="publicResultsList"></div>
+    </div>
+  </section>
+
   <section id="homePanel" class="panel">
     <h2>Available Examinations</h2>
     <p class="muted">
@@ -369,6 +390,7 @@ footer {
  
     <button id="loadExamsBtn" type="button">Load Examinations</button>
     <button id="loadResultsBtn" type="button" class="secondary">My Results</button>
+    <button id="openPublicMockBtn" type="button" class="secondary">Open Public Mock</button>
  
     <div id="examList" style="margin-top:18px">
       <p class="muted">Tap "Load Examinations" to begin.</p>
@@ -511,7 +533,7 @@ function restoreActiveAttempt() {
 }
  
 function getToken() {
-  return sessionStorage.getItem("jta_student_token");
+  return publicMode ? localStorage.getItem(PUBLIC_TOKEN_KEY) : sessionStorage.getItem("jta_student_token");
 }
  
 function showNotice(message, isError = false) {
@@ -526,41 +548,37 @@ function clearNotice() {
 }
  
 function showPanel(name) {
-  ["homePanel", "examPanel", "resultsPanel"].forEach(id => {
+  ["publicPanel", "homePanel", "examPanel", "resultsPanel"].forEach(id => {
     $(id).classList.toggle("hidden", id !== name);
   });
 }
  
+let publicMode = false;
+const PUBLIC_TOKEN_KEY = "jta_public_mock_token_v1";
+
 async function api(path, options = {}) {
-  const token = getToken();
- 
-  if (!token) {
-    throw new Error("Your login session was not found. Please log in first.");
+  const token = publicMode ? localStorage.getItem(PUBLIC_TOKEN_KEY) : sessionStorage.getItem("jta_student_token");
+  if (!token) throw new Error(publicMode ? "Register for the public mock first." : "Your login session was not found. Please log in first.");
+  let requestPath = path;
+  if (publicMode) {
+    if (path === "/api/exams") requestPath = "/api/public/exams";
+    else if (path === "/api/results") requestPath = "/api/public/results";
+    else requestPath = path.replace(/^\/api\/exams\//, "/api/public/exams/");
   }
- 
   const headers = {
     "Authorization": "Bearer " + token,
     ...(options.body ? {"Content-Type": "application/json"} : {}),
     ...(options.headers || {})
   };
- 
-  const response = await fetch(API + path, {...options, headers});
+  const response = await fetch(API + requestPath, {...options, headers});
   const text = await response.text();
   let data = {};
- 
-  try {
-    data = text ? JSON.parse(text) : {};
-  } catch {
-    throw new Error("The server returned an unexpected response.");
-  }
- 
-  if (!response.ok) {
-    throw new Error(data.error || data.message || ("Request failed: " + response.status));
-  }
- 
+  try { data = text ? JSON.parse(text) : {}; }
+  catch { throw new Error("The server returned an unexpected response."); }
+  if (!response.ok) throw new Error(data.error || data.message || ("Request failed: " + response.status));
   return data;
 }
- 
+
 function unwrapList(data, keys) {
   if (Array.isArray(data)) return data;
   for (const key of keys) {
@@ -770,14 +788,16 @@ function allowedSubjectsForGroup(group) {
   if (["science", "medical", "medicals", "engineering", "pure science"].includes(value))
     return ["English Language", "Mathematics", "Physics", "Chemistry", "Biology"];
   if (["arts", "art", "law and pure arts", "eng lit econs govt", "irs", "irs students", "irs students only"].includes(value))
-    return ["English Language", "Literature in English", "CRS", "Government", "IRS", "Economics"];
+    return ["Literature in English", "CRS", "Government", "IRS", "Economics"];
   if (["commercial", "commercial 1", "commercial 2", "commerce"].includes(value))
-    return ["English Language", "Mathematics", "Economics", "Government", "Commerce", "Accounting"];
+    return publicMode
+      ? ["English Language", "Mathematics", "Economics", "Government", "Commerce/Accounting"]
+      : ["English Language", "Mathematics", "Economics", "Government", "Commerce", "Accounting"];
   return [];
 }
  
 async function chooseFourSubjects(exam) {
-  const group = exam.department || window.currentStudentDepartment || "";
+  const group = (publicMode && window.jtaPublicDepartment) || exam.department || window.currentStudentDepartment || "";
   const allowed = allowedSubjectsForGroup(group);
   if (!allowed.length) throw new Error("Your department group could not be identified. Please contact JTA.");
   // Show every subject allowed for the student's department. The exam may
@@ -835,7 +855,7 @@ async function startExam(examOrId) {
   const examType = String(
     examObject.exam_type ?? examObject.examType ?? examObject.type ?? examObject.format ?? ""
   ).trim().toLowerCase();
-  const isCombinedExam = examType.includes("combined") || examType === "";
+  const isCombinedExam = publicMode || examType.includes("combined") || examType === "";
   if (isCombinedExam) {
     selectedSubjects = await chooseFourSubjects(examObject);
     if (!selectedSubjects) return;
@@ -872,10 +892,14 @@ async function startExam(examOrId) {
       currentExam.duration_minutes ?? currentExam.durationMinutes
     );
  
-    const endTime = data.deadline || data.deadline_at || data.ends_at || data.endTime;
+    const endTime = data.deadline || data.deadline_at || data.ends_at || data.endTime || data.attempt?.deadline_at;
  
     if (endTime) {
-      deadline = new Date(endTime).getTime();
+      // D1 datetime() values are UTC but have no timezone suffix. Parse them as UTC,
+      // rather than letting a Nigeria-local browser shift the examination deadline.
+      const deadlineText = typeof endTime === "string" && /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(endTime)
+        ? endTime.replace(" ", "T") + "Z" : endTime;
+      deadline = new Date(deadlineText).getTime();
     } else if (Number.isFinite(duration) && duration > 0) {
       deadline = Date.now() + duration * 60000;
     } else {
@@ -1192,6 +1216,49 @@ async function loadResults() {
   }
 }
  
+async function publicRegister(event) {
+  event.preventDefault();
+  const btn=$("publicRegisterBtn"); btn.disabled=true;
+  try {
+    const response=await fetch(API+"/api/public/register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+      fullName:$("publicFullName").value,phone:$("publicPhone").value,email:$("publicEmail").value,department:$("publicDepartment").value
+    })});
+    const data=await response.json();
+    if(!response.ok) throw new Error(data.error||"Registration failed.");
+    localStorage.setItem(PUBLIC_TOKEN_KEY,data.token);
+    window.jtaPublicDepartment=data.candidate.department; window.jtaPublicCandidate=data.candidate;
+    publicMode=true; $("publicRegistration").classList.add("hidden"); $("publicActions").classList.remove("hidden");
+    $("publicCandidateLabel").textContent=`Registered: ${data.candidate.fullName} · ${data.candidate.department}`;
+    $("publicWelcome").textContent="Registration successful. You can now load available open mock examinations.";
+    $("publicWelcome").classList.remove("hidden"); await loadPublicExams();
+  } catch(error) { $("publicWelcome").textContent=error.message; $("publicWelcome").classList.remove("hidden"); }
+  finally { btn.disabled=false; }
+}
+async function loadPublicExams() {
+  publicMode=true; const box=$("publicExamList"); box.textContent="Loading public examinations...";
+  try {
+    const data=await api("/api/exams"); const exams=unwrapList(data,["exams"]); box.replaceChildren();
+    if(!exams.length){box.textContent="No open mock examination is currently available for your department.";return;}
+    exams.forEach(exam=>{
+      const card=document.createElement("div");card.className="panel";
+      const title=document.createElement("h3");title.textContent=getExamTitle(exam);
+      const detail=document.createElement("p");detail.className="muted";detail.textContent=`${exam.duration_minutes||30} minutes · ${exam.department||window.jtaPublicDepartment} · ${exam.attempts_remaining} attempt(s) remaining`;
+      const start=document.createElement("button");start.type="button";start.textContent="Start Open Mock";start.disabled=Number(exam.attempts_remaining)<=0;
+      start.addEventListener("click",()=>startExam(exam));card.append(title,detail,start);box.appendChild(card);
+    });
+  } catch(error){box.textContent=error.message;}
+}
+async function loadPublicResults() {
+  publicMode=true; const box=$("publicResultsList");box.textContent="Loading results...";
+  try {const data=await api("/api/results");const rows=unwrapList(data,["results"]);box.replaceChildren();if(!rows.length){box.textContent="No public mock results yet.";return;}rows.forEach(result=>box.appendChild(renderResultCard(result)));}
+  catch(error){box.textContent=error.message;}
+}
+$("publicRegistration").addEventListener("submit",publicRegister);
+$("publicLoadExamsBtn").addEventListener("click",loadPublicExams);
+$("publicResultsBtn").addEventListener("click",loadPublicResults);
+$("publicSwitchBtn").addEventListener("click",()=>{publicMode=false;showPanel("homePanel");showNotice("Student login mode selected. Please use your JTA student login session.");});
+$("openPublicMockBtn").addEventListener("click",()=>{publicMode=true;showPanel("publicPanel");clearNotice();});
+
 $("loadExamsBtn").addEventListener("click", loadExams);
 $("loadResultsBtn").addEventListener("click", loadResults);
  
@@ -1203,11 +1270,23 @@ $("backBtn").addEventListener("click", () => {
 window.addEventListener("beforeunload", saveActiveAttempt);
 window.addEventListener("pagehide", saveActiveAttempt);
 
-if (!getToken()) {
-  showNotice("Please log in through the JTA student login page before using the CBT portal.", true);
-} else if (!restoreActiveAttempt()) {
-  loadExams();
-}
+const studentTokenAtBoot=sessionStorage.getItem("jta_student_token");
+const publicTokenAtBoot=localStorage.getItem(PUBLIC_TOKEN_KEY);
+if (studentTokenAtBoot) {
+  publicMode=false;
+  if (!restoreActiveAttempt()) loadExams();
+} else if (publicTokenAtBoot) {
+  publicMode=true;
+  (async()=>{
+    try {
+      const data=await api("/api/exams");
+      window.jtaPublicDepartment=data.candidate.department; window.jtaPublicCandidate=data.candidate;
+      $("publicRegistration").classList.add("hidden"); $("publicActions").classList.remove("hidden");
+      $("publicCandidateLabel").textContent=`Registered: ${data.candidate.full_name} · ${data.candidate.department}`;
+      if (!restoreActiveAttempt()) { await loadPublicExams(); showPanel("publicPanel"); }
+    } catch {localStorage.removeItem(PUBLIC_TOKEN_KEY);publicMode=false;showPanel("publicPanel");}
+  })();
+} else { publicMode=true; showPanel("publicPanel"); }
 </script>
 </body>
 </html>
