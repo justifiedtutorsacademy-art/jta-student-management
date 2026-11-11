@@ -14,6 +14,7 @@
 .standings-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap}.standings-head h3{font-size:21px;margin:3px 0}.standings-tools{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:15px 0}.standings-tools input{flex:1;min-width:220px}.period-tools{display:flex;gap:6px;flex-wrap:wrap}.period-btn{background:#edf1ff;color:#34436d;padding:8px 12px}.period-btn.active{background:linear-gradient(100deg,var(--jta-blue),var(--jta-purple));color:#fff}.standings-podium{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;align-items:end;margin:18px 0}.standings-person{background:#f7f8ff;border:1px solid #e2e6f5;border-radius:14px;padding:13px 8px;text-align:center;min-width:0}.standings-person.first{background:#eef0ff;border-color:#a9b8ef;transform:translateY(-5px)}.standings-person .medal{font-size:19px}.standings-person strong{display:block;overflow-wrap:anywhere;font-size:13px;margin:5px 0}.standings-person .score{font-size:22px;font-weight:900;color:#214eae}.standings-person small{display:block;color:#718096}.selection-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;background:#f4f6fc;border:1px solid #e5e9f3;padding:10px 12px;border-radius:10px;margin:12px 0}.selection-bar label{display:flex;align-items:center;gap:8px;margin:0}.selection-bar input,.result-check{width:18px;height:18px;accent-color:#315ec8}.standings-table{min-width:760px}.score-chip{display:inline-block;background:#e9efff;color:#1e459f;border-radius:7px;padding:5px 8px;font-weight:850;white-space:nowrap}.danger-btn{background:#fff0f1!important;color:#a52843!important;border:1px solid #f5cbd3!important}
 @media(max-width:850px){.app-shell{display:block}.sidebar{position:fixed;z-index:20;left:0;top:0;width:260px;transform:translateX(-105%);height:100dvh;box-shadow:15px 0 35px #0004;transition:transform .2s}.sidebar.mobile-open{transform:translateX(0)}.mobile-scrim.show{display:block;position:fixed;inset:0;background:#080b20a8;z-index:19}.content{padding:18px 14px 32px}.topbar{padding:16px}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:560px){.grid{grid-template-columns:1fr}.dark-overview{padding:16px}.panel{padding:14px}.content{padding:14px 10px 28px}.top-title h1{font-size:19px}.top-title p{font-size:11px}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.metric{padding:11px}.metric .value{font-size:22px}.week-controls{margin-top:12px;min-width:0}.week-controls input{flex:1;min-width:0}.week-controls button{width:100%}.podium{gap:6px}.podium-card{padding:12px 5px}.podium-score{font-size:19px}.weekly-table{min-width:760px}table{min-width:480px}.standings-podium{gap:5px}.standings-person{padding:10px 4px}.standings-person strong{font-size:11px}.standings-person .score{font-size:17px}.standings-tools input{min-width:100%}.period-tools{width:100%}.period-btn{flex:1;padding:8px 5px;font-size:12px}button{min-height:42px}}
+.empty-state{padding:14px 16px;border:1px dashed rgba(148,163,184,.45);border-radius:12px;color:var(--muted,#64748b);background:rgba(148,163,184,.06);line-height:1.55}
 </style><style>
 .overview-export{margin:14px 0}.overview-export button{width:100%;padding:15px;background:linear-gradient(100deg,#064dbb,#075b48);font-size:16px;border-radius:12px}
 .overview-filter{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px 17px}.overview-periods{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.filter-caption{background:#edf2ff;color:#2454a8;padding:9px 12px;border-radius:9px;font-weight:800}.overview-period{background:transparent;color:#64718b;padding:9px 12px}.overview-period.active{background:linear-gradient(100deg,#075b48,#08775c);color:#fff}.overview-filter select{max-width:320px;flex:1;min-width:190px}.sync-note{display:flex;align-items:center;gap:8px;color:#65738c;font-size:10px;font-weight:900;letter-spacing:1.2px}.sync-note span{width:8px;height:8px;background:#f3a22c;border-radius:50%;box-shadow:0 0 0 4px #fff1dc}
@@ -134,7 +135,7 @@ $('leaderboard').innerHTML=table(['Rank','Student','JTA Code','Department','Aver
 $('departments').innerHTML=table(['Department','Students','Average score'],arr(data.departments).map(x=>[esc(first(x,['department','name','label'])),esc(first(x,['count','students','total','student_count'])),esc(score(num(first(x,['average_score','averageScore','avg_score'],null))))]));
 $('coaches').innerHTML=table(['Coach','Status','Assigned students'],arr(data.coaches).map(x=>[esc(first(x,['full_name','fullName','name','email'],'Coach')),esc(first(x,['status','active'])),esc(first(x,['assigned_students','assignedStudents','student_count','students_count','assigned_count']))]));
 let al=arr(data.alerts);if(!al.length)al=arr(data.students).filter(x=>x.needs_attention||x.alert||x.low_score||x.low_attendance);
-const alertHTML=al.length?al.map(a=>'<div class="alert"><strong>'+esc(name(a))+'</strong><div>'+esc(code(a))+' · '+esc(dept(a))+'</div>'+esc(first(a,['message','reason','alert','issue','type'],'Review attendance and scores'))+'</div>').join(''):'<div class="alert">No follow-up alerts were returned by the backend.</div>';$('alerts').innerHTML=alertHTML;$('alertsFull').innerHTML=alertHTML;
+const alertHTML=al.length?al.map(a=>'<div class="alert"><strong>'+esc(name(a))+'</strong><div>'+esc(code(a))+' · '+esc(dept(a))+'</div>'+esc(first(a,['message','reason','alert','issue','type'],'Review attendance and scores'))+'</div>').join(''):'<div class="empty-state">No students currently meet the follow-up alert criteria. Student performance and attendance records are still available in the other reports.</div>';$('alerts').innerHTML=alertHTML;$('alertsFull').innerHTML=alertHTML;
 renderWeekly();renderStudents();$('dash').classList.remove('hidden')
 }
 function dt(o){let x=first(o,['date','class_date','taken_at','created_at','day','week'],null);if(!x)return null;let d=new Date(x);return isNaN(d)?null:d}
@@ -215,12 +216,29 @@ setAdminWeek();$('adminWeekLoad').addEventListener('click',loadAdminWeeklyBoard)
 document.querySelectorAll('[data-view="leaderboard-view"]').forEach(b=>b.addEventListener('click',loadAdminWeeklyBoard));
 })();
 
+// Reliable section navigation: keep the selected page in the URL and local storage.
+const PAGE_KEY = "jta_analytics_active_view";
+const VALID_VIEWS = new Set(["overview","performance","leaderboard-view","students-view","departments-view","coaches-view","alerts-view","reports-view","results-deletion"]);
+function activateView(view, persist=true) {
+ const target = VALID_VIEWS.has(view) ? view : "overview";
+ document.querySelectorAll("[data-view]").forEach(x=>x.classList.toggle("active",x.dataset.view===target));
+ document.querySelectorAll(".view").forEach(x=>x.classList.toggle("active",x.id==="view-"+target));
+ const sidebar=document.getElementById("sidebar"), scrim=document.getElementById("scrim");
+ if(sidebar) sidebar.classList.remove("mobile-open");
+ if(scrim) scrim.classList.remove("show");
+ if(persist) {
+   try { localStorage.setItem(PAGE_KEY,target); } catch(e) {}
+   if(location.hash !== "#"+target) history.replaceState(null,"","#"+target);
+ }
+}
 document.querySelectorAll("[data-view]").forEach(button=>button.addEventListener("click",()=>{
- document.querySelectorAll("[data-view]").forEach(x=>x.classList.toggle("active",x===button));
- document.querySelectorAll(".view").forEach(x=>x.classList.toggle("active",x.id==="view-"+button.dataset.view));
- document.getElementById("sidebar").classList.remove("mobile-open");
- document.getElementById("scrim").classList.remove("show");
+ const target=button.dataset.view;
+ activateView(target,true);
+ if(target==="leaderboard-view" && typeof loadAdminWeeklyBoard==="function") loadAdminWeeklyBoard();
 }));
+window.addEventListener("hashchange",()=>activateView(location.hash.slice(1),false));
+const initialView=(location.hash.slice(1)||(()=>{try{return localStorage.getItem(PAGE_KEY)||"overview"}catch(e){return "overview"}})());
+activateView(initialView,false);
 document.getElementById("menuToggle").addEventListener("click",()=>{
  if(window.innerWidth<=1100){document.getElementById("sidebar").classList.toggle("mobile-open");document.getElementById("scrim").classList.toggle("show");}
  else document.body.classList.toggle("sidebar-collapsed");
