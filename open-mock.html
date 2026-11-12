@@ -308,6 +308,33 @@ input[type="radio"] {
   background: linear-gradient(180deg, #FFFFFF, #FAF6FF);
 }
  
+.subject-breakdown {
+  border: 1px solid #D9E5F5;
+  border-radius: 12px;
+  background: #F8FBFF;
+  padding: 8px 14px;
+  margin: 10px 0 16px;
+}
+.subject-score-row, .subject-score-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 2px;
+  border-bottom: 1px solid #E3EAF4;
+  color: #334155;
+}
+.subject-score-row strong, .subject-score-total strong:last-child {
+  color: #1050BD;
+  white-space: nowrap;
+}
+.subject-score-total {
+  border-bottom: 0;
+  border-top: 2px solid #A653D8;
+  margin-top: 4px;
+  color: #172B4D;
+  flex-wrap: wrap;
+}
 .result-score {
   font-size: 19px;
   font-weight: bold;
@@ -413,7 +440,7 @@ footer {
   <div id="notice" class="message hidden" role="status" aria-live="polite"></div>
  
   <section id="publicPanel" class="panel">
-    <h2>JTA OPEN MOCK EXAMINATION</h2>
+    
     <div id="publicWelcome" class="message hidden"></div>
     <form id="publicRegistration">
       <label>Full name<input id="publicFullName" type="text" maxlength="140" autocomplete="name" required style="display:block;width:100%;padding:12px;border:1px solid var(--border);border-radius:8px;margin:6px 0 12px"></label>
@@ -1367,7 +1394,7 @@ async function loadPublicResults(){
     const rows=unwrapList(d,["results"]);
     box.replaceChildren();
     if(!rows.length){box.textContent="No submitted public mock attempts yet.";return;}
-    rows.forEach(r=>{
+    for (const r of rows) {
       const card=document.createElement("article");
       card.className="result-card";
       const h=document.createElement("h3");
@@ -1381,17 +1408,73 @@ async function loadPublicResults(){
       } else {
         const raw=Number(r.score ?? r.total_score ?? r.marks);
         const total=Number(r.total_marks ?? r.max_score ?? r.totalMarks ?? r.maxScore);
-        const score=document.createElement("p");
-        score.className="result-score";
         if(Number.isFinite(raw) && Number.isFinite(total) && total>0){
           const percentage=Math.max(0,Math.min(100,(raw/total)*100));
           const outOf400=Math.round(percentage*4);
+          const score=document.createElement("p");
+          score.className="result-score";
           score.textContent=`JTA JAMB-STYLE SCORE: ${outOf400}/400`;
           const detail=document.createElement("p");
           detail.className="muted";
           detail.textContent=`Raw marks: ${raw}/${total} · ${percentage.toFixed(1)}%`;
           card.append(score,detail);
+
+          const breakdownTitle=document.createElement("h4");
+          breakdownTitle.textContent="SUBJECT SCORE BREAKDOWN";
+          breakdownTitle.style.margin="18px 0 8px";
+          card.appendChild(breakdownTitle);
+          const breakdown=document.createElement("div");
+          breakdown.className="subject-breakdown";
+          const loading=document.createElement("p");
+          loading.className="muted";
+          loading.textContent="Loading subject scores...";
+          breakdown.appendChild(loading);
+          card.appendChild(breakdown);
+
+          // Subject marks are returned by the released corrections endpoint.
+          try {
+            const detailData=await api("/api/public/results/"+encodeURIComponent(r.attempt_id)+"/corrections");
+            const questions=Array.isArray(detailData.corrections)?detailData.corrections:[];
+            const bySubject=new Map();
+            questions.forEach(q=>{
+              const subject=String(q.subject||"Other").trim()||"Other";
+              const marks=Number(q.marks)||0;
+              const awarded=Number(q.marks_awarded)||0;
+              if(!bySubject.has(subject))bySubject.set(subject,{earned:0,total:0});
+              const entry=bySubject.get(subject);
+              entry.earned+=awarded;
+              entry.total+=marks;
+            });
+            breakdown.replaceChildren();
+            if(bySubject.size){
+              const subjectRows=[...bySubject.entries()];
+              subjectRows.forEach(([subject,values])=>{
+                const row=document.createElement("div");
+                row.className="subject-score-row";
+                const name=document.createElement("span");
+                name.textContent=subject;
+                const value=document.createElement("strong");
+                value.textContent=`${values.earned}/${values.total}`;
+                row.append(name,value);
+                breakdown.appendChild(row);
+              });
+              const totalRow=document.createElement("div");
+              totalRow.className="subject-score-total";
+              const totalLabel=document.createElement("strong");
+              totalLabel.textContent="TOTAL JAMB-STYLE SCORE";
+              const totalValue=document.createElement("strong");
+              totalValue.textContent=`${outOf400}/400`;
+              totalRow.append(totalLabel,totalValue);
+              breakdown.appendChild(totalRow);
+            } else {
+              breakdown.textContent="Subject-wise marks are not available for this result.";
+            }
+          } catch (detailError) {
+            breakdown.textContent="Subject-wise marks could not be loaded. Please refresh or contact the academy.";
+          }
         } else {
+          const score=document.createElement("p");
+          score.className="result-score";
           score.textContent="The server did not return total marks, so the score out of 400 cannot be calculated yet.";
           card.appendChild(score);
         }
@@ -1402,7 +1485,7 @@ async function loadPublicResults(){
         card.appendChild(b);
       }
       box.appendChild(card);
-    });
+    }
   } catch(e) {
     box.textContent=e.message;
   }
