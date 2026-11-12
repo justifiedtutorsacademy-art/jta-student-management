@@ -344,17 +344,24 @@ document.getElementById('closeReader')?.addEventListener('click',()=>{
 function escapeHtml(value){
   return String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 }
-function materialCoverUrl(material){
-  return material.cover_image_url||material.cover_url||material.thumbnail_url||material.preview_image_url||material.image_url||material.thumbnail||'';
+function materialCoverUrl(material,isVideo=false){
+  return (isVideo?(material.video_thumbnail_url||material.thumbnail_url||material.cover_image_url):(material.cover_image_url||material.cover_url||material.preview_image_url||material.image_url||material.thumbnail_url||material.thumbnail))||'';
+}
+async function loadLibraryImage(image,url){
+  try{
+    if(/^https?:\/\//i.test(url)){image.src=url;return;}
+    const response=await fetch(API_BASE+url,{headers:{Authorization:'Bearer '+sessionStorage.getItem('jta_student_token')},cache:'no-store'});
+    if(!response.ok)throw Error('Image unavailable');
+    const blob=await response.blob();image.src=URL.createObjectURL(blob);
+  }catch(_){image.remove();const cover=image.parentElement;if(cover&&!cover.querySelector('.library-cover-fallback'))cover.append(makeCoverFallback(image._material,image._isVideo));}
 }
 function createLibraryCard(material,isVideo=false){
   const card=document.createElement('section');card.className='card library-card';
   const cover=document.createElement('div');cover.className='library-cover'+(isVideo?' video-cover':'');
-  const coverUrl=materialCoverUrl(material);
+  const coverUrl=materialCoverUrl(material,isVideo);
   if(coverUrl){
-    const image=document.createElement('img');image.src=coverUrl;image.alt=(material.title||'JTA material')+' cover';image.loading='lazy';
-    image.onerror=()=>{image.remove();cover.append(makeCoverFallback(material,isVideo));};
-    cover.append(image);
+    const image=document.createElement('img');image.alt=(material.title||'JTA material')+(isVideo?' thumbnail':' cover');image.loading='lazy';image._material=material;image._isVideo=isVideo;
+    cover.append(image);loadLibraryImage(image,coverUrl);
   }else cover.append(makeCoverFallback(material,isVideo));
   if(isVideo){
     const play=document.createElement('span');play.textContent='▶';play.setAttribute('aria-hidden','true');
