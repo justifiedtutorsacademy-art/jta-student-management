@@ -1206,7 +1206,9 @@ async function loadResults() {
     $("resultsList").replaceChildren();
  
     if (!results.length) {
-      $("resultsList").textContent = "No examination results are available yet.";
+      $("resultsList").textContent = Number(data.withheld_count || 0) > 0
+        ? "Your examination result(s) have been submitted and are currently being withheld by the academy. Please check again after results are released."
+        : "No examination results are available yet.";
       return;
     }
  
