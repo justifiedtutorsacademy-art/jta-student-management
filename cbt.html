@@ -435,6 +435,7 @@ footer {
     <h2>My Examination Results</h2>
     <p class="muted">Review your raw marks, percentage and estimated score out of 400.</p>
     <div id="resultsList"></div>
+    <div id="correctionsPanel" class="hidden" style="margin-top:18px"></div>
     <button id="backBtn" type="button" class="secondary">Back to Examinations</button>
   </section>
 </main>
@@ -717,6 +718,19 @@ function renderResultCard(result) {
     }
   }
  
+  if (result.corrections_released && result.attempt_id) {
+    const correctionsButton=document.createElement("button");
+    correctionsButton.type="button"; correctionsButton.className="secondary";
+    correctionsButton.textContent="View Corrections";
+    correctionsButton.style.marginTop="12px";
+    correctionsButton.addEventListener("click",()=>loadCorrections(result.attempt_id));
+    item.appendChild(correctionsButton);
+  } else if (result.attempt_id) {
+    const pending=document.createElement("p"); pending.className="disclaimer";
+    pending.textContent="Corrections are currently being withheld by the academy.";
+    item.appendChild(pending);
+  }
+
   const date = document.createElement("p");
   date.className = "muted";
   date.textContent = "Submitted: " + formatDate(
@@ -1194,6 +1208,34 @@ document.addEventListener("visibilitychange", () => {
   }
 });
 
+async function loadCorrections(attemptId) {
+  const panel=$("correctionsPanel");
+  panel.classList.remove("hidden");
+  panel.textContent="Loading corrections…";
+  try {
+    const data=await api("/api/results/"+encodeURIComponent(attemptId)+"/corrections");
+    panel.replaceChildren();
+    const heading=document.createElement("h3"); heading.textContent="Examination Corrections"; panel.appendChild(heading);
+    (data.corrections||[]).forEach((entry,index)=>{
+      const card=document.createElement("article"); card.className="result-card";
+      const subject=document.createElement("p"); subject.className="muted"; subject.textContent=entry.subject||"General"; card.appendChild(subject);
+      const question=document.createElement("h4"); question.textContent=(index+1)+". "+(entry.question_text||"Question"); card.appendChild(question);
+      let options=[]; try { options=Array.isArray(entry.options_json)?entry.options_json:JSON.parse(entry.options_json||"[]"); } catch(_) { options=[]; }
+      if(Array.isArray(options)) options.forEach((option,i)=>{
+        const line=document.createElement("p");
+        const label=String.fromCharCode(65+i);
+        const value=typeof option==="string"?option:(option.text??option.value??JSON.stringify(option));
+        line.textContent=label+". "+value; card.appendChild(line);
+      });
+      const your=document.createElement("p"); your.textContent="Your answer: "+(entry.selected_answer||"Not answered"); card.appendChild(your);
+      const correct=document.createElement("p"); correct.style.fontWeight="700"; correct.textContent="Correct answer: "+(entry.correct_answer??"Not supplied"); card.appendChild(correct);
+      const marks=document.createElement("p"); marks.textContent="Marks: "+Number(entry.marks_awarded||0)+" / "+Number(entry.marks||0); card.appendChild(marks);
+      panel.appendChild(card);
+    });
+    if(!(data.corrections||[]).length) panel.appendChild(document.createTextNode("No correction records were found for this attempt."));
+  } catch(error) { panel.textContent=error.message; }
+}
+
 async function loadResults() {
   clearNotice();
   showPanel("resultsPanel");
@@ -1204,6 +1246,8 @@ async function loadResults() {
     const results = unwrapList(data, ["results", "data", "attempts"]);
  
     $("resultsList").replaceChildren();
+    $("correctionsPanel").replaceChildren();
+    $("correctionsPanel").classList.add("hidden");
  
     if (!results.length) {
       $("resultsList").textContent = Number(data.withheld_count || 0) > 0

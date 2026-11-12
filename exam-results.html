@@ -215,13 +215,14 @@ async function loadResults(id){
   area.replaceChildren(safe("h3",data.exam.title));
   if(!data.results.length){area.append(safe("p","No attempts have been submitted for this examination yet.","muted"));return}
   const releasedCount=data.results.filter(r=>r.status==="submitted"&&Number(r.result_released)===1).length;
+  const correctionsCount=data.results.filter(r=>r.status==="submitted"&&Number(r.corrections_released)===1).length;
   const submittedCount=data.results.filter(r=>r.status==="submitted").length;
-  const summary=safe("p",releasedCount+" of "+submittedCount+" submitted result(s) currently released. Each student's result can be controlled separately.","muted");
+  const summary=safe("p",releasedCount+" of "+submittedCount+" submitted result(s) released · "+correctionsCount+" of "+submittedCount+" correction set(s) released. Results and corrections are controlled independently.","muted");
   area.append(summary);
   const table=document.createElement("div");table.style.overflowX="auto";
   const t=document.createElement("table");t.style.cssText="border-collapse:collapse;width:100%;min-width:860px";
   const thead=document.createElement("thead"),tr=document.createElement("tr");
-  ["Student","JTA Code","Department","Score","Status","Started","Submitted","Result visibility","Action"].forEach(x=>{const th=safe("th",x);th.style.cssText="text-align:left;padding:9px;border-bottom:1px solid #dce4ef";tr.append(th)});
+  ["Student","JTA Code","Department","Score","Status","Started","Submitted","Result visibility","Corrections visibility","Actions"].forEach(x=>{const th=safe("th",x);th.style.cssText="text-align:left;padding:9px;border-bottom:1px solid #dce4ef";tr.append(th)});
   thead.append(tr);t.append(thead);const tbody=document.createElement("tbody");
   data.results.forEach(r=>{
    const row=document.createElement("tr");
@@ -229,9 +230,12 @@ async function loadResults(id){
    const visibility=safe("td",r.status==="submitted"?(Number(r.result_released)===1?"Released":"Withheld"):"—");
    visibility.style.cssText="padding:9px;border-bottom:1px solid #edf0f5;font-size:13px;font-weight:700";
    row.append(visibility);
-   const cell=document.createElement("td");cell.style.cssText="padding:9px;border-bottom:1px solid #edf0f5";
+   const correctionsVisibility=safe("td",r.status==="submitted"?(Number(r.corrections_released)===1?"Released":"Withheld"):"—");
+   correctionsVisibility.style.cssText="padding:9px;border-bottom:1px solid #edf0f5;font-size:13px;font-weight:700";
+   row.append(correctionsVisibility);
+   const cell=document.createElement("td");cell.style.cssText="padding:9px;border-bottom:1px solid #edf0f5;min-width:190px";
    if(r.status==="submitted"){
-    const release=safe("button",Number(r.result_released)===1?"Withhold":"Release");
+    const release=safe("button",Number(r.result_released)===1?"Withhold result":"Release result");
     release.className=Number(r.result_released)===1?"btn danger":"btn primary";release.type="button";
     release.onclick=async()=>{
      const next=!Number(r.result_released);
@@ -245,6 +249,22 @@ async function loadResults(id){
      }catch(err){msg("listMsg","Could not change result visibility: "+err.message,"err");release.disabled=false}
     };
     cell.append(release);
+    const correctionButton=safe("button",Number(r.corrections_released)===1?"Withhold corrections":"Release corrections");
+    correctionButton.className=Number(r.corrections_released)===1?"btn danger":"btn primary";
+    correctionButton.type="button";
+    correctionButton.style.marginTop="6px";
+    correctionButton.onclick=async()=>{
+     const next=!Number(r.corrections_released);
+     const who=(r.full_name||"Unknown student")+" ("+(r.student_code||"no JTA code")+")";
+     if(!confirm((next?"Release":"Withhold")+" corrections for "+who+"?"))return;
+     correctionButton.disabled=true;
+     try{
+      await api("/api/admin/exams/"+encodeURIComponent(id)+"/attempts/"+encodeURIComponent(r.attempt_id)+"/corrections-release",{method:next?"POST":"DELETE"});
+      msg("listMsg",next?"Student corrections released.":"Student corrections withheld.","ok");
+      await loadResults(id);
+     }catch(err){msg("listMsg","Could not change corrections visibility: "+err.message,"err");correctionButton.disabled=false}
+    };
+    cell.append(correctionButton);
     const del=safe("button","Delete");del.className="btn danger";del.type="button";
     del.onclick=async()=>{
      const who=(r.full_name||"Unknown student")+" ("+(r.student_code||"no JTA code")+")";
