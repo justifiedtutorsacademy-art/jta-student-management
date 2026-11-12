@@ -557,6 +557,7 @@ function showPanel(name) {
  
 let publicMode = false;
 const PUBLIC_TOKEN_KEY = "jta_public_mock_token_v1";
+const PUBLIC_CANDIDATE_KEY = "jta_public_mock_candidate_v1";
 
 async function api(path, options = {}) {
   const token = publicMode ? localStorage.getItem(PUBLIC_TOKEN_KEY) : sessionStorage.getItem("jta_student_token");
@@ -577,7 +578,7 @@ async function api(path, options = {}) {
   let data = {};
   try { data = text ? JSON.parse(text) : {}; }
   catch { throw new Error("The server returned an unexpected response."); }
-  if (!response.ok) throw new Error(data.error || data.message || ("Request failed: " + response.status));
+  if (!response.ok) { const err = new Error(data.error || data.message || ("Request failed: " + response.status)); err.status = response.status; throw err; }
   return data;
 }
 
@@ -1220,7 +1221,9 @@ async function loadResults() {
 }
  
 async function activatePublicSession(data,label){
-  localStorage.setItem(PUBLIC_TOKEN_KEY,data.token);publicMode=true;
+  localStorage.setItem(PUBLIC_TOKEN_KEY,data.token);
+  localStorage.setItem(PUBLIC_CANDIDATE_KEY, JSON.stringify(data.candidate));
+  publicMode=true;
   window.jtaPublicDepartment=data.candidate.department;window.jtaPublicCandidate=data.candidate;
   $("publicRegistration").classList.add("hidden");$("publicLoginWrap").classList.add("hidden");$("publicActions").classList.remove("hidden");
   $("publicCandidateLabel").textContent=`${label}: ${data.candidate.full_name||data.candidate.fullName} · ${data.candidate.department}`;
@@ -1287,9 +1290,64 @@ $("backBtn").addEventListener("click", () => {
 window.addEventListener("beforeunload", saveActiveAttempt);
 window.addEventListener("pagehide", saveActiveAttempt);
 
-publicMode=true;
-const publicTokenAtBoot=localStorage.getItem(PUBLIC_TOKEN_KEY);
-if(publicTokenAtBoot){(async()=>{try{const d=await api("/api/exams");window.jtaPublicDepartment=d.candidate.department;window.jtaPublicCandidate=d.candidate;$("publicRegistration").classList.add("hidden");$("publicLoginWrap").classList.add("hidden");$("publicActions").classList.remove("hidden");$("publicCandidateLabel").textContent=`Welcome back: ${d.candidate.full_name} · ${d.candidate.department}`;await loadPublicExams();await loadPublicResults();if(!restoreActiveAttempt())showPanel("publicPanel");}catch{$("publicWelcome").textContent="Your saved session has expired. Log in with your email and phone number.";$("publicWelcome").classList.remove("hidden");localStorage.removeItem(PUBLIC_TOKEN_KEY);showPanel("publicPanel");}})();}else{showPanel("publicPanel");}
+// Public candidate sessions are intentionally persistent across page reloads.
+// Do not erase a saved token because of a temporary network/server error.
+publicMode = true;
+const publicTokenAtBoot = localStorage.getItem(PUBLIC_TOKEN_KEY);
+if (publicTokenAtBoot) {
+  let cachedCandidate = null;
+  try { cachedCandidate = JSON.parse(localStorage.getItem(PUBLIC_CANDIDATE_KEY) || "null"); } catch (_) {}
+  if (cachedCandidate) {
+    window.jtaPublicCandidate = cachedCandidate;
+    window.jtaPublicDepartment = cachedCandidate.department || "";
+    $("publicRegistration").classList.add("hidden");
+    $("publicLoginWrap").classList.add("hidden");
+    $("publicActions").classList.remove("hidden");
+    $("publicCandidateLabel").textContent = `Welcome back: ${cachedCandidate.full_name || cachedCandidate.fullName || "Candidate"} · ${cachedCandidate.department || ""}`;
+  }
+  (async () => {
+    try {
+      const d = await api("/api/exams");
+      if (d.candidate) {
+        window.jtaPublicDepartment = d.candidate.department || "";
+        window.jtaPublicCandidate = d.candidate;
+        localStorage.setItem(PUBLIC_CANDIDATE_KEY, JSON.stringify(d.candidate));
+        $("publicCandidateLabel").textContent = `Welcome back: ${d.candidate.full_name || d.candidate.fullName || "Candidate"} · ${d.candidate.department || ""}`;
+      }
+      $("publicRegistration").classList.add("hidden");
+      $("publicLoginWrap").classList.add("hidden");
+      $("publicActions").classList.remove("hidden");
+      await loadPublicExams();
+      await loadPublicResults();
+      if (!restoreActiveAttempt()) showPanel("publicPanel");
+    } catch (error) {
+      const isUnauthorized = Number(error && error.status) === 401;
+      if (isUnauthorized) {
+        localStorage.removeItem(PUBLIC_TOKEN_KEY);
+        localStorage.removeItem(PUBLIC_CANDIDATE_KEY);
+        window.jtaPublicCandidate = null;
+        window.jtaPublicDepartment = "";
+        $("publicRegistration").classList.remove("hidden");
+        $("publicLoginWrap").classList.remove("hidden");
+        $("publicActions").classList.add("hidden");
+        $("publicWelcome").textContent = "Your session needs you to log in again. Use your registered email address and phone number.";
+      } else {
+        // Keep the token and cached identity. A temporary connection failure must
+        // never sign the candidate out or destroy their locally saved attempt.
+        $("publicWelcome").textContent = "Your saved login is still on this device, but the server could not be reached. Check your connection and tap Load Open Mock Examinations to retry.";
+        if (cachedCandidate) {
+          $("publicRegistration").classList.add("hidden");
+          $("publicLoginWrap").classList.add("hidden");
+          $("publicActions").classList.remove("hidden");
+        }
+      }
+      $("publicWelcome").classList.remove("hidden");
+      if (!restoreActiveAttempt()) showPanel("publicPanel");
+    }
+  })();
+} else {
+  showPanel("publicPanel");
+}
 </script>
 </body>
 </html>
