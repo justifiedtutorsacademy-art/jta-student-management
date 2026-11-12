@@ -1317,7 +1317,10 @@ $("publicResultsBtn").addEventListener("click",loadPublicResults);
 // Standalone public page: no link to the JTA student portal.
 
 $("loadExamsBtn").addEventListener("click", loadExams);
-$("loadResultsBtn").addEventListener("click", loadResults);
+// The standalone Open Mock page has no student-results button. Do not bind
+// an event handler to a missing element: that would abort all startup logic.
+const legacyLoadResultsButton = $("loadResultsBtn");
+if (legacyLoadResultsButton) legacyLoadResultsButton.addEventListener("click", loadResults);
  
 $("backBtn").addEventListener("click", () => {
   showPanel("homePanel");
