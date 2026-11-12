@@ -81,6 +81,21 @@ footer{background:#17245B;color:#DDE2FF;font-size:11px;line-height:2}footer stro
 @media(max-width:760px){.topbar-inner{min-height:74px;padding:0 13px}.topbar{padding:0}.brand h1{font-size:13px;letter-spacing:.25px}.brand p{font-size:9px;letter-spacing:.55px}.logo{width:43px;height:43px;border-radius:14px}.sidebar{width:min(84vw,320px);padding:22px 16px}.main-content{padding:18px 13px 35px}.welcome{min-height:0;padding:24px 19px;border-radius:18px;margin-bottom:18px}.welcome h2{font-size:24px}.welcome p{font-size:12px}.welcome-badge{display:inline-block;margin-top:16px;max-width:100%;padding:8px 11px}.home-grid{grid-template-columns:1fr}.card{padding:19px;border-radius:16px}.page-heading h2{font-size:25px}.coming-card{padding:42px 20px}}
 @media(min-width:761px){.main-content{min-height:calc(100vh - 88px)}}
 
+/* Study materials and video lesson library */
+.resource-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px;align-items:start}
+.video-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start}
+.video-card{min-width:0;overflow:hidden;padding:0;background:#fff;border:1px solid #e6e9f3;border-radius:17px;box-shadow:0 7px 22px rgba(36,48,105,.06)}
+.video-thumb{position:relative;display:block;width:100%;aspect-ratio:16/9;overflow:hidden;background:linear-gradient(135deg,#1d3d9b,#6654d9)}
+.video-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.video-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:54px;height:54px;min-height:54px;padding:0;border:0;border-radius:50%;background:#fff;color:#2457D6;box-shadow:0 4px 18px #0003;font-size:22px}
+.video-play:hover{transform:translate(-50%,-50%) scale(1.06)}
+.video-duration{position:absolute;right:9px;bottom:9px;padding:4px 7px;border-radius:5px;background:#101827dd;color:#fff;font-size:10px;font-weight:800}
+.video-details{padding:13px 14px 15px}.video-details h3{margin:0 0 6px;color:#202C5D;font-size:14px;line-height:1.4}.video-details p{margin:0;color:#858da7;font-size:11px;line-height:1.5}
+.video-watch{width:100%;margin-top:11px}
+.reader-card{margin-top:20px}.reader-card iframe{display:block;width:100%;height:72vh;border:0}
+@media(max-width:560px){.resource-grid,.video-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.video-details{padding:10px}.video-details h3{font-size:12px}.video-details p{font-size:10px}.video-play{width:43px;height:43px;min-height:43px}}
+
+
 
 .subscription-card{border:1px solid #d9def4;background:linear-gradient(135deg,#fff,#f4f5ff)}
 .subscription-card h3{margin:0 0 12px;color:#172554}
@@ -110,7 +125,8 @@ footer{background:#17245B;color:#DDE2FF;font-size:11px;line-height:2}footer stro
     <div class="sidebar-heading"><strong>JTA STUDENT MENU</strong><button id="menuClose" type="button" aria-label="Close menu">×</button></div>
     <nav class="nav-list">
       <button class="nav-item active" data-view="home"><span class="nav-icon">⌂</span>Home</button>
-      <button class="nav-item" data-view="study"><span class="nav-icon">♧</span>Study</button>
+      <button class="nav-item" data-view="materials"><span class="nav-icon">▤</span>Study Materials</button>
+      <button class="nav-item" data-view="videos"><span class="nav-icon">▶</span>Video Lessons</button>
       <button class="nav-item" data-view="test"><span class="nav-icon">▣</span>Test <span class="nav-arrow">⌄</span></button>
       <button class="nav-item" data-view="chat"><span class="nav-icon">▤</span>Community & Class Groups</button>
       <button class="nav-item" data-view="news"><span class="nav-icon">▥</span>News</button>
@@ -163,7 +179,17 @@ footer{background:#17245B;color:#DDE2FF;font-size:11px;line-height:2}footer stro
       <div class="page-heading"><span class="eyebrow">MY PROGRESS</span><h2>Academic Dashboard</h2><p>A quick view of your personal JTA learning records.</p></div>
       <div class="grid"><section class="card"><h3>My Attendance Summary</h3><p class="empty">Your attendance history is available on the Home page.</p><button class="full-button" type="button" data-open-view="home">View Home & Attendance</button></section><section class="card"><h3>My Examination Records</h3><p class="empty">Your saved examination scores are available in the Test Centre.</p><button class="full-button" type="button" data-open-view="test">View Test Results</button></section></div>
     </section>
-    <section id="view-study" class="portal-view hidden"><div class="page-heading"><span class="eyebrow">LEARNING RESOURCES</span><h2>Study Materials</h2><p>Read general study resources, watch lessons and open learning packages assigned to your JTA code. Save authorised PDFs for up to 7 days of offline reading.</p></div><div id="materialsStatus" class="empty">Loading your learning materials...</div><div id="materialsGrid" class="grid"></div><section id="jtaReader" class="card" hidden><div class="actions"><strong id="readerTitle">Reading material</strong><button class="full-button" type="button" id="closeReader">Close reader</button></div><div id="readerBody"></div></section></section>
+    <section id="view-materials" class="portal-view hidden">
+      <div class="page-heading"><span class="eyebrow">READ & DOWNLOAD</span><h2>Study Materials</h2><p>Explore JTA PDF notes, textbooks, past questions and other learning documents assigned to your account.</p></div>
+      <div id="materialsStatus" class="empty">Loading your JTA study materials...</div>
+      <div id="materialsGrid" class="resource-grid"></div>
+    </section>
+    <section id="view-videos" class="portal-view hidden">
+      <div class="page-heading"><span class="eyebrow">WATCH & LEARN</span><h2>Video Lessons</h2><p>Learn every topic with JTA video tutorials, organised by subject and topic.</p></div>
+      <div id="videosStatus" class="empty">Loading your JTA video lessons...</div>
+      <div id="videosGrid" class="video-grid"></div>
+    </section>
+    <section id="jtaReader" class="card reader-card" hidden><div class="actions"><strong id="readerTitle">Learning resource</strong><button class="full-button" type="button" id="closeReader">Close</button></div><div id="readerBody"></div></section>
     <section id="view-chat" class="portal-view hidden"><div class="page-heading"><span class="eyebrow">STUDENT COMMUNITY</span><h2>Community & Class Groups</h2><p>Join the official JTA channel and the class groups relevant to your department.</p></div><div id="communityStatus" class="empty">Loading your JTA community links...</div><div id="communityGroups" class="grid"></div><div class="notice">Only use official JTA links shown here. Group membership is managed by the platform administrators. If a link has expired or you cannot join, contact JTA support.</div></section>
     <section id="view-news" class="portal-view hidden"><div class="page-heading"><span class="eyebrow">UPDATES & ANNOUNCEMENTS</span><h2>News</h2><p>Important announcements from Justified Tutor's Academy.</p></div><div class="coming-card"><div class="coming-icon">▥</div><h3>JTA News is coming soon</h3><p>Class announcements, examination updates and important notices will be published here.</p></div></section>
     <section id="view-connect" class="portal-view hidden"><div class="page-heading"><span class="eyebrow">GET SUPPORT</span><h2>Connect</h2><p>Find ways to reach and get support from JTA.</p></div><div class="coming-card"><div class="coming-icon">⌘</div><h3>JTA Connect is coming soon</h3><p>Support contacts and student guidance links will be added here.</p></div></section>
@@ -382,69 +408,85 @@ async function renderOfflineMaterials(message){
     ?(message||'You are offline. Your saved PDFs are available for up to 7 days.')
     :(message||'No valid offline materials are saved on this device.');
   grid.replaceChildren();
-  const grouped=new Map();
   valid.forEach(item=>{
-    const name=item.folderName||'General Study Materials';
-    if(!grouped.has(name))grouped.set(name,[]);
-    grouped.get(name).push(item);
-  });
-  grouped.forEach((items,name)=>{
-    const heading=document.createElement('h3');heading.textContent=name;heading.style.gridColumn='1/-1';grid.append(heading);
-    items.forEach(item=>{
-      const card=document.createElement('section');card.className='card';
-      const title=document.createElement('h3');title.textContent=item.title;
-      const button=document.createElement('button');button.className='full-button gold-button';button.textContent='Read saved PDF offline';
-      button.onclick=()=>{
-        if(item.ownerCode!==owner||Number(item.expiresAt)<=Date.now()){showStatus('This offline access has expired. Reconnect to renew it.');return;}
-        const objectUrl=URL.createObjectURL(item.blob);
-        openJtaReader(item.title,'<iframe title="Offline PDF" src="'+objectUrl+'#toolbar=0&navpanes=0&scrollbar=0" style="width:100%;height:75vh;border:0"></iframe>');
-        setTimeout(()=>URL.revokeObjectURL(objectUrl),30*60*1000);
-      };
-      card.append(title,button);grid.append(card);
-    });
+    const card=document.createElement('section');card.className='card';
+    const title=document.createElement('h3');title.textContent=item.title||'Saved JTA PDF';
+    const meta=document.createElement('p');meta.className='empty';meta.textContent='Available offline · expires '+new Date(Number(item.expiresAt)).toLocaleDateString();
+    const button=document.createElement('button');button.className='full-button gold-button';button.textContent='Read saved PDF';
+    button.onclick=()=>{
+      if(item.ownerCode!==owner||Number(item.expiresAt)<=Date.now()){showStatus('This offline access has expired. Reconnect to renew it.');return;}
+      const objectUrl=URL.createObjectURL(item.blob);
+      openJtaReader(item.title,'<iframe title="Offline PDF" src="'+objectUrl+'#toolbar=0&navpanes=0&scrollbar=0" style="width:100%;height:75vh;border:0"></iframe>');
+      setTimeout(()=>URL.revokeObjectURL(objectUrl),30*60*1000);
+    };
+    card.append(title,meta,button);grid.append(card);
   });
 }
-function startOfflineOnlyPortal(){
-  document.querySelectorAll('.nav-item').forEach(button=>{if(button.dataset.view!=='study')button.hidden=true;});
-  document.querySelectorAll('.portal-view').forEach(view=>view.classList.toggle('hidden',view.id!=='view-study'));
-  const studyNav=document.querySelector('.nav-item[data-view="study"]');if(studyNav)studyNav.classList.add('active');
-  const heading=document.querySelector('#view-study .page-heading');
-  if(heading){
-    let notice=document.getElementById('offlineOnlyNotice');
-    if(!notice){notice=document.createElement('p');notice.id='offlineOnlyNotice';notice.className='empty';heading.append(notice);}
-    notice.textContent='Offline reading mode: only PDFs previously saved on this device are available. Reconnect and sign in to refresh your access.';
-  }
-  loadMaterials();
+function renderVideoCard(material){
+  const card=document.createElement('article');card.className='video-card';
+  const thumb=document.createElement('div');thumb.className='video-thumb';
+  const image=document.createElement('img');
+  image.src='https://i.ytimg.com/vi/'+encodeURIComponent(material.youtube_video_id)+'/hqdefault.jpg';
+  image.alt=(material.title||'JTA video lesson')+' thumbnail';
+  image.loading='lazy';image.onerror=()=>{image.style.display='none';};
+  const play=document.createElement('button');play.type='button';play.className='video-play';play.setAttribute('aria-label','Play '+(material.title||'video lesson'));play.textContent='▶';
+  thumb.append(image,play);
+  const duration=document.createElement('span');duration.className='video-duration';duration.textContent=material.duration||'VIDEO';
+  thumb.append(duration);
+  const details=document.createElement('div');details.className='video-details';
+  const title=document.createElement('h3');title.textContent=material.title||'JTA Video Lesson';
+  const meta=document.createElement('p');meta.textContent=[material.subject,material.department].filter(Boolean).join(' · ')||'JTA Video Tutorial';
+  const watch=document.createElement('button');watch.type='button';watch.className='video-watch';watch.textContent='Watch lesson';
+  const open=()=>openVideoLesson(material);
+  play.addEventListener('click',open);watch.addEventListener('click',open);
+  details.append(title,meta,watch);card.append(thumb,details);
+  if(material.premium_only){const tag=document.createElement('span');tag.className='premium-tag';tag.textContent='PREMIUM';title.append(tag);}
+  return card;
+}
+async function openVideoLesson(material){
+  const action=materialCard(material).querySelector('button');
+  if(action)action.click();
 }
 async function loadMaterials(){
   const status=document.getElementById('materialsStatus'),grid=document.getElementById('materialsGrid');
-  status.style.display='block';status.textContent='Loading your JTA materials...';grid.replaceChildren();
-  if(!sessionStorage.getItem('jta_student_token')){await renderOfflineMaterials();return;}
+  const videoStatus=document.getElementById('videosStatus'),videoGrid=document.getElementById('videosGrid');
+  status.style.display='block';status.textContent='Loading your JTA study materials...';grid.replaceChildren();
+  videoStatus.style.display='block';videoStatus.textContent='Loading your JTA video lessons...';videoGrid.replaceChildren();
+  if(!sessionStorage.getItem('jta_student_token')){videoStatus.textContent='Video lessons require an internet connection. Your saved PDFs remain available below.';await renderOfflineMaterials();return;}
   try{
-    const data=await apiRequest('/api/materials'),materials=data.materials||[];
+    const data=await apiRequest('/api/materials'),all=data.materials||[];
     await purgeExpiredOfflineMaterials().catch(()=>{});
-    if(!materials.length){status.textContent='No learning materials have been published or assigned to you yet.';return;}
-    status.style.display='none';
-    const general=materials.filter(item=>item.access_type==='general');
-    if(general.length){
-      const heading=document.createElement('h3');heading.textContent='General Study Materials';heading.style.gridColumn='1/-1';grid.append(heading);
-      general.forEach(item=>grid.append(materialCard(item)));
-    }
-    const assigned=materials.filter(item=>item.access_type==='assigned');
-    const folders=new Map();
-    assigned.forEach(item=>{
-      const key=item.folder_id||item.folder_name||'assigned';
-      if(!folders.has(key))folders.set(key,{name:item.folder_name||'Assigned Package',items:[]});
-      folders.get(key).items.push(item);
-    });
-    if(folders.size){
-      const heading=document.createElement('h3');heading.textContent='My Assigned Materials';heading.style.gridColumn='1/-1';grid.append(heading);
-      folders.forEach(folder=>{
-        const folderHeading=document.createElement('h4');folderHeading.textContent='📁 '+folder.name;folderHeading.style.gridColumn='1/-1';grid.append(folderHeading);
-        folder.items.forEach(item=>grid.append(materialCard(item)));
+    const videos=all.filter(item=>!!item.youtube_video_id);
+    const materials=all.filter(item=>!item.youtube_video_id);
+    if(!materials.length){status.textContent='No study materials have been published or assigned to you yet.';}
+    else{
+      status.style.display='none';
+      const general=materials.filter(item=>item.access_type==='general');
+      if(general.length){
+        const heading=document.createElement('h3');heading.textContent='General Study Materials';heading.style.gridColumn='1/-1';grid.append(heading);
+        general.forEach(item=>grid.append(materialCard(item)));
+      }
+      const assigned=materials.filter(item=>item.access_type==='assigned');
+      const folders=new Map();
+      assigned.forEach(item=>{
+        const key=item.folder_id||item.folder_name||'assigned';
+        if(!folders.has(key))folders.set(key,{name:item.folder_name||'Assigned Package',items:[]});
+        folders.get(key).items.push(item);
       });
+      if(folders.size){
+        const heading=document.createElement('h3');heading.textContent='My Assigned Materials';heading.style.gridColumn='1/-1';grid.append(heading);
+        folders.forEach(folder=>{
+          const folderHeading=document.createElement('h4');folderHeading.textContent='📁 '+folder.name;folderHeading.style.gridColumn='1/-1';grid.append(folderHeading);
+          folder.items.forEach(item=>grid.append(materialCard(item)));
+        });
+      }
     }
-  }catch(error){await renderOfflineMaterials(error.message||'Could not load learning materials.');}
+    if(!videos.length){videoStatus.textContent='No video lessons have been published or assigned to you yet.';}
+    else{videoStatus.style.display='none';videos.forEach(item=>videoGrid.append(renderVideoCard(item)));}
+  }catch(error){
+    await renderOfflineMaterials(error.message||'Could not load study materials.');
+    videoStatus.textContent='Could not load video lessons. Please reconnect and try again.';
+  }
 }
 
 document.getElementById("attendanceForm").addEventListener("submit",async function(event){
@@ -480,14 +522,14 @@ async function loadCommunityGroups(){
  const link=document.createElement("a");link.className="button-link full-button";link.href=group.inviteUrl;link.target="_blank";link.rel="noopener noreferrer";link.textContent=group.platform==="telegram"?"Open Telegram group / channel":"Join WhatsApp group";card.append(link);grid.append(card);});
  }catch(error){status.textContent=error.message||"Unable to load community links."}
 }
-const JTA_PORTAL_VIEWS=["home","study","test","chat","news","connect","shop","dashboard","download"];
+const JTA_PORTAL_VIEWS=["home","materials","videos","test","chat","news","connect","shop","dashboard","download"];
 function getSavedPortalView(){
   const requested=(window.location.hash||"").replace(/^#(?:view-)?/,"").trim().toLowerCase();
-  return JTA_PORTAL_VIEWS.includes(requested)?requested:"home";
+  return requested==="study"?"materials":(JTA_PORTAL_VIEWS.includes(requested)?requested:"home");
 }
 function showView(name,updateAddress=true){
   if(!JTA_PORTAL_VIEWS.includes(name))name="home";
-  if(name==="study")loadMaterials();
+  if(name==="materials"||name==="videos")loadMaterials();
   if(name==="chat")loadCommunityGroups();
   document.querySelectorAll(".portal-view").forEach(view=>view.classList.add("hidden"));
   const target=document.getElementById("view-"+name);
