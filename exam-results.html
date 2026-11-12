@@ -219,6 +219,32 @@ async function loadResults(id){
   const submittedCount=data.results.filter(r=>r.status==="submitted").length;
   const summary=safe("p",releasedCount+" of "+submittedCount+" submitted result(s) released · "+correctionsCount+" of "+submittedCount+" correction set(s) released. Results and corrections are controlled independently.","muted");
   area.append(summary);
+  const bulkBar=document.createElement("div");
+  bulkBar.style.cssText="display:flex;flex-wrap:wrap;gap:10px;margin:12px 0 18px";
+  const releaseAll=safe("button","Release ALL results + corrections");
+  releaseAll.className="btn primary";releaseAll.type="button";
+  releaseAll.onclick=async()=>{
+   if(!confirm("Release results AND corrections for EVERY submitted attempt in this examination? This will not affect other examinations."))return;
+   releaseAll.disabled=true;
+   try{
+    const outcome=await api("/api/admin/exams/"+encodeURIComponent(id)+"/release-all",{method:"POST"});
+    msg("listMsg",outcome.message+" ("+outcome.updated_attempts+" submitted attempt(s)).","ok");
+    await loadResults(id);
+   }catch(err){msg("listMsg","Could not release all results and corrections: "+err.message,"err");releaseAll.disabled=false}
+  };
+  const withholdAll=safe("button","Withhold ALL results + corrections");
+  withholdAll.className="btn danger";withholdAll.type="button";
+  withholdAll.onclick=async()=>{
+   if(!confirm("Withhold results AND corrections for EVERY submitted attempt in this examination? Students will no longer see either."))return;
+   withholdAll.disabled=true;
+   try{
+    const outcome=await api("/api/admin/exams/"+encodeURIComponent(id)+"/release-all",{method:"DELETE"});
+    msg("listMsg",outcome.message+" ("+outcome.updated_attempts+" submitted attempt(s)).","ok");
+    await loadResults(id);
+   }catch(err){msg("listMsg","Could not withhold all results and corrections: "+err.message,"err");withholdAll.disabled=false}
+  };
+  bulkBar.append(releaseAll,withholdAll);
+  area.append(bulkBar);
   const table=document.createElement("div");table.style.overflowX="auto";
   const t=document.createElement("table");t.style.cssText="border-collapse:collapse;width:100%;min-width:860px";
   const thead=document.createElement("thead"),tr=document.createElement("tr");
