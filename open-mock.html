@@ -1229,6 +1229,45 @@ async function activatePublicSession(data,label){
 }
 async function publicRegister(event){event.preventDefault();const btn=$("publicRegisterBtn");btn.disabled=true;try{const r=await fetch(API+"/api/public/register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({fullName:$("publicFullName").value,phone:$("publicPhone").value,email:$("publicEmail").value,department:$("publicDepartment").value})});const d=await r.json();if(!r.ok)throw Error(d.error||"Registration failed.");await activatePublicSession(d,"Registration successful");}catch(e){$("publicWelcome").textContent=e.message;$("publicWelcome").classList.remove("hidden");}finally{btn.disabled=false;}}
 async function publicLogin(event){event.preventDefault();const btn=$("publicLoginBtn");btn.disabled=true;try{const r=await fetch(API+"/api/public/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:$("publicLoginEmail").value,phone:$("publicLoginPhone").value})});const d=await r.json();if(!r.ok)throw Error(d.error||"Login failed.");await activatePublicSession(d,"Welcome back");}catch(e){$("publicWelcome").textContent=e.message;$("publicWelcome").classList.remove("hidden");}finally{btn.disabled=false;}}
+async function loadPublicExams(){
+  publicMode = true;
+  const box = $("publicExamList");
+  box.textContent = "Loading open mock examinations...";
+  try {
+    const data = await api("/api/exams");
+    const exams = unwrapList(data, ["exams", "data", "results"]);
+    box.replaceChildren();
+    if (!exams.length) {
+      box.textContent = "No open mock examinations are currently available for your department.";
+      return;
+    }
+    exams.forEach(exam => {
+      const card = document.createElement("article");
+      card.className = "panel";
+      const title = document.createElement("h3");
+      title.textContent = exam.title || "JTA Open Mock Examination";
+      const details = document.createElement("p");
+      details.className = "muted";
+      const duration = Number(exam.duration_minutes || 0);
+      const remaining = Number(exam.attempts_remaining ?? 0);
+      details.textContent = [
+        exam.department || window.jtaPublicDepartment || "",
+        duration > 0 ? duration + " minutes" : "",
+        remaining + " attempt(s) remaining"
+      ].filter(Boolean).join(" · ");
+      const start = document.createElement("button");
+      start.type = "button";
+      start.textContent = remaining > 0 ? "Start Examination" : "Attempts Used";
+      start.disabled = remaining <= 0;
+      start.addEventListener("click", () => startExam(exam));
+      card.append(title, details, start);
+      box.appendChild(card);
+    });
+  } catch (error) {
+    box.textContent = error.message || "Unable to load open mock examinations.";
+  }
+}
+
 async function loadPublicResults(){publicMode=true;const box=$("publicResultsList");box.textContent="Loading submitted results...";try{const d=await api("/api/results");const rows=unwrapList(d,["results"]);box.replaceChildren();if(!rows.length){box.textContent="No submitted public mock attempts yet.";return;}rows.forEach(r=>{const card=document.createElement("article");card.className="result-card";const h=document.createElement("h3");h.textContent=r.exam_title||"Public Mock Examination";card.appendChild(h);if(Number(r.result_released)!==1){const p=document.createElement("p");p.className="muted";p.textContent="Your examination has been submitted. The academy is withholding your score and corrections until the official release.";card.appendChild(p);}else{const score=document.createElement("p");score.className="result-score";score.textContent=`Your score: ${r.score}/${r.total_marks}`;card.appendChild(score);const b=document.createElement("button");b.type="button";b.textContent="View Corrections";b.onclick=()=>loadPublicCorrections(r.attempt_id);card.appendChild(b);}box.appendChild(card);});}catch(e){box.textContent=e.message;}}
 async function loadPublicCorrections(id){const box=$("publicCorrectionList");box.textContent="Loading corrections...";try{const d=await api("/api/public/results/"+encodeURIComponent(id)+"/corrections");box.replaceChildren();const h=document.createElement("h3");h.textContent="Examination Corrections";box.appendChild(h);(d.corrections||[]).forEach((q,i)=>{const card=document.createElement("article");card.className="result-card";const p=document.createElement("p");p.textContent=`Question ${i+1}. ${q.question_text||""}`;card.appendChild(p);let opts=[];try{opts=JSON.parse(q.options_json||"[]");}catch{}if(!Array.isArray(opts)&&opts&&typeof opts==="object")opts=Object.entries(opts).map(([label,text])=>({label,text}));const ol=document.createElement("ol");ol.type="A";opts.forEach(o=>{const li=document.createElement("li");li.textContent=typeof o==="string"?o:(o.text||o.label||o.option||"");ol.appendChild(li)});card.appendChild(ol);const optionText=(raw)=>{if(raw===null||raw===undefined||String(raw).trim()==="")return "Not answered";const v=String(raw).trim();let idx=/^\d+$/.test(v)?Number(v):(/^[A-H]$/i.test(v)?v.toUpperCase().charCodeAt(0)-65:-1);if(idx>=0&&idx<opts.length){const o=opts[idx];return typeof o==="string"?o:(o.text||o.label||o.option||o.value||v);}const found=opts.find(o=>String(typeof o==="object"?(o.label||o.key||""):"").toUpperCase()===v.toUpperCase());return found?(typeof found==="string"?found:(found.text||found.option||v)):v;};const yours=document.createElement("p");yours.textContent="Your answer: "+optionText(q.selected_answer);card.appendChild(yours);const correct=document.createElement("p");correct.className="success";correct.textContent="Correct answer: "+optionText(q.correct_answer);card.appendChild(correct);const marks=document.createElement("p");marks.textContent=`Marks awarded: ${q.marks_awarded}/${q.marks}`;card.appendChild(marks);box.appendChild(card);});}catch(e){box.textContent=e.message;}}
 $("publicRegistration").addEventListener("submit",publicRegister);
