@@ -349,6 +349,39 @@ footer {
 .subject-choice { display:flex; align-items:center; gap:10px; padding:11px; border:1px solid var(--border); border-radius:9px; margin:8px 0; background:white; }
 .subject-choice input { width:18px; height:18px; }
  #homePanel,#resultsPanel,#openPublicMockBtn{display:none!important}
+
+.link-intro{background:#0d142b;color:#e8edfb;border:1px solid #26334f;border-radius:20px;padding:22px;margin:0 0 18px;box-shadow:0 12px 30px rgba(5,10,28,.16)}
+.link-intro .eyebrow{display:inline-block;background:#e7edff;color:#1b3fa5;border-radius:24px;padding:6px 13px;font-size:12px;font-weight:900;letter-spacing:.12em}
+.link-intro h2{color:#f1f4ff;font-size:clamp(25px,5vw,36px);margin:14px 0 8px}
+.link-intro .link-description{color:#aab5cc;font-size:clamp(15px,3.5vw,19px);line-height:1.7}
+.link-closed{margin-top:18px;padding:20px;border:1px solid #2d3a58;border-radius:16px;background:#17213a;color:#e6ebf7;font-size:17px}
+.rule-heading{margin:20px 0 10px;color:#9aadd7;font-weight:900;letter-spacing:.16em;font-size:13px}
+.rules-list{display:grid;gap:0;border:1px solid #2c3854;border-radius:17px;overflow:hidden;background:#151e35}
+.rule-item{display:flex;gap:14px;padding:16px;border-bottom:1px solid #2c3854}
+.rule-item:last-child{border-bottom:0}
+.rule-icon{width:48px;height:48px;flex:0 0 48px;border-radius:13px;background:#243452;display:grid;place-items:center;font-size:22px}
+.rule-item strong{display:block;color:#eef2ff;font-size:16px;margin:1px 0 4px}
+.rule-item p{margin:0;color:#aab5cc;line-height:1.6}
+.leaderboard-public{background:#101a33;color:#edf2ff;border-radius:16px;padding:16px;margin:14px 0}
+.leaderboard-public h3{color:#fff;margin:0 0 12px}
+.public-rank-row{display:grid;grid-template-columns:35px 1fr auto;gap:10px;align-items:center;padding:11px 8px;border-bottom:1px solid #2b3855}
+.public-rank-row:last-child{border-bottom:0}
+.public-rank-number{font-size:19px;font-weight:900;color:#c5d2ef}
+.public-rank-row:nth-child(2) .public-rank-number{color:#e5c85a}
+.public-rank-row:nth-child(3) .public-rank-number{color:#c5cedd}
+.public-rank-row:nth-child(4) .public-rank-number{color:#d39b6c}
+.public-rank-name{font-weight:800}
+.public-rank-meta{font-size:12px;color:#aab5cc}
+.public-rank-score{font-weight:800;white-space:nowrap}
+
+body.link-closed-mode{background:#0d142b;color:#e8edfb}
+body.link-closed-mode header{background:#10235f;border-bottom:1px solid #26334f}
+body.link-closed-mode main{min-height:calc(100vh - 220px)}
+body.link-closed-mode .link-intro{margin-top:18px}
+body.link-closed-mode #publicPanel{background:#151e35;border-color:#2b3855;color:#e8edfb}
+body.link-closed-mode #publicPanel h2,body.link-closed-mode #publicPanel h3{color:#e8edfb}
+body.link-closed-mode #publicPanel .muted{color:#aab5cc}
+body.link-closed-mode footer{background:#0d142b;color:#aab5cc;border-color:#26334f}
 </style>
 </head>
  
@@ -359,6 +392,23 @@ footer {
 </header>
  
 <main>
+  <section id="linkIntro" class="link-intro">
+    <span class="eyebrow">EXAM MODE</span>
+    <h2 id="linkExamTitle">JTA Open Mock Examination</h2>
+    <p id="linkExamDescription" class="link-description">Open the special examination link provided by the academy.</p>
+    <div id="linkClosedMessage" class="link-closed">This examination link is being checked. Please wait.</div>
+    <div id="examRules" class="hidden">
+      <div class="rule-heading">READ THE RULES</div>
+      <div class="rules-list">
+        <div class="rule-item"><div class="rule-icon">⏱</div><div><strong>Fixed examination countdown</strong><p>The timer starts when you press Start and submits automatically when it reaches zero.</p></div></div>
+        <div class="rule-item"><div class="rule-icon">💡</div><div><strong>No hints while you write</strong><p>Correct answers and explanations are made available only after the academy releases results and corrections.</p></div></div>
+        <div class="rule-item"><div class="rule-icon">▦</div><div><strong>Move around freely</strong><p>Use the question navigator to move between questions and change your answers before submitting.</p></div></div>
+        <div class="rule-item"><div class="rule-icon">▣</div><div><strong>Answers save automatically</strong><p>Your answers are saved as you work. If your connection drops, reconnect and continue on the same device and browser.</p></div></div>
+        <div class="rule-item"><div class="rule-icon">↪</div><div><strong>One attempt only</strong><p>Once you submit, you cannot retake this examination unless the academy deletes your result and restores your attempt.</p></div></div>
+        <div class="rule-item"><div class="rule-icon">🏆</div><div><strong>See your rank</strong><p>After submission, you can view the top three candidates and your position on this examination's leaderboard.</p></div></div>
+      </div>
+    </div>
+  </section>
   <div id="notice" class="message hidden" role="status" aria-live="polite"></div>
  
   <section id="publicPanel" class="panel">
@@ -379,7 +429,7 @@ footer {
       <button id="publicResultsBtn" type="button" class="secondary">My Public Mock Results</button>
       
       <div id="publicExamList" style="margin-top:18px"></div>
-      <div id="publicResultsList"></div><div id="publicCorrectionList"></div>
+      <div id="publicResultsList"></div><div id="publicLeaderboard"></div><div id="publicCorrectionList"></div>
     </div>
   </section>
 
@@ -535,7 +585,7 @@ function restoreActiveAttempt() {
 }
  
 function getToken() {
-  return publicMode ? localStorage.getItem(PUBLIC_TOKEN_KEY) : sessionStorage.getItem("jta_student_token");
+  return publicMode ? localStorage.getItem(PUBLIC_TOKEN_STORAGE_KEY) : sessionStorage.getItem("jta_student_token");
 }
  
 function showNotice(message, isError = false) {
@@ -558,9 +608,13 @@ function showPanel(name) {
 let publicMode = false;
 const PUBLIC_TOKEN_KEY = "jta_public_mock_token_v1";
 const PUBLIC_CANDIDATE_KEY = "jta_public_mock_candidate_v1";
+const PUBLIC_EXAM_TOKEN = new URLSearchParams(window.location.search).get("test") || "";
+const PUBLIC_TOKEN_STORAGE_KEY = PUBLIC_TOKEN_KEY + "_" + (PUBLIC_EXAM_TOKEN ? PUBLIC_EXAM_TOKEN.slice(0,18) : "no_link");
+const PUBLIC_CANDIDATE_STORAGE_KEY = PUBLIC_CANDIDATE_KEY + "_" + (PUBLIC_EXAM_TOKEN ? PUBLIC_EXAM_TOKEN.slice(0,18) : "no_link");
+let publicLinkExam = null;
 
 async function api(path, options = {}) {
-  const token = publicMode ? localStorage.getItem(PUBLIC_TOKEN_KEY) : sessionStorage.getItem("jta_student_token");
+  const token = publicMode ? localStorage.getItem(PUBLIC_TOKEN_STORAGE_KEY) : sessionStorage.getItem("jta_student_token");
   if (!token) throw new Error(publicMode ? "Register for the public mock first." : "Your login session was not found. Please log in first.");
   let requestPath = path;
   if (publicMode) {
@@ -590,20 +644,20 @@ async function api(path, options = {}) {
   // This is the same email + phone login the candidate normally uses.
   if (publicMode && result.response.status === 401 && !path.startsWith("/api/public/login")) {
     let candidate = null;
-    try { candidate = JSON.parse(localStorage.getItem(PUBLIC_CANDIDATE_KEY) || "null"); } catch (_) {}
+    try { candidate = JSON.parse(localStorage.getItem(PUBLIC_CANDIDATE_STORAGE_KEY) || "null"); } catch (_) {}
     const email = candidate && (candidate.email || "");
     const phone = candidate && (candidate.phone || "");
     if (email && phone) {
       const loginResponse = await fetch(API + "/api/public/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, phone })
+        body: JSON.stringify({ email, phone, examToken: PUBLIC_EXAM_TOKEN })
       });
       let loginData = {};
       try { loginData = await loginResponse.json(); } catch (_) {}
       if (loginResponse.ok && loginData.token && loginData.candidate) {
-        localStorage.setItem(PUBLIC_TOKEN_KEY, loginData.token);
-        localStorage.setItem(PUBLIC_CANDIDATE_KEY, JSON.stringify(loginData.candidate));
+        localStorage.setItem(PUBLIC_TOKEN_STORAGE_KEY, loginData.token);
+        localStorage.setItem(PUBLIC_CANDIDATE_STORAGE_KEY, JSON.stringify(loginData.candidate));
         window.jtaPublicCandidate = loginData.candidate;
         window.jtaPublicDepartment = loginData.candidate.department || "";
         result = await send(loginData.token);
@@ -1190,7 +1244,7 @@ async function submitExam(autoSubmit) {
     $("resultsList").replaceChildren();
     $("resultsList").appendChild(renderResultCard(result));
     showPanel(publicMode ? "publicPanel" : "homePanel");
-    if(publicMode) await loadPublicResults();
+    if(publicMode){await loadPublicResults();await loadPublicLeaderboard();}
     showNotice(autoSubmit
       ? "Exam submitted successfully. Your examination has been closed."
       : "Your examination has been submitted successfully. Your examination has been closed.");
@@ -1258,8 +1312,8 @@ async function loadResults() {
 }
  
 async function activatePublicSession(data,label){
-  localStorage.setItem(PUBLIC_TOKEN_KEY,data.token);
-  localStorage.setItem(PUBLIC_CANDIDATE_KEY, JSON.stringify(data.candidate));
+  localStorage.setItem(PUBLIC_TOKEN_STORAGE_KEY,data.token);
+  localStorage.setItem(PUBLIC_CANDIDATE_STORAGE_KEY, JSON.stringify(data.candidate));
   publicMode=true;
   window.jtaPublicDepartment=data.candidate.department;window.jtaPublicCandidate=data.candidate;
   $("publicRegistration").classList.add("hidden");$("publicLoginWrap").classList.add("hidden");$("publicActions").classList.remove("hidden");
@@ -1267,49 +1321,85 @@ async function activatePublicSession(data,label){
   $("publicWelcome").textContent="You are signed in. Results and corrections will appear here after the academy releases them.";$("publicWelcome").classList.remove("hidden");
   await loadPublicExams();await loadPublicResults();showPanel("publicPanel");
 }
-async function publicRegister(event){event.preventDefault();const btn=$("publicRegisterBtn");btn.disabled=true;try{const r=await fetch(API+"/api/public/register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({fullName:$("publicFullName").value,phone:$("publicPhone").value,email:$("publicEmail").value,department:$("publicDepartment").value})});const d=await r.json();if(!r.ok)throw Error(d.error||"Registration failed.");await activatePublicSession(d,"Registration successful");}catch(e){$("publicWelcome").textContent=e.message;$("publicWelcome").classList.remove("hidden");}finally{btn.disabled=false;}}
-async function publicLogin(event){event.preventDefault();const btn=$("publicLoginBtn");btn.disabled=true;try{const r=await fetch(API+"/api/public/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:$("publicLoginEmail").value,phone:$("publicLoginPhone").value})});const d=await r.json();if(!r.ok)throw Error(d.error||"Login failed.");await activatePublicSession(d,"Welcome back");}catch(e){$("publicWelcome").textContent=e.message;$("publicWelcome").classList.remove("hidden");}finally{btn.disabled=false;}}
+async function publicRegister(event){event.preventDefault();const btn=$("publicRegisterBtn");btn.disabled=true;try{const r=await fetch(API+"/api/public/register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({fullName:$("publicFullName").value,phone:$("publicPhone").value,email:$("publicEmail").value,department:$("publicDepartment").value,examToken:PUBLIC_EXAM_TOKEN})});const d=await r.json();if(!r.ok)throw Error(d.error||"Registration failed.");await activatePublicSession(d,"Registration successful");}catch(e){$("publicWelcome").textContent=e.message;$("publicWelcome").classList.remove("hidden");}finally{btn.disabled=false;}}
+async function publicLogin(event){event.preventDefault();const btn=$("publicLoginBtn");btn.disabled=true;try{const r=await fetch(API+"/api/public/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:$("publicLoginEmail").value,phone:$("publicLoginPhone").value,examToken:PUBLIC_EXAM_TOKEN})});const d=await r.json();if(!r.ok)throw Error(d.error||"Login failed.");await activatePublicSession(d,"Welcome back");}catch(e){$("publicWelcome").textContent=e.message;$("publicWelcome").classList.remove("hidden");}finally{btn.disabled=false;}}
 async function loadPublicExams(){
   publicMode = true;
   const box = $("publicExamList");
-  box.textContent = "Loading open mock examinations...";
+  box.textContent = "Loading this examination...";
   try {
     const data = await api("/api/exams");
     const exams = unwrapList(data, ["exams", "data", "results"]);
     box.replaceChildren();
-    if (!exams.length) {
-      box.textContent = "No open mock examinations are currently available for your department.";
-      return;
-    }
+    if (!exams.length) { box.textContent = "This examination is no longer available."; return; }
     exams.forEach(exam => {
-      const card = document.createElement("article");
-      card.className = "panel";
-      const title = document.createElement("h3");
-      title.textContent = exam.title || "JTA Open Mock Examination";
-      const details = document.createElement("p");
-      details.className = "muted";
-      const duration = Number(exam.duration_minutes || 0);
-      const remaining = Number(exam.attempts_remaining ?? 0);
-      details.textContent = [
-        exam.department || window.jtaPublicDepartment || "",
-        duration > 0 ? duration + " minutes" : "",
-        remaining + " attempt(s) remaining"
-      ].filter(Boolean).join(" · ");
-      const start = document.createElement("button");
-      start.type = "button";
-      start.textContent = remaining > 0 ? "Start Examination" : "Attempts Used";
-      start.disabled = remaining <= 0;
-      start.addEventListener("click", () => startExam(exam));
-      card.append(title, details, start);
-      box.appendChild(card);
+      const card = document.createElement("article");card.className="panel";
+      const title = document.createElement("h3");title.textContent=exam.title||"JTA Open Mock Examination";
+      const details=document.createElement("p");details.className="muted";
+      details.textContent=[exam.department||window.jtaPublicDepartment||"",Number(exam.duration_minutes||0)>0?Number(exam.duration_minutes)+" minutes":"", "1 attempt"].filter(Boolean).join(" · ");
+      const start=document.createElement("button");start.type="button";
+      start.textContent=Number(exam.attempts_remaining)>0?"Start Examination":"Attempt Used";
+      start.disabled=Number(exam.attempts_remaining)<=0;
+      start.addEventListener("click",()=>startExam(exam));
+      card.append(title,details,start);box.appendChild(card);
     });
-  } catch (error) {
-    box.textContent = error.message || "Unable to load open mock examinations.";
-  }
+  } catch (error) { box.textContent=error.message||"Unable to load this examination."; }
 }
 
+async function loadPublicLeaderboard(){
+ const box=$("publicLeaderboard");if(!box)return;
+ box.replaceChildren();
+ try{
+  const data=await api("/api/public/leaderboard");
+  const section=document.createElement("section");section.className="leaderboard-public";
+  const heading=document.createElement("h3");heading.textContent="🏆 Examination Leaderboard — Top 3";section.appendChild(heading);
+  const top=Array.isArray(data.top3)?data.top3:[];
+  if(!top.length){const p=document.createElement("p");p.className="public-rank-meta";p.textContent="The leaderboard will appear after candidates submit this examination.";section.appendChild(p);}
+  top.forEach((r,i)=>{
+   const row=document.createElement("div");row.className="public-rank-row";
+   const rank=document.createElement("div");rank.className="public-rank-number";rank.textContent=String(i+1);
+   const person=document.createElement("div");const name=document.createElement("div");name.className="public-rank-name";name.textContent=r.full_name||"Candidate";
+   const meta=document.createElement("div");meta.className="public-rank-meta";meta.textContent=r.department||"Candidate";person.append(name,meta);
+   const score=document.createElement("div");score.className="public-rank-score";score.textContent=r.result_released?`${r.score}/${r.total_marks}`:"Score withheld";
+   row.append(rank,person,score);section.appendChild(row);
+  });
+  const mine=document.createElement("p");mine.style.margin="14px 0 0";mine.style.fontWeight="800";
+  mine.textContent=data.my_rank?`Your rank: #${data.my_rank} of ${data.total_candidates}`:"Your rank will appear after you submit this examination.";
+  section.appendChild(mine);box.appendChild(section);
+ }catch(e){box.textContent=e.message||"Leaderboard is not available yet.";}
+}
 async function loadPublicResults(){publicMode=true;const box=$("publicResultsList");box.textContent="Loading submitted results...";try{const d=await api("/api/results");const rows=unwrapList(d,["results"]);box.replaceChildren();if(!rows.length){box.textContent="No submitted public mock attempts yet.";return;}rows.forEach(r=>{const card=document.createElement("article");card.className="result-card";const h=document.createElement("h3");h.textContent=r.exam_title||"Public Mock Examination";card.appendChild(h);if(Number(r.result_released)!==1){const p=document.createElement("p");p.className="muted";p.textContent="Your examination has been submitted. The academy is withholding your score and corrections until the official release.";card.appendChild(p);}else{const score=document.createElement("p");score.className="result-score";score.textContent=`Your score: ${r.score}/${r.total_marks}`;card.appendChild(score);const b=document.createElement("button");b.type="button";b.textContent="View Corrections";b.onclick=()=>loadPublicCorrections(r.attempt_id);card.appendChild(b);}box.appendChild(card);});}catch(e){box.textContent=e.message;}}
 async function loadPublicCorrections(id){const box=$("publicCorrectionList");box.textContent="Loading corrections...";try{const d=await api("/api/public/results/"+encodeURIComponent(id)+"/corrections");box.replaceChildren();const h=document.createElement("h3");h.textContent="Examination Corrections";box.appendChild(h);(d.corrections||[]).forEach((q,i)=>{const card=document.createElement("article");card.className="result-card";const p=document.createElement("p");p.textContent=`Question ${i+1}. ${q.question_text||""}`;card.appendChild(p);let opts=[];try{opts=JSON.parse(q.options_json||"[]");}catch{}if(!Array.isArray(opts)&&opts&&typeof opts==="object")opts=Object.entries(opts).map(([label,text])=>({label,text}));const ol=document.createElement("ol");ol.type="A";opts.forEach(o=>{const li=document.createElement("li");li.textContent=typeof o==="string"?o:(o.text||o.label||o.option||"");ol.appendChild(li)});card.appendChild(ol);const optionText=(raw)=>{if(raw===null||raw===undefined||String(raw).trim()==="")return "Not answered";const v=String(raw).trim();let idx=/^\d+$/.test(v)?Number(v):(/^[A-H]$/i.test(v)?v.toUpperCase().charCodeAt(0)-65:-1);if(idx>=0&&idx<opts.length){const o=opts[idx];return typeof o==="string"?o:(o.text||o.label||o.option||o.value||v);}const found=opts.find(o=>String(typeof o==="object"?(o.label||o.key||""):"").toUpperCase()===v.toUpperCase());return found?(typeof found==="string"?found:(found.text||found.option||v)):v;};const yours=document.createElement("p");yours.textContent="Your answer: "+optionText(q.selected_answer);card.appendChild(yours);const correct=document.createElement("p");correct.className="success";correct.textContent="Correct answer: "+optionText(q.correct_answer);card.appendChild(correct);const marks=document.createElement("p");marks.textContent=`Marks awarded: ${q.marks_awarded}/${q.marks}`;card.appendChild(marks);box.appendChild(card);});}catch(e){box.textContent=e.message;}}
+async function loadPublicExamLink(){
+ const closed=$("linkClosedMessage"),rules=$("examRules");
+ $("publicRegistration").classList.add("hidden");$("publicLoginWrap").classList.add("hidden");$("publicActions").classList.add("hidden");
+ if(!PUBLIC_EXAM_TOKEN){
+  $("linkExamTitle").textContent="JTA Open Mock Examination";
+  $("linkExamDescription").textContent="Each examination has its own special link. Please open the link shared by the academy.";
+  closed.textContent="This examination link is missing. Please use the special test link provided by JTA.";
+  return false;
+ }
+ try{
+  const r=await fetch(API+"/api/public/exam-link?token="+encodeURIComponent(PUBLIC_EXAM_TOKEN));
+  const d=await r.json();if(!r.ok)throw new Error(d.error||"This examination link is unavailable.");
+  publicLinkExam=d.exam||{};
+  $("linkExamTitle").textContent=publicLinkExam.title||"JTA Open Mock Examination";
+  $("linkExamDescription").textContent=publicLinkExam.description||"Complete this examination within the stated time. Each candidate has one attempt.";
+  if(!d.available||Number(d.question_count)<=0){
+   closed.textContent="CBT is closed for now. Please check back soon.";
+   document.body.classList.add("link-closed-mode");
+   return false;
+  }
+  closed.classList.add("hidden");rules.classList.remove("hidden");
+  $("publicRegistration").classList.remove("hidden");$("publicLoginWrap").classList.remove("hidden");
+  return true;
+ }catch(e){
+  closed.textContent=e.message||"This examination link is unavailable or has been revoked.";
+  document.body.classList.add("link-closed-mode");
+  return false;
+ }
+}
+
 $("publicRegistration").addEventListener("submit",publicRegister);
 $("publicLoginForm").addEventListener("submit",publicLogin);
 $("publicLoadExamsBtn").addEventListener("click",loadPublicExams);
@@ -1327,63 +1417,44 @@ $("backBtn").addEventListener("click", () => {
 window.addEventListener("beforeunload", saveActiveAttempt);
 window.addEventListener("pagehide", saveActiveAttempt);
 
-// Public candidate sessions are intentionally persistent across page reloads.
-// Do not erase a saved token because of a temporary network/server error.
-publicMode = true;
-const publicTokenAtBoot = localStorage.getItem(PUBLIC_TOKEN_KEY);
-if (publicTokenAtBoot) {
-  let cachedCandidate = null;
-  try { cachedCandidate = JSON.parse(localStorage.getItem(PUBLIC_CANDIDATE_KEY) || "null"); } catch (_) {}
-  if (cachedCandidate) {
-    window.jtaPublicCandidate = cachedCandidate;
-    window.jtaPublicDepartment = cachedCandidate.department || "";
-    $("publicRegistration").classList.add("hidden");
-    $("publicLoginWrap").classList.add("hidden");
-    $("publicActions").classList.remove("hidden");
-    $("publicCandidateLabel").textContent = `Welcome back: ${cachedCandidate.full_name || cachedCandidate.fullName || "Candidate"} · ${cachedCandidate.department || ""}`;
+// Public candidate sessions are isolated by the unique examination link.
+(async()=>{
+ const linkReady=await loadPublicExamLink();
+ if(!linkReady){showPanel("publicPanel");return;}
+ const publicTokenAtBoot=localStorage.getItem(PUBLIC_TOKEN_STORAGE_KEY);
+ if(publicTokenAtBoot){
+  let cachedCandidate=null;
+  try{cachedCandidate=JSON.parse(localStorage.getItem(PUBLIC_CANDIDATE_STORAGE_KEY)||"null");}catch(_){}
+  if(cachedCandidate){
+   window.jtaPublicCandidate=cachedCandidate;window.jtaPublicDepartment=cachedCandidate.department||"";
+   $("publicRegistration").classList.add("hidden");$("publicLoginWrap").classList.add("hidden");$("publicActions").classList.remove("hidden");
+   $("publicCandidateLabel").textContent=`Welcome back: ${cachedCandidate.full_name||cachedCandidate.fullName||"Candidate"} · ${cachedCandidate.department||""}`;
   }
-  (async () => {
-    try {
-      const d = await api("/api/exams");
-      if (d.candidate) {
-        window.jtaPublicDepartment = d.candidate.department || "";
-        window.jtaPublicCandidate = d.candidate;
-        localStorage.setItem(PUBLIC_CANDIDATE_KEY, JSON.stringify(d.candidate));
-        $("publicCandidateLabel").textContent = `Welcome back: ${d.candidate.full_name || d.candidate.fullName || "Candidate"} · ${d.candidate.department || ""}`;
-      }
-      $("publicRegistration").classList.add("hidden");
-      $("publicLoginWrap").classList.add("hidden");
-      $("publicActions").classList.remove("hidden");
-      await loadPublicExams();
-      await loadPublicResults();
-      if (!restoreActiveAttempt()) showPanel("publicPanel");
-    } catch (error) {
-      const isUnauthorized = Number(error && error.status) === 401;
-      if (isUnauthorized) {
-        // Keep cached candidate details so the candidate can retry login without
-        // registering again. The API helper has already attempted silent renewal.
-        localStorage.removeItem(PUBLIC_TOKEN_KEY);
-        $("publicRegistration").classList.remove("hidden");
-        $("publicLoginWrap").classList.remove("hidden");
-        $("publicActions").classList.add("hidden");
-        $("publicWelcome").textContent = "Your session needs you to log in again. Use your registered email address and phone number.";
-      } else {
-        // Keep the token and cached identity. A temporary connection failure must
-        // never sign the candidate out or destroy their locally saved attempt.
-        $("publicWelcome").textContent = "Your saved login is still on this device, but the server could not be reached. Check your connection and tap Load Open Mock Examinations to retry.";
-        if (cachedCandidate) {
-          $("publicRegistration").classList.add("hidden");
-          $("publicLoginWrap").classList.add("hidden");
-          $("publicActions").classList.remove("hidden");
-        }
-      }
-      $("publicWelcome").classList.remove("hidden");
-      if (!restoreActiveAttempt()) showPanel("publicPanel");
-    }
-  })();
-} else {
-  showPanel("publicPanel");
-}
+  try{
+   const d=await api("/api/exams");
+   if(d.candidate){
+    window.jtaPublicDepartment=d.candidate.department||"";window.jtaPublicCandidate=d.candidate;
+    localStorage.setItem(PUBLIC_CANDIDATE_STORAGE_KEY,JSON.stringify(d.candidate));
+    $("publicCandidateLabel").textContent=`Welcome back: ${d.candidate.full_name||d.candidate.fullName||"Candidate"} · ${d.candidate.department||""}`;
+   }
+   $("publicRegistration").classList.add("hidden");$("publicLoginWrap").classList.add("hidden");$("publicActions").classList.remove("hidden");
+   await loadPublicExams();await loadPublicResults();await loadPublicLeaderboard();
+   if(!restoreActiveAttempt())showPanel("publicPanel");
+  }catch(error){
+   const isUnauthorized=Number(error&&error.status)===401;
+   if(isUnauthorized){
+    localStorage.removeItem(PUBLIC_TOKEN_STORAGE_KEY);
+    $("publicRegistration").classList.remove("hidden");$("publicLoginWrap").classList.remove("hidden");$("publicActions").classList.add("hidden");
+    $("publicWelcome").textContent="Please register or log in for this examination using this special link.";
+   }else{
+    $("publicWelcome").textContent="Your saved login is still on this device, but the server could not be reached. Check your connection and retry.";
+    if(cachedCandidate){$("publicRegistration").classList.add("hidden");$("publicLoginWrap").classList.add("hidden");$("publicActions").classList.remove("hidden");}
+   }
+   $("publicWelcome").classList.remove("hidden");
+   if(!restoreActiveAttempt())showPanel("publicPanel");
+  }
+ }else{showPanel("publicPanel");}
+})();
 </script>
 </body>
 </html>
