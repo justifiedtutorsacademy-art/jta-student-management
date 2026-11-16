@@ -388,7 +388,6 @@ body.link-closed-mode footer{background:#0d142b;color:#aab5cc;border-color:#2633
 <body>
 <header>
   <h1>Justified Tutor's Academy</h1>
-  <p>JTA OPEN MOCK EXAMINATION</p>
 </header>
  
 <main>
@@ -412,8 +411,6 @@ body.link-closed-mode footer{background:#0d142b;color:#aab5cc;border-color:#2633
   <div id="notice" class="message hidden" role="status" aria-live="polite"></div>
  
   <section id="publicPanel" class="panel">
-    <h2>JTA OPEN MOCK EXAMINATION</h2>
-    <p class="muted">Register once or log in with your registered email address and phone number. Results and corrections are shown only after the academy releases them.</p>
     <div id="publicWelcome" class="message hidden"></div>
     <form id="publicRegistration">
       <label>Full name<input id="publicFullName" type="text" maxlength="140" autocomplete="name" required style="display:block;width:100%;padding:12px;border:1px solid var(--border);border-radius:8px;margin:6px 0 12px"></label>
@@ -424,7 +421,7 @@ body.link-closed-mode footer{background:#0d142b;color:#aab5cc;border-color:#2633
     </form>
     <div id="publicLoginWrap" style="margin-top:18px;border-top:1px solid var(--border);padding-top:14px"><h3>Already registered?</h3><form id="publicLoginForm"><label>Email address<input id="publicLoginEmail" type="email" required autocomplete="email" style="display:block;width:100%;padding:12px;border:1px solid var(--border);border-radius:8px;margin:6px 0 12px"></label><label>Phone number<input id="publicLoginPhone" type="tel" required autocomplete="tel" style="display:block;width:100%;padding:12px;border:1px solid var(--border);border-radius:8px;margin:6px 0 12px"></label><button type="submit" id="publicLoginBtn">Login to Open Mock</button></form></div>
     <div id="publicActions" class="hidden">
-      <p id="publicCandidateLabel" class="muted"></p>
+      <h2 id="publicCandidateLabel" style="margin:0 0 16px;font-size:22px;line-height:1.35"></h2>
       <button id="publicLoadExamsBtn" type="button">Load Open Mock Examinations</button>
       <button id="publicResultsBtn" type="button" class="secondary">My Public Mock Results</button>
       
@@ -1317,8 +1314,8 @@ async function activatePublicSession(data,label){
   publicMode=true;
   window.jtaPublicDepartment=data.candidate.department;window.jtaPublicCandidate=data.candidate;
   $("publicRegistration").classList.add("hidden");$("publicLoginWrap").classList.add("hidden");$("publicActions").classList.remove("hidden");
-  $("publicCandidateLabel").textContent=`${label}: ${data.candidate.full_name||data.candidate.fullName} · ${data.candidate.department}`;
-  $("publicWelcome").textContent="You are signed in. Results and corrections will appear here after the academy releases them.";$("publicWelcome").classList.remove("hidden");
+  $("publicCandidateLabel").textContent=`Welcome back: ${data.candidate.full_name||data.candidate.fullName||"Candidate"} · ${data.candidate.department||""} Department Exam`;
+  $("publicWelcome").textContent="";$("publicWelcome").classList.add("hidden");
   await loadPublicExams();await loadPublicResults();showPanel("publicPanel");
 }
 async function publicRegister(event){event.preventDefault();const btn=$("publicRegisterBtn");btn.disabled=true;try{const r=await fetch(API+"/api/public/register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({fullName:$("publicFullName").value,phone:$("publicPhone").value,email:$("publicEmail").value,department:$("publicDepartment").value,examToken:PUBLIC_EXAM_TOKEN})});const d=await r.json();if(!r.ok)throw Error(d.error||"Registration failed.");await activatePublicSession(d,"Registration successful");}catch(e){$("publicWelcome").textContent=e.message;$("publicWelcome").classList.remove("hidden");}finally{btn.disabled=false;}}
@@ -1428,14 +1425,14 @@ window.addEventListener("pagehide", saveActiveAttempt);
   if(cachedCandidate){
    window.jtaPublicCandidate=cachedCandidate;window.jtaPublicDepartment=cachedCandidate.department||"";
    $("publicRegistration").classList.add("hidden");$("publicLoginWrap").classList.add("hidden");$("publicActions").classList.remove("hidden");
-   $("publicCandidateLabel").textContent=`Welcome back: ${cachedCandidate.full_name||cachedCandidate.fullName||"Candidate"} · ${cachedCandidate.department||""}`;
+   $("publicCandidateLabel").textContent=`Welcome back: ${cachedCandidate.full_name||cachedCandidate.fullName||"Candidate"} · ${cachedCandidate.department||""} Department Exam`;
   }
   try{
    const d=await api("/api/exams");
    if(d.candidate){
     window.jtaPublicDepartment=d.candidate.department||"";window.jtaPublicCandidate=d.candidate;
     localStorage.setItem(PUBLIC_CANDIDATE_STORAGE_KEY,JSON.stringify(d.candidate));
-    $("publicCandidateLabel").textContent=`Welcome back: ${d.candidate.full_name||d.candidate.fullName||"Candidate"} · ${d.candidate.department||""}`;
+    $("publicCandidateLabel").textContent=`Welcome back: ${d.candidate.full_name||d.candidate.fullName||"Candidate"} · ${d.candidate.department||""} Department Exam`;
    }
    $("publicRegistration").classList.add("hidden");$("publicLoginWrap").classList.add("hidden");$("publicActions").classList.remove("hidden");
    await loadPublicExams();await loadPublicResults();await loadPublicLeaderboard();
