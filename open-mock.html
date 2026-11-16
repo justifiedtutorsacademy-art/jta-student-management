@@ -997,13 +997,18 @@ async function startExam(examOrId) {
   }
  
   let selectedSubjects = [];
-  // Some API responses omit exam_type or return it under a different property.
-  // Show the subject picker for combined exams, and use the combined flow when
-  // the type is missing so the backend never receives an empty subject selection.
+  // General / Custom examinations are open to all departments and use every
+  // question assigned to the examination. They do not require the JAMB 4-subject
+  // picker. Keep the existing four-subject selection for JAMB Combined exams.
   const examType = String(
     examObject.exam_type ?? examObject.examType ?? examObject.type ?? examObject.format ?? ""
-  ).trim().toLowerCase();
-  const isCombinedExam = publicMode || examType.includes("combined") || examType === "";
+  ).trim().toLowerCase().replace(/[ _]+/g, "-");
+  const isGeneralCustomExam = [
+    "general", "custom", "general/custom", "general-custom",
+    "custom-exam", "all-subjects", "all-subject"
+  ].includes(examType);
+  const isCombinedExam = !isGeneralCustomExam &&
+    (publicMode || examType.includes("combined") || examType === "");
   if (isCombinedExam) {
     selectedSubjects = await chooseFourSubjects(examObject);
     if (!selectedSubjects) return;
