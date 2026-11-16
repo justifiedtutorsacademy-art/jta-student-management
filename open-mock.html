@@ -349,105 +349,21 @@ footer {
 .subject-choice { display:flex; align-items:center; gap:10px; padding:11px; border:1px solid var(--border); border-radius:9px; margin:8px 0; background:white; }
 .subject-choice input { width:18px; height:18px; }
  #homePanel,#resultsPanel,#openPublicMockBtn{display:none!important}
-
-.link-intro{background:#0d142b;color:#e8edfb;border:1px solid #26334f;border-radius:20px;padding:22px;margin:0 0 18px;box-shadow:0 12px 30px rgba(5,10,28,.16)}
-.link-intro .eyebrow{display:inline-block;background:#e7edff;color:#1b3fa5;border-radius:24px;padding:6px 13px;font-size:12px;font-weight:900;letter-spacing:.12em}
-.link-intro h2{color:#f1f4ff;font-size:clamp(25px,5vw,36px);margin:14px 0 8px}
-.link-intro .link-description{color:#aab5cc;font-size:clamp(15px,3.5vw,19px);line-height:1.7}
-.link-closed{margin-top:18px;padding:20px;border:1px solid #2d3a58;border-radius:16px;background:#17213a;color:#e6ebf7;font-size:17px}
-.rule-heading{margin:20px 0 10px;color:#9aadd7;font-weight:900;letter-spacing:.16em;font-size:13px}
-.rules-list{display:grid;gap:0;border:1px solid #2c3854;border-radius:17px;overflow:hidden;background:#151e35}
-.rule-item{display:flex;gap:14px;padding:16px;border-bottom:1px solid #2c3854}
-.rule-item:last-child{border-bottom:0}
-.rule-icon{width:48px;height:48px;flex:0 0 48px;border-radius:13px;background:#243452;display:grid;place-items:center;font-size:22px}
-.rule-item strong{display:block;color:#eef2ff;font-size:16px;margin:1px 0 4px}
-.rule-item p{margin:0;color:#aab5cc;line-height:1.6}
-.leaderboard-public{background:#101a33;color:#edf2ff;border-radius:16px;padding:16px;margin:14px 0}
-.leaderboard-public h3{color:#fff;margin:0 0 12px}
-.public-rank-row{display:grid;grid-template-columns:35px 1fr auto;gap:10px;align-items:center;padding:11px 8px;border-bottom:1px solid #2b3855}
-.public-rank-row:last-child{border-bottom:0}
-.public-rank-number{font-size:19px;font-weight:900;color:#c5d2ef}
-.public-rank-row:nth-child(2) .public-rank-number{color:#e5c85a}
-.public-rank-row:nth-child(3) .public-rank-number{color:#c5cedd}
-.public-rank-row:nth-child(4) .public-rank-number{color:#d39b6c}
-.public-rank-name{font-weight:800}
-.public-rank-meta{font-size:12px;color:#aab5cc}
-.public-rank-score{font-weight:800;white-space:nowrap}
-
-body.link-closed-mode{background:#0d142b;color:#e8edfb}
-body.link-closed-mode header{background:#10235f;border-bottom:1px solid #26334f}
-body.link-closed-mode main{min-height:calc(100vh - 220px)}
-body.link-closed-mode .link-intro{margin-top:18px}
-body.link-closed-mode #publicPanel{background:#151e35;border-color:#2b3855;color:#e8edfb}
-body.link-closed-mode #publicPanel h2,body.link-closed-mode #publicPanel h3{color:#e8edfb}
-body.link-closed-mode #publicPanel .muted{color:#aab5cc}
-body.link-closed-mode footer{background:#0d142b;color:#aab5cc;border-color:#26334f}
-
-.jta-masthead{background:linear-gradient(110deg,#e8f5fc 0%,#f3eaff 100%);color:#1050BD;padding:26px 16px 24px;text-align:center;border-bottom:6px solid #A653D8}
-.jta-masthead .jta-logo{display:block;width:min(370px,92%);height:auto;max-height:112px;object-fit:contain;margin:0 auto 12px}
-.jta-masthead h1{font-size:clamp(23px,5vw,36px);line-height:1.16;margin:0;color:#244eb0;font-weight:900}
-.jta-masthead .brand-motto{margin:16px 0 0;color:#2052a4;font-weight:800;letter-spacing:1.3px;font-size:15px}
-.candidate-welcome{padding:4px 0 16px;border-bottom:1px solid var(--border);margin-bottom:14px}
-.welcome-kicker{font-size:11px;font-weight:800;letter-spacing:1.4px;color:var(--accent)}
-#publicCandidateLabel{font-size:clamp(20px,4.5vw,26px);line-height:1.3;margin:5px 0 0;color:#1050BD}
-.candidate-actions{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 20px}
-.candidate-actions button{flex:1 1 180px;margin:0}
-.dashboard-section{padding:15px 0;border-top:1px solid var(--border)}
-.dashboard-section>h3{margin:0 0 12px;color:#263b62;font-size:18px}
-#publicExamList>.panel{margin:0 0 12px;border-radius:14px;box-shadow:0 4px 14px #1050bd0d}
-#publicResultsList .result-card{margin:10px 0}
-.leaderboard-section{margin-top:6px}
-@media(max-width:520px){
-  .jta-masthead{padding:18px 12px}.jta-masthead .brand-motto{font-size:12px}
-  main{margin:14px auto;padding:0 10px 24px}.panel{padding:14px}
-  .link-intro{padding:16px;border-radius:16px;margin-bottom:12px}
-  .link-intro .eyebrow{font-size:10px;padding:5px 10px}
-  .link-intro h2{font-size:22px;line-height:1.25;margin:10px 0 6px}
-  .link-intro .link-description{font-size:13px;line-height:1.45;margin:8px 0 10px}
-  .rule-heading{font-size:11px;letter-spacing:.12em;margin:12px 0 7px}
-  .rules-list{max-height:none;overflow:visible;border-radius:12px}
-  .rule-item{gap:9px;padding:10px}.rule-icon{width:36px;height:36px;min-width:36px;border-radius:10px;font-size:16px}
-  .rule-item strong{font-size:13px;line-height:1.3;margin:0 0 3px}
-  .rule-item p{font-size:12px;line-height:1.45}
-  .candidate-actions{display:grid;grid-template-columns:1fr}.candidate-actions button{width:100%}
-}
-@media(min-width:521px) and (max-width:760px){
-  .link-intro{padding:19px}.link-intro h2{font-size:27px}
-  .link-intro .link-description{font-size:15px}.rule-item{padding:12px}
-  .rule-item strong{font-size:14px}.rule-item p{font-size:13px}
-}
-
 </style>
 </head>
  
 <body>
-<header class="jta-masthead">
-  <img class="jta-logo" alt="Justified Tutors Academy logo" src="data:image/jpeg;base64,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">
-  <h1>JUSTIFIED TUTORS ACADEMY<br>EXAM PORTAL</h1>
-  <p class="brand-motto">300+ IN JAMB IS OUR CALLING</p>
+<header>
+  <h1>Justified Tutor's Academy</h1>
+  <p>JTA OPEN MOCK EXAMINATION</p>
 </header>
  
 <main>
-  <section id="linkIntro" class="link-intro">
-    <span class="eyebrow">EXAM MODE</span>
-    <h2 id="linkExamTitle">JTA Open Mock Examination</h2>
-    <p id="linkExamDescription" class="link-description">Open the special examination link provided by the academy.</p>
-    <div id="linkClosedMessage" class="link-closed">This examination link is being checked. Please wait.</div>
-    <div id="examRules" class="hidden">
-      <div class="rule-heading">READ THE RULES</div>
-      <div class="rules-list">
-        <div class="rule-item"><div class="rule-icon">⏱</div><div><strong>Fixed examination countdown</strong><p>The timer starts when you press Start and submits automatically when it reaches zero.</p></div></div>
-        <div class="rule-item"><div class="rule-icon">💡</div><div><strong>No hints while you write</strong><p>Correct answers and explanations are made available only after the academy releases results and corrections.</p></div></div>
-        <div class="rule-item"><div class="rule-icon">▦</div><div><strong>Move around freely</strong><p>Use the question navigator to move between questions and change your answers before submitting.</p></div></div>
-        <div class="rule-item"><div class="rule-icon">▣</div><div><strong>Answers save automatically</strong><p>Your answers are saved as you work. If your connection drops, reconnect and continue on the same device and browser.</p></div></div>
-        <div class="rule-item"><div class="rule-icon">↪</div><div><strong>One attempt only</strong><p>Once you submit, you cannot retake this examination unless the academy deletes your result and restores your attempt.</p></div></div>
-        <div class="rule-item"><div class="rule-icon">🏆</div><div><strong>See your rank</strong><p>After submission, you can view the top three candidates and your position on this examination's leaderboard.</p></div></div>
-      </div>
-    </div>
-  </section>
   <div id="notice" class="message hidden" role="status" aria-live="polite"></div>
  
   <section id="publicPanel" class="panel">
+    <h2>JTA OPEN MOCK EXAMINATION</h2>
+    <p class="muted">Register once or log in with your registered email address and phone number. Results and corrections are shown only after the academy releases them.</p>
     <div id="publicWelcome" class="message hidden"></div>
     <form id="publicRegistration">
       <label>Full name<input id="publicFullName" type="text" maxlength="140" autocomplete="name" required style="display:block;width:100%;padding:12px;border:1px solid var(--border);border-radius:8px;margin:6px 0 12px"></label>
@@ -458,18 +374,12 @@ body.link-closed-mode footer{background:#0d142b;color:#aab5cc;border-color:#2633
     </form>
     <div id="publicLoginWrap" style="margin-top:18px;border-top:1px solid var(--border);padding-top:14px"><h3>Already registered?</h3><form id="publicLoginForm"><label>Email address<input id="publicLoginEmail" type="email" required autocomplete="email" style="display:block;width:100%;padding:12px;border:1px solid var(--border);border-radius:8px;margin:6px 0 12px"></label><label>Phone number<input id="publicLoginPhone" type="tel" required autocomplete="tel" style="display:block;width:100%;padding:12px;border:1px solid var(--border);border-radius:8px;margin:6px 0 12px"></label><button type="submit" id="publicLoginBtn">Login to Open Mock</button></form></div>
     <div id="publicActions" class="hidden">
-      <div class="candidate-welcome">
-        <span class="welcome-kicker">CANDIDATE DASHBOARD</span>
-        <h2 id="publicCandidateLabel"></h2>
-      </div>
-      <div class="candidate-actions">
-        <button id="publicLoadExamsBtn" type="button">Available Examination</button>
-        <button id="publicResultsBtn" type="button" class="secondary">My Results</button>
-      </div>
-      <section class="dashboard-section"><h3>Examination</h3><div id="publicExamList"></div></section>
-      <section class="dashboard-section"><h3>My Results</h3><div id="publicResultsList"></div></section>
-      <section class="dashboard-section leaderboard-section"><div id="publicLeaderboard"></div></section>
-      <div id="publicCorrectionList"></div>
+      <p id="publicCandidateLabel" class="muted"></p>
+      <button id="publicLoadExamsBtn" type="button">Load Open Mock Examinations</button>
+      <button id="publicResultsBtn" type="button" class="secondary">My Public Mock Results</button>
+      
+      <div id="publicExamList" style="margin-top:18px"></div>
+      <div id="publicResultsList"></div><div id="publicCorrectionList"></div>
     </div>
   </section>
 
@@ -625,7 +535,7 @@ function restoreActiveAttempt() {
 }
  
 function getToken() {
-  return publicMode ? publicStorageGet(PUBLIC_TOKEN_STORAGE_KEY) : sessionStorage.getItem("jta_student_token");
+  return publicMode ? localStorage.getItem(PUBLIC_TOKEN_KEY) : sessionStorage.getItem("jta_student_token");
 }
  
 function showNotice(message, isError = false) {
@@ -648,28 +558,10 @@ function showPanel(name) {
 let publicMode = false;
 const PUBLIC_TOKEN_KEY = "jta_public_mock_token_v1";
 const PUBLIC_CANDIDATE_KEY = "jta_public_mock_candidate_v1";
-const PUBLIC_EXAM_TOKEN = new URLSearchParams(window.location.search).get("test") || "";
-const PUBLIC_TOKEN_STORAGE_KEY = PUBLIC_TOKEN_KEY + "_" + (PUBLIC_EXAM_TOKEN ? PUBLIC_EXAM_TOKEN.slice(0,18) : "no_link");
-const PUBLIC_CANDIDATE_STORAGE_KEY = PUBLIC_CANDIDATE_KEY + "_" + (PUBLIC_EXAM_TOKEN ? PUBLIC_EXAM_TOKEN.slice(0,18) : "no_link");
-let publicLinkExam = null;
-
-// Storage helpers prevent browser storage restrictions from crashing the page.
-function publicStorageGet(key) { try { return localStorage.getItem(key); } catch (_) { return null; } }
-function publicStorageSet(key, value) { try { localStorage.setItem(key, value); return true; } catch (_) { return false; } }
-function publicStorageRemove(key) { try { localStorage.removeItem(key); } catch (_) {} }
 
 async function api(path, options = {}) {
-  let token = publicMode ? publicStorageGet(PUBLIC_TOKEN_STORAGE_KEY) : sessionStorage.getItem("jta_student_token");
-  if (publicMode && !token) {
-    let savedCandidate=null;
-    try { savedCandidate=JSON.parse(publicStorageGet(PUBLIC_CANDIDATE_STORAGE_KEY)||"null"); } catch (_) {}
-    if(savedCandidate?.email && savedCandidate?.phone && PUBLIC_EXAM_TOKEN){
-      const restored=await fetch(API+"/api/public/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:savedCandidate.email,phone:savedCandidate.phone,examToken:PUBLIC_EXAM_TOKEN})});
-      let restoredData={};try{restoredData=await restored.json();}catch(_){}
-      if(restored.ok && restoredData.token){token=restoredData.token;publicStorageSet(PUBLIC_TOKEN_STORAGE_KEY,token);if(restoredData.candidate)publicStorageSet(PUBLIC_CANDIDATE_STORAGE_KEY,JSON.stringify(restoredData.candidate));}
-    }
-  }
-  if (!token) throw new Error(publicMode ? "Register or log in for this examination first." : "Your login session was not found. Please log in first.");
+  const token = publicMode ? localStorage.getItem(PUBLIC_TOKEN_KEY) : sessionStorage.getItem("jta_student_token");
+  if (!token) throw new Error(publicMode ? "Register for the public mock first." : "Your login session was not found. Please log in first.");
   let requestPath = path;
   if (publicMode) {
     if (path === "/api/exams") requestPath = "/api/public/exams";
@@ -698,20 +590,20 @@ async function api(path, options = {}) {
   // This is the same email + phone login the candidate normally uses.
   if (publicMode && result.response.status === 401 && !path.startsWith("/api/public/login")) {
     let candidate = null;
-    try { candidate = JSON.parse(publicStorageGet(PUBLIC_CANDIDATE_STORAGE_KEY) || "null"); } catch (_) {}
+    try { candidate = JSON.parse(localStorage.getItem(PUBLIC_CANDIDATE_KEY) || "null"); } catch (_) {}
     const email = candidate && (candidate.email || "");
     const phone = candidate && (candidate.phone || "");
     if (email && phone) {
       const loginResponse = await fetch(API + "/api/public/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, phone, examToken: PUBLIC_EXAM_TOKEN })
+        body: JSON.stringify({ email, phone })
       });
       let loginData = {};
       try { loginData = await loginResponse.json(); } catch (_) {}
       if (loginResponse.ok && loginData.token && loginData.candidate) {
-        publicStorageSet(PUBLIC_TOKEN_STORAGE_KEY, loginData.token);
-        publicStorageSet(PUBLIC_CANDIDATE_STORAGE_KEY, JSON.stringify(loginData.candidate));
+        localStorage.setItem(PUBLIC_TOKEN_KEY, loginData.token);
+        localStorage.setItem(PUBLIC_CANDIDATE_KEY, JSON.stringify(loginData.candidate));
         window.jtaPublicCandidate = loginData.candidate;
         window.jtaPublicDepartment = loginData.candidate.department || "";
         result = await send(loginData.token);
@@ -1003,7 +895,7 @@ async function startExam(examOrId) {
   const examType = String(
     examObject.exam_type ?? examObject.examType ?? examObject.type ?? examObject.format ?? ""
   ).trim().toLowerCase();
-  const isCombinedExam = publicMode || examType.includes("combined") || examType === "";
+  const isCombinedExam = examType.includes("combined") || examType === "";
   if (isCombinedExam) {
     selectedSubjects = await chooseFourSubjects(examObject);
     if (!selectedSubjects) return;
@@ -1298,7 +1190,7 @@ async function submitExam(autoSubmit) {
     $("resultsList").replaceChildren();
     $("resultsList").appendChild(renderResultCard(result));
     showPanel(publicMode ? "publicPanel" : "homePanel");
-    if(publicMode){await loadPublicResults();await loadPublicLeaderboard();}
+    if(publicMode) await loadPublicResults();
     showNotice(autoSubmit
       ? "Exam submitted successfully. Your examination has been closed."
       : "Your examination has been submitted successfully. Your examination has been closed.");
@@ -1366,107 +1258,68 @@ async function loadResults() {
 }
  
 async function activatePublicSession(data,label){
-  publicStorageSet(PUBLIC_TOKEN_STORAGE_KEY,data.token);
-  publicStorageSet(PUBLIC_CANDIDATE_STORAGE_KEY, JSON.stringify(data.candidate));
+  localStorage.setItem(PUBLIC_TOKEN_KEY,data.token);
+  localStorage.setItem(PUBLIC_CANDIDATE_KEY, JSON.stringify(data.candidate));
   publicMode=true;
   window.jtaPublicDepartment=data.candidate.department;window.jtaPublicCandidate=data.candidate;
   $("publicRegistration").classList.add("hidden");$("publicLoginWrap").classList.add("hidden");$("publicActions").classList.remove("hidden");
-  $("publicCandidateLabel").textContent=`Welcome back: ${data.candidate.full_name||data.candidate.fullName||"Candidate"} · ${data.candidate.department||""} Department Exam`;
-  $("publicWelcome").textContent="";$("publicWelcome").classList.add("hidden");
-  await loadPublicExams();await loadPublicResults();await loadPublicLeaderboard();showPanel("publicPanel");
+  $("publicCandidateLabel").textContent=`${label}: ${data.candidate.full_name||data.candidate.fullName} · ${data.candidate.department}`;
+  $("publicWelcome").textContent="You are signed in. Results and corrections will appear here after the academy releases them.";$("publicWelcome").classList.remove("hidden");
+  await loadPublicExams();await loadPublicResults();showPanel("publicPanel");
 }
-async function publicRegister(event){event.preventDefault();const btn=$("publicRegisterBtn");btn.disabled=true;try{const r=await fetch(API+"/api/public/register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({fullName:$("publicFullName").value,phone:$("publicPhone").value,email:$("publicEmail").value,department:$("publicDepartment").value,examToken:PUBLIC_EXAM_TOKEN})});const d=await r.json();if(!r.ok)throw Error(d.error||"Registration failed.");await activatePublicSession(d,"Registration successful");}catch(e){$("publicWelcome").textContent=e.message;$("publicWelcome").classList.remove("hidden");}finally{btn.disabled=false;}}
-async function publicLogin(event){event.preventDefault();const btn=$("publicLoginBtn");btn.disabled=true;try{const r=await fetch(API+"/api/public/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:$("publicLoginEmail").value,phone:$("publicLoginPhone").value,examToken:PUBLIC_EXAM_TOKEN})});const d=await r.json();if(!r.ok)throw Error(d.error||"Login failed.");await activatePublicSession(d,"Welcome back");}catch(e){$("publicWelcome").textContent=e.message;$("publicWelcome").classList.remove("hidden");}finally{btn.disabled=false;}}
+async function publicRegister(event){event.preventDefault();const btn=$("publicRegisterBtn");btn.disabled=true;try{const r=await fetch(API+"/api/public/register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({fullName:$("publicFullName").value,phone:$("publicPhone").value,email:$("publicEmail").value,department:$("publicDepartment").value})});const d=await r.json();if(!r.ok)throw Error(d.error||"Registration failed.");await activatePublicSession(d,"Registration successful");}catch(e){$("publicWelcome").textContent=e.message;$("publicWelcome").classList.remove("hidden");}finally{btn.disabled=false;}}
+async function publicLogin(event){event.preventDefault();const btn=$("publicLoginBtn");btn.disabled=true;try{const r=await fetch(API+"/api/public/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:$("publicLoginEmail").value,phone:$("publicLoginPhone").value})});const d=await r.json();if(!r.ok)throw Error(d.error||"Login failed.");await activatePublicSession(d,"Welcome back");}catch(e){$("publicWelcome").textContent=e.message;$("publicWelcome").classList.remove("hidden");}finally{btn.disabled=false;}}
 async function loadPublicExams(){
   publicMode = true;
   const box = $("publicExamList");
-  box.textContent = "Loading this examination...";
+  box.textContent = "Loading open mock examinations...";
   try {
     const data = await api("/api/exams");
     const exams = unwrapList(data, ["exams", "data", "results"]);
     box.replaceChildren();
-    if (!exams.length) { box.textContent = "This examination is no longer available."; return; }
+    if (!exams.length) {
+      box.textContent = "No open mock examinations are currently available for your department.";
+      return;
+    }
     exams.forEach(exam => {
-      const card = document.createElement("article");card.className="panel";
-      const title = document.createElement("h3");title.textContent=exam.title||"JTA Open Mock Examination";
-      const details=document.createElement("p");details.className="muted";
-      details.textContent=[exam.department||window.jtaPublicDepartment||"",Number(exam.duration_minutes||0)>0?Number(exam.duration_minutes)+" minutes":"", "1 attempt"].filter(Boolean).join(" · ");
-      const start=document.createElement("button");start.type="button";
-      start.textContent=Number(exam.attempts_remaining)>0?"Start Examination":"Attempt Used";
-      start.disabled=Number(exam.attempts_remaining)<=0;
-      start.addEventListener("click",()=>startExam(exam));
-      card.append(title,details,start);box.appendChild(card);
+      const card = document.createElement("article");
+      card.className = "panel";
+      const title = document.createElement("h3");
+      title.textContent = exam.title || "JTA Open Mock Examination";
+      const details = document.createElement("p");
+      details.className = "muted";
+      const duration = Number(exam.duration_minutes || 0);
+      const remaining = Number(exam.attempts_remaining ?? 0);
+      details.textContent = [
+        exam.department || window.jtaPublicDepartment || "",
+        duration > 0 ? duration + " minutes" : "",
+        remaining + " attempt(s) remaining"
+      ].filter(Boolean).join(" · ");
+      const start = document.createElement("button");
+      start.type = "button";
+      start.textContent = remaining > 0 ? "Start Examination" : "Attempts Used";
+      start.disabled = remaining <= 0;
+      start.addEventListener("click", () => startExam(exam));
+      card.append(title, details, start);
+      box.appendChild(card);
     });
-  } catch (error) { box.textContent=error.message||"Unable to load this examination."; }
+  } catch (error) {
+    box.textContent = error.message || "Unable to load open mock examinations.";
+  }
 }
 
-async function loadPublicLeaderboard(){
- const box=$("publicLeaderboard");if(!box)return;
- box.replaceChildren();
- try{
-  const data=await api("/api/public/leaderboard");
-  const section=document.createElement("section");section.className="leaderboard-public";
-  const heading=document.createElement("h3");heading.textContent="🏆 Examination Leaderboard — Top 3";section.appendChild(heading);
-  const top=Array.isArray(data.top3)?data.top3:[];
-  if(!top.length){const p=document.createElement("p");p.className="public-rank-meta";p.textContent="The leaderboard will appear after candidates submit this examination.";section.appendChild(p);}
-  top.forEach((r,i)=>{
-   const row=document.createElement("div");row.className="public-rank-row";
-   const rank=document.createElement("div");rank.className="public-rank-number";rank.textContent=String(i+1);
-   const person=document.createElement("div");const name=document.createElement("div");name.className="public-rank-name";name.textContent=r.full_name||"Candidate";
-   const meta=document.createElement("div");meta.className="public-rank-meta";meta.textContent=r.department||"Candidate";person.append(name,meta);
-   const score=document.createElement("div");score.className="public-rank-score";score.textContent=r.result_released?`${r.score}/${r.total_marks}`:"Score withheld";
-   row.append(rank,person,score);section.appendChild(row);
-  });
-  const mine=document.createElement("p");mine.style.margin="14px 0 0";mine.style.fontWeight="800";
-  mine.textContent=data.my_rank?`Your rank: #${data.my_rank} of ${data.total_candidates}`:"Your rank will appear after you submit this examination.";
-  section.appendChild(mine);box.appendChild(section);
- }catch(e){box.textContent=e.message||"Leaderboard is not available yet.";}
-}
 async function loadPublicResults(){publicMode=true;const box=$("publicResultsList");box.textContent="Loading submitted results...";try{const d=await api("/api/results");const rows=unwrapList(d,["results"]);box.replaceChildren();if(!rows.length){box.textContent="No submitted public mock attempts yet.";return;}rows.forEach(r=>{const card=document.createElement("article");card.className="result-card";const h=document.createElement("h3");h.textContent=r.exam_title||"Public Mock Examination";card.appendChild(h);if(Number(r.result_released)!==1){const p=document.createElement("p");p.className="muted";p.textContent="Your examination has been submitted. The academy is withholding your score and corrections until the official release.";card.appendChild(p);}else{const score=document.createElement("p");score.className="result-score";score.textContent=`Your score: ${r.score}/${r.total_marks}`;card.appendChild(score);const b=document.createElement("button");b.type="button";b.textContent="View Corrections";b.onclick=()=>loadPublicCorrections(r.attempt_id);card.appendChild(b);}box.appendChild(card);});}catch(e){box.textContent=e.message;}}
 async function loadPublicCorrections(id){const box=$("publicCorrectionList");box.textContent="Loading corrections...";try{const d=await api("/api/public/results/"+encodeURIComponent(id)+"/corrections");box.replaceChildren();const h=document.createElement("h3");h.textContent="Examination Corrections";box.appendChild(h);(d.corrections||[]).forEach((q,i)=>{const card=document.createElement("article");card.className="result-card";const p=document.createElement("p");p.textContent=`Question ${i+1}. ${q.question_text||""}`;card.appendChild(p);let opts=[];try{opts=JSON.parse(q.options_json||"[]");}catch{}if(!Array.isArray(opts)&&opts&&typeof opts==="object")opts=Object.entries(opts).map(([label,text])=>({label,text}));const ol=document.createElement("ol");ol.type="A";opts.forEach(o=>{const li=document.createElement("li");li.textContent=typeof o==="string"?o:(o.text||o.label||o.option||"");ol.appendChild(li)});card.appendChild(ol);const optionText=(raw)=>{if(raw===null||raw===undefined||String(raw).trim()==="")return "Not answered";const v=String(raw).trim();let idx=/^\d+$/.test(v)?Number(v):(/^[A-H]$/i.test(v)?v.toUpperCase().charCodeAt(0)-65:-1);if(idx>=0&&idx<opts.length){const o=opts[idx];return typeof o==="string"?o:(o.text||o.label||o.option||o.value||v);}const found=opts.find(o=>String(typeof o==="object"?(o.label||o.key||""):"").toUpperCase()===v.toUpperCase());return found?(typeof found==="string"?found:(found.text||found.option||v)):v;};const yours=document.createElement("p");yours.textContent="Your answer: "+optionText(q.selected_answer);card.appendChild(yours);const correct=document.createElement("p");correct.className="success";correct.textContent="Correct answer: "+optionText(q.correct_answer);card.appendChild(correct);const marks=document.createElement("p");marks.textContent=`Marks awarded: ${q.marks_awarded}/${q.marks}`;card.appendChild(marks);box.appendChild(card);});}catch(e){box.textContent=e.message;}}
-async function loadPublicExamLink(){
- const closed=$("linkClosedMessage"),rules=$("examRules");
- $("publicRegistration").classList.add("hidden");$("publicLoginWrap").classList.add("hidden");$("publicActions").classList.add("hidden");
- if(!PUBLIC_EXAM_TOKEN){
-  $("linkExamTitle").textContent="JTA Open Mock Examination";
-  $("linkExamDescription").textContent="Each examination has its own special link. Please open the link shared by the academy.";
-  closed.textContent="This examination link is missing. Please use the special test link provided by JTA.";
-  return false;
- }
- try{
-  const r=await fetch(API+"/api/public/exam-link?token="+encodeURIComponent(PUBLIC_EXAM_TOKEN));
-  const d=await r.json();if(!r.ok)throw new Error(d.error||"This examination link is unavailable.");
-  publicLinkExam=d.exam||{};
-  $("linkExamTitle").textContent=publicLinkExam.title||"JTA Open Mock Examination";
-  $("linkExamDescription").textContent=publicLinkExam.description||"Complete this examination within the stated time. Each candidate has one attempt.";
-  if(!d.available||Number(d.question_count)<=0){
-   closed.textContent="CBT is closed for now. Please check back soon.";
-   document.body.classList.add("link-closed-mode");
-   return false;
-  }
-  closed.classList.add("hidden");rules.classList.remove("hidden");
-  $("publicRegistration").classList.remove("hidden");$("publicLoginWrap").classList.remove("hidden");
-  return true;
- }catch(e){
-  closed.textContent=e.message||"This examination link is unavailable or has been revoked.";
-  document.body.classList.add("link-closed-mode");
-  return false;
- }
-}
-
 $("publicRegistration").addEventListener("submit",publicRegister);
 $("publicLoginForm").addEventListener("submit",publicLogin);
 $("publicLoadExamsBtn").addEventListener("click",loadPublicExams);
 $("publicResultsBtn").addEventListener("click",loadPublicResults);
-// Standalone public Open Mock page: do not bind legacy student-portal controls.
-// Those controls are not present on this page; binding them caused a startup
-// TypeError and stopped the candidate portal from loading.
-const legacyLoadExamsButton = $("loadExamsBtn");
-if (legacyLoadExamsButton) legacyLoadExamsButton.addEventListener("click", loadExams);
-const legacyLoadResultsButton = $("loadResultsBtn");
-if (legacyLoadResultsButton) legacyLoadResultsButton.addEventListener("click", loadResults);
-const legacyBackButton = $("backBtn");
-if (legacyBackButton) legacyBackButton.addEventListener("click", () => {
+// Standalone public page: no link to the JTA student portal.
+
+$("loadExamsBtn").addEventListener("click", loadExams);
+$("loadResultsBtn").addEventListener("click", loadResults);
+ 
+$("backBtn").addEventListener("click", () => {
   showPanel("homePanel");
   clearNotice();
 });
@@ -1474,45 +1327,63 @@ if (legacyBackButton) legacyBackButton.addEventListener("click", () => {
 window.addEventListener("beforeunload", saveActiveAttempt);
 window.addEventListener("pagehide", saveActiveAttempt);
 
-// Public candidate sessions are isolated by the unique examination link.
-(async()=>{
- const linkReady=await loadPublicExamLink();
- if(!linkReady){showPanel("publicPanel");return;}
- publicMode=true;
- const publicTokenAtBoot=publicStorageGet(PUBLIC_TOKEN_STORAGE_KEY);
- let cachedCandidate=null;
- try{cachedCandidate=JSON.parse(publicStorageGet(PUBLIC_CANDIDATE_STORAGE_KEY)||"null");}catch(_){}
- if(publicTokenAtBoot || (cachedCandidate?.email && cachedCandidate?.phone)){
-  if(cachedCandidate){
-   window.jtaPublicCandidate=cachedCandidate;window.jtaPublicDepartment=cachedCandidate.department||"";
-   $("publicRegistration").classList.add("hidden");$("publicLoginWrap").classList.add("hidden");$("publicActions").classList.remove("hidden");
-   $("publicCandidateLabel").textContent=`Welcome back: ${cachedCandidate.full_name||cachedCandidate.fullName||"Candidate"} · ${cachedCandidate.department||""} Department Exam`;
+// Public candidate sessions are intentionally persistent across page reloads.
+// Do not erase a saved token because of a temporary network/server error.
+publicMode = true;
+const publicTokenAtBoot = localStorage.getItem(PUBLIC_TOKEN_KEY);
+if (publicTokenAtBoot) {
+  let cachedCandidate = null;
+  try { cachedCandidate = JSON.parse(localStorage.getItem(PUBLIC_CANDIDATE_KEY) || "null"); } catch (_) {}
+  if (cachedCandidate) {
+    window.jtaPublicCandidate = cachedCandidate;
+    window.jtaPublicDepartment = cachedCandidate.department || "";
+    $("publicRegistration").classList.add("hidden");
+    $("publicLoginWrap").classList.add("hidden");
+    $("publicActions").classList.remove("hidden");
+    $("publicCandidateLabel").textContent = `Welcome back: ${cachedCandidate.full_name || cachedCandidate.fullName || "Candidate"} · ${cachedCandidate.department || ""}`;
   }
-  try{
-   const d=await api("/api/exams");
-   if(d.candidate){
-    window.jtaPublicDepartment=d.candidate.department||"";window.jtaPublicCandidate=d.candidate;
-    publicStorageSet(PUBLIC_CANDIDATE_STORAGE_KEY,JSON.stringify(d.candidate));
-    $("publicCandidateLabel").textContent=`Welcome back: ${d.candidate.full_name||d.candidate.fullName||"Candidate"} · ${d.candidate.department||""} Department Exam`;
-   }
-   $("publicRegistration").classList.add("hidden");$("publicLoginWrap").classList.add("hidden");$("publicActions").classList.remove("hidden");
-   await loadPublicExams();await loadPublicResults();await loadPublicLeaderboard();
-   if(!restoreActiveAttempt())showPanel("publicPanel");
-  }catch(error){
-   const isUnauthorized=Number(error&&error.status)===401;
-   if(isUnauthorized){
-    publicStorageRemove(PUBLIC_TOKEN_STORAGE_KEY);
-    $("publicRegistration").classList.remove("hidden");$("publicLoginWrap").classList.remove("hidden");$("publicActions").classList.add("hidden");
-    $("publicWelcome").textContent="Please register or log in for this examination using this special link.";
-   }else{
-    $("publicWelcome").textContent="Your saved login is still on this device, but the server could not be reached. Check your connection and retry.";
-    if(cachedCandidate){$("publicRegistration").classList.add("hidden");$("publicLoginWrap").classList.add("hidden");$("publicActions").classList.remove("hidden");}
-   }
-   $("publicWelcome").classList.remove("hidden");
-   if(!restoreActiveAttempt())showPanel("publicPanel");
-  }
- }else{showPanel("publicPanel");}
-})();
+  (async () => {
+    try {
+      const d = await api("/api/exams");
+      if (d.candidate) {
+        window.jtaPublicDepartment = d.candidate.department || "";
+        window.jtaPublicCandidate = d.candidate;
+        localStorage.setItem(PUBLIC_CANDIDATE_KEY, JSON.stringify(d.candidate));
+        $("publicCandidateLabel").textContent = `Welcome back: ${d.candidate.full_name || d.candidate.fullName || "Candidate"} · ${d.candidate.department || ""}`;
+      }
+      $("publicRegistration").classList.add("hidden");
+      $("publicLoginWrap").classList.add("hidden");
+      $("publicActions").classList.remove("hidden");
+      await loadPublicExams();
+      await loadPublicResults();
+      if (!restoreActiveAttempt()) showPanel("publicPanel");
+    } catch (error) {
+      const isUnauthorized = Number(error && error.status) === 401;
+      if (isUnauthorized) {
+        // Keep cached candidate details so the candidate can retry login without
+        // registering again. The API helper has already attempted silent renewal.
+        localStorage.removeItem(PUBLIC_TOKEN_KEY);
+        $("publicRegistration").classList.remove("hidden");
+        $("publicLoginWrap").classList.remove("hidden");
+        $("publicActions").classList.add("hidden");
+        $("publicWelcome").textContent = "Your session needs you to log in again. Use your registered email address and phone number.";
+      } else {
+        // Keep the token and cached identity. A temporary connection failure must
+        // never sign the candidate out or destroy their locally saved attempt.
+        $("publicWelcome").textContent = "Your saved login is still on this device, but the server could not be reached. Check your connection and tap Load Open Mock Examinations to retry.";
+        if (cachedCandidate) {
+          $("publicRegistration").classList.add("hidden");
+          $("publicLoginWrap").classList.add("hidden");
+          $("publicActions").classList.remove("hidden");
+        }
+      }
+      $("publicWelcome").classList.remove("hidden");
+      if (!restoreActiveAttempt()) showPanel("publicPanel");
+    }
+  })();
+} else {
+  showPanel("publicPanel");
+}
 </script>
 </body>
 </html>
