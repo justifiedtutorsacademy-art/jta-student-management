@@ -1007,8 +1007,11 @@ async function startExam(examOrId) {
     "general", "custom", "general/custom", "general-custom",
     "custom-exam", "all-subjects", "all-subject"
   ].includes(examType);
+  // Do not use publicMode to force the JAMB subject picker: public Open Mock
+  // links can also point to General / Custom examinations. Only a JAMB
+  // Combined exam (or a legacy exam with no type metadata) needs four subjects.
   const isCombinedExam = !isGeneralCustomExam &&
-    (publicMode || examType.includes("combined") || examType === "");
+    (examType.includes("combined") || examType === "");
   if (isCombinedExam) {
     selectedSubjects = await chooseFourSubjects(examObject);
     if (!selectedSubjects) return;
