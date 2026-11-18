@@ -927,7 +927,12 @@ function normalizeQuestions(data) {
     id: q.id ?? q.question_id ?? q.questionId ?? String(index + 1),
     text: q.question ?? q.text ?? q.question_text ?? q.prompt ?? "",
     options: q.options ?? q.options_json ?? q.choices ?? [],
-    subject: q.subject || ""
+    subject: q.subject || "",
+    image_data: q.image_data ?? q.imageData ?? (typeof q.image === "string" ? q.image : q.image?.data ? (String(q.image.data).startsWith("data:") ? q.image.data : `data:${q.image.mime_type || q.image.mimeType || "image/png"};base64,${q.image.data}`) : ""),
+    image_url: q.image_url ?? q.imageUrl ?? (typeof q.image === "object" ? q.image.url || "" : ""),
+    explanation: q.explanation ?? q.detailed_explanation ?? "",
+    solution_steps: q.solution_steps ?? q.solutionSteps ?? [],
+    key_point: q.key_point ?? q.keyPoint ?? ""
   }));
 }
  
@@ -1007,11 +1012,10 @@ async function startExam(examOrId) {
     "general", "custom", "general/custom", "general-custom",
     "custom-exam", "all-subjects", "all-subject"
   ].includes(examType);
-  // Open Mock is a single-examination link. It must start with all questions
-  // assigned to that examination and must never display the JAMB four-subject
-  // picker. The four-subject selection remains available in the regular CBT
-  // portal for JAMB Combined examinations only.
-  const isCombinedExam = !publicMode && !isGeneralCustomExam &&
+  // Do not use publicMode to force the JAMB subject picker: public Open Mock
+  // links can also point to General / Custom examinations. Only a JAMB
+  // Combined exam (or a legacy exam with no type metadata) needs four subjects.
+  const isCombinedExam = !isGeneralCustomExam &&
     (examType.includes("combined") || examType === "");
   if (isCombinedExam) {
     selectedSubjects = await chooseFourSubjects(examObject);
@@ -1121,6 +1125,19 @@ function renderQuestion() {
   $("questionNumber").textContent =
     `Question ${currentIndex + 1} of ${questions.length}`;
   $("questionText").textContent = q.text || "Question text unavailable.";
+  const previousImage = $("questionImage");
+  if (previousImage) previousImage.remove();
+  const imageSource = q.image_data || q.image_url || "";
+  if (imageSource) {
+    const image = document.createElement("img");
+    image.id = "questionImage";
+    image.alt = "Question illustration";
+    image.loading = "lazy";
+    image.src = imageSource;
+    image.style.cssText = "display:block;width:auto;max-width:100%;max-height:420px;object-fit:contain;margin:14px auto;border-radius:10px";
+    image.onerror = () => { image.alt = "Question image could not be loaded. Check the image data or URL in the question bank."; image.style.display = "none"; };
+    $("questionText").insertAdjacentElement("afterend", image);
+  }
   $("options").replaceChildren();
  
   let options = q.options;
