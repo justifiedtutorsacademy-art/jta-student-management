@@ -617,6 +617,8 @@ function restoreActiveAttempt() {
   autoSubmitPending = !!(deadline && Date.now() >= deadline);
 
   $("examTitle").textContent = getExamTitle(currentExam);
+  $("linkIntro").classList.add("hidden");
+  $("examRules").classList.add("hidden");
   showPanel("examPanel");
   renderQuestion();
   startTimer();
@@ -920,6 +922,25 @@ async function loadExams() {
   }
 }
  
+function normalizeQuestionImageData(value) {
+  if (!value) return "";
+  if (typeof value === "object") {
+    if (typeof value.data === "string") {
+      const data = value.data.trim();
+      if (data.startsWith("data:image/")) return data;
+      const mime = value.mime_type || value.mimeType || "image/png";
+      return `data:${mime};base64,${data}`;
+    }
+    return "";
+  }
+  if (typeof value !== "string") return "";
+  const data = value.trim();
+  if (/^data:image\/(png|jpeg|jpg|webp);base64,/i.test(data)) return data;
+  // The JSON importer may store the Base64 payload without its data-URL prefix.
+  if (/^[A-Za-z0-9+/]+={0,2}$/.test(data) && data.length > 100) return `data:image/png;base64,${data}`;
+  return "";
+}
+
 function normalizeQuestions(data) {
   const list = unwrapList(data, ["questions", "data"]);
  
@@ -928,7 +949,7 @@ function normalizeQuestions(data) {
     text: q.question ?? q.text ?? q.question_text ?? q.prompt ?? "",
     options: q.options ?? q.options_json ?? q.choices ?? [],
     subject: q.subject || "",
-    image_data: q.image_data ?? q.imageData ?? (typeof q.image === "string" ? q.image : q.image?.data ? (String(q.image.data).startsWith("data:") ? q.image.data : `data:${q.image.mime_type || q.image.mimeType || "image/png"};base64,${q.image.data}`) : ""),
+    image_data: normalizeQuestionImageData(q.image_data ?? q.imageData ?? q.image),
     image_url: q.image_url ?? q.imageUrl ?? (typeof q.image === "object" ? q.image.url || "" : ""),
     explanation: q.explanation ?? q.detailed_explanation ?? "",
     solution_steps: q.solution_steps ?? q.solutionSteps ?? [],
@@ -1068,6 +1089,8 @@ async function startExam(examOrId) {
     }
  
     $("examTitle").textContent = getExamTitle(currentExam);
+    $("linkIntro").classList.add("hidden");
+    $("examRules").classList.add("hidden");
     showPanel("examPanel");
     clearNotice();
     saveActiveAttempt();
@@ -1127,6 +1150,8 @@ function renderQuestion() {
   $("questionText").textContent = q.text || "Question text unavailable.";
   const previousImage = $("questionImage");
   if (previousImage) previousImage.remove();
+  const previousImageError = $("questionImageError");
+  if (previousImageError) previousImageError.remove();
   const imageSource = q.image_data || q.image_url || "";
   if (imageSource) {
     const image = document.createElement("img");
@@ -1135,7 +1160,14 @@ function renderQuestion() {
     image.loading = "lazy";
     image.src = imageSource;
     image.style.cssText = "display:block;width:auto;max-width:100%;max-height:420px;object-fit:contain;margin:14px auto;border-radius:10px";
-    image.onerror = () => { image.alt = "Question image could not be loaded. Check the image data or URL in the question bank."; image.style.display = "none"; };
+    image.onerror = () => {
+      image.remove();
+      const warning = document.createElement("p");
+      warning.id = "questionImageError";
+      warning.className = "muted";
+      warning.textContent = "Question image could not be loaded. Check that the image was saved correctly in the question bank and that its URL is publicly reachable.";
+      $("questionText").insertAdjacentElement("afterend", warning);
+    };
     $("questionText").insertAdjacentElement("afterend", image);
   }
   $("options").replaceChildren();
@@ -1397,6 +1429,8 @@ async function activatePublicSession(data,label){
   publicMode=true;
   window.jtaPublicDepartment=data.candidate.department;window.jtaPublicCandidate=data.candidate;
   $("publicRegistration").classList.add("hidden");$("publicLoginWrap").classList.add("hidden");$("publicActions").classList.remove("hidden");
+  $("examRules").classList.remove("hidden");
+  $("linkIntro").classList.remove("hidden");
   $("publicCandidateLabel").textContent=`Welcome back: ${data.candidate.full_name||data.candidate.fullName||"Candidate"} · ${data.candidate.department||""} Department Exam`;
   $("publicWelcome").textContent="";$("publicWelcome").classList.add("hidden");
   await loadPublicExams();await loadPublicResults();await loadPublicLeaderboard();showPanel("publicPanel");
@@ -1470,7 +1504,7 @@ async function loadPublicExamLink(){
    document.body.classList.add("link-closed-mode");
    return false;
   }
-  closed.classList.add("hidden");rules.classList.remove("hidden");
+  closed.classList.add("hidden");rules.classList.add("hidden");
   $("publicRegistration").classList.remove("hidden");$("publicLoginWrap").classList.remove("hidden");
   return true;
  }catch(e){
