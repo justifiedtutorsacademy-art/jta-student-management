@@ -1007,10 +1007,11 @@ async function startExam(examOrId) {
     "general", "custom", "general/custom", "general-custom",
     "custom-exam", "all-subjects", "all-subject"
   ].includes(examType);
-  // Do not use publicMode to force the JAMB subject picker: public Open Mock
-  // links can also point to General / Custom examinations. Only a JAMB
-  // Combined exam (or a legacy exam with no type metadata) needs four subjects.
-  const isCombinedExam = !isGeneralCustomExam &&
+  // Open Mock is a single-examination link. It must start with all questions
+  // assigned to that examination and must never display the JAMB four-subject
+  // picker. The four-subject selection remains available in the regular CBT
+  // portal for JAMB Combined examinations only.
+  const isCombinedExam = !publicMode && !isGeneralCustomExam &&
     (examType.includes("combined") || examType === "");
   if (isCombinedExam) {
     selectedSubjects = await chooseFourSubjects(examObject);
