@@ -962,7 +962,7 @@ function allowedSubjectsForGroup(group) {
   if (["science", "medical", "medicals", "engineering", "pure science"].includes(value))
     return ["English Language", "Mathematics", "Physics", "Chemistry", "Biology"];
   if (["arts", "art", "law and pure arts", "eng lit econs govt", "irs", "irs students", "irs students only"].includes(value))
-    return ["Literature in English", "CRS", "Government", "IRS", "Economics"];
+    return ["English Language", "Literature in English", "CRS", "Government", "IRS", "Economics"];
   if (["commercial", "commercial 1", "commercial 2", "commerce"].includes(value))
     return publicMode
       ? ["English Language", "Mathematics", "Economics", "Government", "Commerce/Accounting"]
