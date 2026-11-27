@@ -1380,9 +1380,30 @@ async function submitExam(autoSubmit) {
     $("resultsList").appendChild(renderResultCard(result));
     showPanel(publicMode ? "publicPanel" : "homePanel");
     if(publicMode){await loadPublicResults();await loadPublicLeaderboard();}
-    showNotice(autoSubmit
-      ? "Exam submitted successfully. Your examination has been closed."
-      : "Your examination has been submitted successfully. Your examination has been closed.");
+    showNotice("Your examination has been submitted successfully. Your examination has been closed. Checking the JTA next-step link...");
+
+    // The destination is managed from the JTA Admin Portal and is never
+    // embedded in this HTML. If no URL is configured, the candidate remains
+    // safely on the Open Mock home screen.
+    try {
+      const redirectResponse = await fetch(API + "/api/public/settings/paid-class-redirect", { method: "GET", cache: "no-store" });
+      const redirectData = await redirectResponse.json().catch(() => ({}));
+      const destination = String(redirectData.redirectUrl || "").trim();
+      if (redirectResponse.ok && destination) {
+        let parsedDestination;
+        try { parsedDestination = new URL(destination); } catch (_) { parsedDestination = null; }
+        if (parsedDestination && parsedDestination.protocol === "https:") {
+          showNotice("Your examination has been submitted successfully. Redirecting you to the JTA information page in a few seconds...");
+          setTimeout(() => window.location.assign(parsedDestination.href), 4000);
+        } else {
+          showNotice("Your examination has been submitted successfully. The saved website link is invalid. Please contact JTA.", true);
+        }
+      } else {
+        showNotice("Your examination has been submitted successfully. No next-step website is currently configured. You can remain on this page.");
+      }
+    } catch (_) {
+      showNotice("Your examination has been submitted successfully. The next-step website could not be loaded. You can remain on this page.", true);
+    }
   } catch (error) {
     if (autoSubmit) {
       // Keep the attempt and answers locally until the server confirms receipt.
