@@ -975,11 +975,9 @@ async function chooseFourSubjects(exam) {
   const allowed = allowedSubjectsForGroup(group);
   if (!allowed.length) throw new Error("Your department group could not be identified. Please contact JTA.");
 
-  // Arts candidates must take English Language plus three choices from the
-  // five Arts options. Other departments retain their existing four-choice flow.
-  const groupKey = String(group || "").trim().toLowerCase();
-  const isArts = ["arts", "art", "law and pure arts", "eng lit econs govt", "irs", "irs students", "irs students only"].includes(groupKey);
-  const requiredCount = isArts ? 3 : 4;
+  // All departments, including Arts, choose any four subjects.
+  // English Language remains available as an ordinary selectable subject.
+  const requiredCount = 4;
   const available = allowed;
   return new Promise(resolve => {
     const overlay = document.createElement("div");
@@ -988,18 +986,10 @@ async function chooseFourSubjects(exam) {
     panel.className = "panel";
     panel.style.cssText = "width:min(520px,100%);max-height:90vh;overflow:auto;margin:0;";
     const heading = document.createElement("h2");
-    heading.textContent = isArts ? "English Language is compulsory" : "Choose exactly 4 subjects";
+    heading.textContent = "Choose exactly 4 subjects";
     const note = document.createElement("p");
     note.className = "muted";
-    note.textContent = isArts
-      ? "English Language is automatically included. Choose 3 additional subjects for this attempt."
-      : "Select four subjects for this attempt. You can choose a different combination next time.";
-    const compulsory = document.createElement("div");
-    if (isArts) {
-      compulsory.className = "subject-choice";
-      compulsory.style.cssText = "background:#E7F0FF;border-color:#1050BD;font-weight:700;";
-      compulsory.textContent = "✓ English Language (Compulsory)";
-    }
+    note.textContent = "Select four subjects for this attempt. You can choose a different combination next time.";
     const counter = document.createElement("p");
     counter.setAttribute("aria-live","polite");
     counter.textContent = "0 of " + requiredCount + " selected";
@@ -1027,12 +1017,10 @@ async function chooseFourSubjects(exam) {
     cancel.addEventListener("click", () => { overlay.remove(); resolve(null); });
     ok.addEventListener("click", () => {
       const selected = checks.filter(x=>x.checked).map(x=>x.value);
-      if (isArts) selected.unshift("English Language");
       overlay.remove(); resolve(selected);
     });
     actions.append(cancel,ok);
-    if (isArts) panel.append(heading,note,compulsory,counter,choices,actions);
-    else panel.append(heading,note,counter,choices,actions);
+    panel.append(heading,note,counter,choices,actions);
     overlay.appendChild(panel); document.body.appendChild(overlay);
   });
 }
